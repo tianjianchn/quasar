@@ -2,6 +2,9 @@
   "name": "quasar",
   "version": "0.15.0-beta.2",
   "description": "Simultaneously build desktop/mobile SPA websites & phone/tablet apps with VueJS",
+  "main": "dist/quasar.mat.esm.js",
+  "module": "dist/quasar.mat.esm.js",
+  "jsnext:main": "dist/quasar.mat.esm.js",
   "files": [
     "dist",
     "i18n",
