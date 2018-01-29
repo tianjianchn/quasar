@@ -2,6 +2,7 @@ import { between } from '../../utils/format'
 import { QBtn } from '../btn'
 import { QInput } from '../input'
 import extend from '../../utils/extend'
+import { getEventKey } from '../../utils/event'
 
 export default {
   name: 'q-pagination',
@@ -71,15 +72,17 @@ export default {
       get () {
         return this.value
       },
-      set (value) {
-        if (this.disable || !value || isNaN(value)) {
+      set (val) {
+        if (this.disable || !val || isNaN(val)) {
           return
         }
-        const model = between(parseInt(value, 10), this.min, this.max)
-        if (this.value !== model) {
-          this.$emit('input', model)
-        }
-        this.$emit('change', model)
+        const value = between(parseInt(val, 10), this.min, this.max)
+        this.$emit('input', value)
+        this.$nextTick(() => {
+          if (JSON.stringify(value) !== JSON.stringify(this.value)) {
+            this.$emit('change', value)
+          }
+        })
       }
     },
     inputPlaceholder () {
@@ -183,7 +186,7 @@ export default {
 
     if (this.input) {
       contentMiddle.push(h(QInput, {
-        staticClass: 'inline no-margin no-padding',
+        staticClass: 'inline no-padding',
         style: {
           width: `${this.inputPlaceholder.length}rem`
         },
@@ -200,7 +203,7 @@ export default {
         },
         on: {
           input: value => (this.newPage = value),
-          keyup: event => (event.keyCode === 13 && this.__update()),
+          keydown: event => (getEventKey(event) === 13 && this.__update()),
           blur: () => this.__update()
         }
       }))

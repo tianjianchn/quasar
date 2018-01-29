@@ -98,18 +98,20 @@ export default {
         inverted: this.inverted,
         dark: this.dark,
         hideUnderline: this.hideUnderline,
-        maxLength: this.maxLength,
         color: this.color,
         before: this.controlBefore,
-        after: this.controlAfter
+        after: this.controlAfter,
+        clearValue: this.clearValue
       },
+      attrs: this.$attrs,
       on: {
         input: v => { this.model = v },
         focus: this.__onFocus,
         blur: this.__onBlur,
         keyup: this.__onKeyup,
         keydown: this.__onKeydown,
-        click: this.__onClick
+        click: this.__onClick,
+        clear: val => this.$emit('clear', val)
       }
     }, [
       this.$slots.default

@@ -18,8 +18,8 @@
         <q-card-main>
           <q-input v-model="numberNull" type="number" prefix="$" float-label="Number (initial null)" @input="onInput" @change="onChange" clearable />
           <q-input :value="numberNull" type="number" prefix="$" float-label="Number (initial null, onChange)" @input="onInput" @change="val => { numberNull = val, onChange(val) }" clearable />
-          <q-input v-model="numberNull" type="number" :max-decimals="2" prefix="$" float-label="Number (initial null, 2 decimals)" @input="onInput" @change="onChange" clearable />
-          <q-input :value="numberNull" type="number" :max-decimals="2" prefix="$" float-label="Number (initial null, 2 decimals, onChange)" @input="onInput" @change="val => { numberNull = val, onChange(val) }" clearable />
+          <q-input v-model="numberNull" type="number" :decimals="2" prefix="$" float-label="Number (initial null, 2 decimals)" @input="onInput" @change="onChange" clearable />
+          <q-input :value="numberNull" type="number" :decimals="2" prefix="$" float-label="Number (initial null, 2 decimals, onChange)" @input="onInput" @change="val => { numberNull = val, onChange(val) }" clearable />
         </q-card-main>
       </q-card>
 
@@ -28,8 +28,8 @@
         <q-card-main>
           <q-input v-model="numberInt" type="number" prefix="$" float-label="Number (initial int)" @input="onInput" @change="onChange" clearable />
           <q-input :value="numberInt" type="number" prefix="$" float-label="Number (initial int, onChange)" @input="onInput" @change="val => { numberInt = val, onChange(val) }" clearable />
-          <q-input v-model="numberInt" type="number" :max-decimals="2" prefix="$" float-label="Number (initial int, 2 decimals)" @input="onInput" @change="onChange" clearable />
-          <q-input :value="numberInt" type="number" :max-decimals="2" prefix="$" float-label="Number (initial int, 2 decimals, onChange)" @input="onInput" @change="val => { numberInt = val, onChange(val) }" clearable />
+          <q-input v-model="numberInt" type="number" :decimals="2" prefix="$" float-label="Number (initial int, 2 decimals)" @input="onInput" @change="onChange" clearable />
+          <q-input :value="numberInt" type="number" :decimals="2" prefix="$" float-label="Number (initial int, 2 decimals, onChange)" @input="onInput" @change="val => { numberInt = val, onChange(val) }" clearable />
         </q-card-main>
       </q-card>
 
@@ -38,8 +38,8 @@
         <q-card-main>
           <q-input v-model="numberFloat" type="number" prefix="$" float-label="Number (initial float)" @input="onInput" @change="onChange" clearable />
           <q-input :value="numberFloat" type="number" prefix="$" float-label="Number (initial float, onChange)" @input="onInput" @change="val => { numberFLoat = val, onChange(val) }" clearable />
-          <q-input v-model="numberFloat" type="number" :max-decimals="2" prefix="$" float-label="Number (initial float, 2 decimals)" @input="onInput" @change="onChange" clearable />
-          <q-input :value="numberFloat" type="number" :max-decimals="2" prefix="$" float-label="Number (initial float, 2 decimals, onChange)" @input="onInput" @change="val => { numberFloat = val, onChange(val) }" clearable />
+          <q-input v-model="numberFloat" type="number" :decimals="2" prefix="$" float-label="Number (initial float, 2 decimals)" @input="onInput" @change="onChange" clearable />
+          <q-input :value="numberFloat" type="number" :decimals="2" prefix="$" float-label="Number (initial float, 2 decimals, onChange)" @input="onInput" @change="val => { numberFloat = val, onChange(val) }" clearable />
         </q-card-main>
       </q-card>
 
@@ -48,8 +48,18 @@
         <q-card-main>
           <q-input v-model="numberFloatText" type="number" prefix="$" float-label="Number (initial float as text)" @input="onInput" @change="onChange" clearable />
           <q-input :value="numberFloatText" type="number" prefix="$" float-label="Number (initial float as text, onChange)" @input="onInput" @change="val => { numberFloatText = val, onChange(val) }" clearable />
-          <q-input v-model="numberFloatText" type="number" :max-decimals="2" prefix="$" float-label="Number (initial float as text, 2 decimals)" @input="onInput" @change="onChange" clearable />
-          <q-input :value="numberFloatText" type="number" :max-decimals="2" prefix="$" float-label="Number (initial float as text, 2 decimals, onChange)" @input="onInput" @change="val => { numberFloatText = val, onChange(val) }" clearable />
+          <q-input v-model="numberFloatText" type="number" :decimals="2" prefix="$" float-label="Number (initial float as text, 2 decimals)" @input="onInput" @change="onChange" clearable />
+          <q-input :value="numberFloatText" type="number" :decimals="2" prefix="$" float-label="Number (initial float as text, 2 decimals, onChange)" @input="onInput" @change="val => { numberFloatText = val, onChange(val) }" clearable />
+        </q-card-main>
+      </q-card>
+
+      <q-card>
+        <q-card-title class="bg-dark text-white q-px-small q-py-smaller">Numeric value: {{JSON.stringify(numberInt)}}, numeric-keyboard-toggle (mobile only)</q-card-title>
+        <q-card-main>
+          <q-input v-model="numberInt" type="number" prefix="$" float-label="Number (initial int)" @input="onInput" @change="onChange" clearable numeric-keyboard-toggle />
+          <q-input :value="numberInt" type="number" prefix="$" float-label="Number (initial int, onChange)" @input="onInput" @change="val => { numberInt = val, onChange(val) }" clearable numeric-keyboard-toggle />
+          <q-input v-model="numberInt" type="number" :decimals="2" prefix="$" float-label="Number (initial int, 2 decimals)" @input="onInput" @change="onChange" clearable numeric-keyboard-toggle />
+          <q-input :value="numberInt" type="number" :decimals="2" prefix="$" float-label="Number (initial int, 2 decimals, onChange)" @input="onInput" @change="val => { numberInt = val, onChange(val) }" clearable numeric-keyboard-toggle />
         </q-card-main>
       </q-card>
 
@@ -66,11 +76,11 @@
       <q-input v-model="text" suffix="@gmail.com" float-label="Clearable" clearable />
       <q-input v-model="text" type="password" float-label="Password & no-pass-toggle" no-pass-toggle />
 
-      <q-input disable v-model="text" float-label="Float Label" placeholder="Gigi" />
-      <q-input inverted disable v-model="text" float-label="Float Label" placeholder="Gigi" clearable />
+      <q-input disable v-model="text" float-label="Float Label disabled" placeholder="Gigi" />
+      <q-input inverted disable v-model="text" float-label="Float Label disabled" placeholder="Gigi" clearable />
 
-      <q-input readonly v-model="text" float-label="Float Label" placeholder="Gigi" />
-      <q-input inverted readonly v-model="text" float-label="Float Label" placeholder="Gigi" clearable />
+      <q-input readonly v-model="text" float-label="Float Label readonly" placeholder="Gigi" />
+      <q-input inverted readonly v-model="text" float-label="Float Label readonly" placeholder="Gigi" clearable />
 
       <q-input v-model="text" float-label="Colored" color="amber" />
       <q-input v-model="text" float-label="Colored" color="amber" error />

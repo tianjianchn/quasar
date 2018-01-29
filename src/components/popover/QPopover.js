@@ -10,6 +10,7 @@ import { getScrollTarget } from '../../utils/scroll'
 import { width, viewport } from '../../utils/dom'
 import EscapeKey from '../../utils/escape-key'
 import ModelToggleMixin from '../../mixins/model-toggle'
+import { listenOpts } from '../../utils/event'
 
 export default {
   name: 'q-popover',
@@ -96,8 +97,8 @@ export default {
       document.body.appendChild(this.$el)
       EscapeKey.register(() => { this.hide() })
       this.scrollTarget = getScrollTarget(this.anchorEl)
-      this.scrollTarget.addEventListener('scroll', this.__updatePosition)
-      window.addEventListener('resize', this.__updatePosition)
+      this.scrollTarget.addEventListener('scroll', this.__updatePosition, listenOpts.passive)
+      window.addEventListener('resize', this.__updatePosition, listenOpts.passive)
       this.reposition(evt)
 
       clearTimeout(this.timer)
@@ -117,13 +118,13 @@ export default {
 
       this.hide(evt)
     },
-    __hide (evt) {
+    __hide () {
       clearTimeout(this.timer)
 
       document.body.removeEventListener('click', this.__bodyHide, true)
       document.body.removeEventListener('touchstart', this.__bodyHide, true)
-      this.scrollTarget.removeEventListener('scroll', this.__updatePosition)
-      window.removeEventListener('resize', this.__updatePosition)
+      this.scrollTarget.removeEventListener('scroll', this.__updatePosition, listenOpts.passive)
+      window.removeEventListener('resize', this.__updatePosition, listenOpts.passive)
       EscapeKey.pop()
 
       document.body.removeChild(this.$el)

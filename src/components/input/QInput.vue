@@ -39,11 +39,9 @@
           ref="input"
           class="col q-input-target q-input-area"
 
-          :name="name"
           :placeholder="inputPlaceholder"
           :disabled="disable"
           :readonly="readonly"
-          :maxlength="maxLength"
           v-bind="$attrs"
 
           :value="model"
@@ -60,14 +58,13 @@
     <input
       v-else
       ref="input"
-      class="col q-input-target"
+      class="col q-input-target q-no-input-spinner"
       :class="[`text-${align}`]"
 
-      :name="name"
       :placeholder="inputPlaceholder"
       :disabled="disable"
       :readonly="readonly"
-      :maxlength="maxLength"
+      :step="computedStep"
       v-bind="$attrs"
 
       :type="inputType"
@@ -91,7 +88,7 @@
     ></q-icon>
 
     <q-icon
-      v-if="isNumber && !noNumberToggle && length"
+      v-if="keyboardToggle"
       slot="after"
       :name="$q.icon.input[showNumber ? 'showNumber' : 'hideNumber']"
       class="q-if-control"
@@ -149,10 +146,11 @@ export default {
     },
     clearable: Boolean,
     noPassToggle: Boolean,
-    noNumberToggle: Boolean,
+    numericKeyboardToggle: Boolean,
     readonly: Boolean,
 
-    maxDecimals: Number,
+    decimals: Number,
+    step: Number,
     upperCase: Boolean
   },
   data () {
@@ -160,20 +158,22 @@ export default {
       showPass: false,
       showNumber: true,
       model: this.value,
+      watcher: null,
       shadow: {
         val: this.model,
         set: this.__set,
         loading: false,
+        watched: false,
         hasFocus: () => {
           return document.activeElement === this.$refs.input
         },
         register: () => {
-          this.watcher = this.$watch('model', val => {
-            this.shadow.val = val
-          })
+          this.shadow.watched = true
+          this.__watcherRegister()
         },
         unregister: () => {
-          this.watcher()
+          this.shadow.watched = false
+          this.__watcherUnregister()
         },
         getEl: () => {
           return this.$refs.input
@@ -185,6 +185,9 @@ export default {
     value (v) {
       this.model = v
       this.isNumberError = false
+    },
+    isTextarea (v) {
+      this[v ? '__watcherRegister' : '__watcherUnregister']()
     }
   },
   provide () {
@@ -210,6 +213,12 @@ export default {
         return this.$attrs.pattern || '[0-9]*'
       }
     },
+    keyboardToggle () {
+      return this.$q.platform.is.mobile &&
+        this.isNumber &&
+        this.numericKeyboardToggle &&
+        length
+    },
     inputType () {
       if (this.isPassword) {
         return this.showPass ? 'text' : 'password'
@@ -223,8 +232,8 @@ export default {
         ? ('' + this.model).length
         : 0
     },
-    editable () {
-      return !this.disable && !this.readonly
+    computedStep () {
+      return this.step || (this.decimals ? 10 ** -this.decimals : 'any')
     }
   },
   methods: {
@@ -238,40 +247,39 @@ export default {
       clearTimeout(this.timer)
       this.focus()
     },
-    clear () {
-      clearTimeout(this.timer)
-      this.focus()
-      if (this.editable) {
-        this.model = this.isNumber ? null : ''
-        this.$emit('input', this.model)
-      }
-    },
 
     __clearTimer () {
       this.$nextTick(() => clearTimeout(this.timer))
     },
 
-    __set (e) {
-      let val = e.target ? e.target.value : e
+    __setModel (val) {
+      clearTimeout(this.timer)
+      this.focus()
+      this.__set(val || (this.isNumber ? null : ''), true)
+    },
+    __set (e, forceUpdate) {
+      let val = e && e.target ? e.target.value : e
 
       if (this.isNumber) {
+        const forcedValue = val
         val = parseFloat(val)
         if (isNaN(val)) {
           this.isNumberError = true
+          if (forceUpdate) {
+            this.$emit('input', forcedValue)
+          }
           return
         }
         this.isNumberError = false
-        if (Number.isInteger(this.maxDecimals)) {
-          val = parseFloat(val.toFixed(this.maxDecimals))
+        if (Number.isInteger(this.decimals)) {
+          val = parseFloat(val.toFixed(this.decimals))
         }
       }
       else if (this.upperCase) {
         val = val.toUpperCase()
       }
 
-      if (val !== this.model) {
-        this.$emit('input', val)
-      }
+      this.$emit('input', val)
       this.model = val
     },
     __updateArea () {
@@ -281,19 +289,39 @@ export default {
         const max = this.maxHeight || h
         this.$refs.input.style.minHeight = `${between(h, 19, max)}px`
       }
+    },
+    __watcher (value) {
+      if (this.isTextarea) {
+        this.__updateArea(value)
+      }
+      if (this.shadow.watched) {
+        this.shadow.val = value
+      }
+    },
+    __watcherRegister () {
+      if (!this.watcher) {
+        this.watcher = this.$watch('model', this.__watcher)
+      }
+    },
+    __watcherUnregister (forceUnregister) {
+      if (
+        this.watcher &&
+        (forceUnregister || (!this.isTextarea && !this.shadow.watched))
+      ) {
+        this.watcher()
+        this.watcher = null
+      }
     }
   },
   mounted () {
     this.__updateArea = frameDebounce(this.__updateArea)
     if (this.isTextarea) {
       this.__updateArea()
-      this.watcher = this.$watch('model', this.__updateArea)
+      this.__watcherRegister()
     }
   },
   beforeDestroy () {
-    if (this.watcher !== void 0) {
-      this.watcher()
-    }
+    this.__watcherUnregister(true)
   }
 }
 </script>

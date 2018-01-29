@@ -1,6 +1,6 @@
 Quasar Framework is an MIT licensed open source project and completely free to use. However, the amount of effort needed to maintain and develop new features for the project is not sustainable without some financial backing.
 
-## Proudly sponsored by:
+## Platinum sponsor:
 
 [![Truelogic](http://quasar-framework.org/images/truelogic_logo.png)](http://truelogic.com)
 
@@ -10,13 +10,13 @@ You can join them in supporting Quasar development by [pledging on Patreon](http
 
 ### $500
 
-It could be you!
+It could be you or your company!
 
 ---
 
 ### $250
 
-It could be you!
+<a href="https://www.jugglestreet.com.au/" target="_blank"><img src="https://web.jugglestreet.com/images/header-logo-banner.png" width="200px"></a>
 
 ---
 
@@ -24,11 +24,9 @@ It could be you!
 
 <a href="http://comcomservices.com/" target="_blank"><img src="http://comcomservices.com/wp-content/uploads/2016/03/Final-ComComLogo.png" width="200px"></a>
 
-<a href="http://picktype.com" target="_blank"><img src="https://picktype.com/wp-content/uploads/2017/04/pt-trans-full-256.png" width="200px"></a>
-
 - Adrien M
 
-<a href="www.kalisio.com" target="_blank"><img src="https://lh5.googleusercontent.com/Ew4UoeGiCyw2TOnO8MOoqFZCbV6yQrffbnoY2g0_L8v5Z19ix45K4KE6LYCyoQbR38vVNlwi70xSZohD9d7ATOV23LyxkqDcGnX3rShc6qs16A1EN1c=w974" width="200px"></a>
+<a href="http://www.kalisio.com/" target="_blank"><img src="https://raw.githubusercontent.com/kalisio/kdk/master/images/kalisio-banner-250x96.png" width="200px"></a>
 
 ---
 
@@ -39,7 +37,8 @@ It could be you!
 - MG Papelaria (company)
 - Moacir Schmidt
 - Evan Leonardi
-- Max Matteo Staack ($50)
+- Max Matteo Staack
+- Bobby Ross
 
 ---
 
@@ -82,6 +81,9 @@ It could be you!
 - El Matzo
 - Thomas Gick
 - Alexey Telyatnikov
+- Ryan Timmins
+- Asif Mehedi
+- Sevenview Studios
 
 - Ken ($5)
 - Oliver ($5)

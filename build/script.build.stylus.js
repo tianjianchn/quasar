@@ -34,7 +34,7 @@ function generateTheme (theme) {
   return prepareStylus([src].concat(deps))
     .then(code => buildUtils.writeFile(`dist/quasar.${theme}.styl`, code))
     .then(code => compileStylus(code))
-    .then(code => postcss([autoprefixer]).process(code))
+    .then(code => postcss([autoprefixer]).process(code, { from: src }))
     .then(code => {
       code.warnings().forEach(warn => {
         console.warn(warn.toString())
@@ -42,15 +42,15 @@ function generateTheme (theme) {
       return new Promise((resolve, reject) => resolve(code.css))
     })
     .then(code => Promise.all([
-      generateStandalone(theme, code),
-      generateStandalone(theme, rtlcss.process(code), '.rtl')
+      generateUMD(theme, code),
+      generateUMD(theme, rtlcss.process(code), '.rtl')
     ]))
 }
 
-function generateStandalone (theme, code, ext = '') {
-  return buildUtils.writeFile(`dist/quasar.${theme}${ext}.css`, code, true)
+function generateUMD (theme, code, ext = '') {
+  return buildUtils.writeFile(`dist/umd/quasar.${theme}${ext}.css`, code, true)
     .then(code => cssnano.process(code))
-    .then(code => buildUtils.writeFile(`dist/quasar.${theme}${ext}.min.css`, code.css, true))
+    .then(code => buildUtils.writeFile(`dist/umd/quasar.${theme}${ext}.min.css`, code.css, true))
 }
 
 function prepareStylus (src) {

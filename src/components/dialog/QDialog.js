@@ -41,29 +41,28 @@ export default {
     if (msg) {
       child.push(
         h('div', {
-          staticClass: 'modal-body modal-scroll'
+          staticClass: 'modal-body modal-message modal-scroll'
         }, [ msg ])
       )
     }
 
-    child.push(
-      h(
-        'div',
-        { staticClass: 'modal-body modal-scroll' },
-        this.hasForm
-          ? (this.prompt ? this.__getPrompt(h) : this.__getOptions(h))
-          : [ this.$slots.default ]
+    if (this.hasForm || this.$slots.body) {
+      child.push(
+        h(
+          'div',
+          { staticClass: 'modal-body modal-scroll' },
+          this.hasForm
+            ? (this.prompt ? this.__getPrompt(h) : this.__getOptions(h))
+            : [ this.$slots.body ]
+        )
       )
-    )
+    }
 
     if (this.$scopedSlots.buttons) {
       child.push(
         h('div', {
           staticClass: 'modal-buttons',
-          'class': {
-            row: !this.stackButtons,
-            column: this.stackButtons
-          }
+          'class': this.buttonClass
         }, [
           this.$scopedSlots.buttons({
             ok: this.__onOk,
@@ -73,13 +72,7 @@ export default {
       )
     }
     else if (this.ok || this.cancel) {
-      child.push(
-        h(
-          'div',
-          { staticClass: 'modal-buttons row' },
-          this.__getButtons(h)
-        )
-      )
+      child.push(this.__getButtons(h))
     }
 
     return h(QModal, {
@@ -102,7 +95,10 @@ export default {
             return
           }
 
-          let node = this.$refs.modal.$el.getElementsByTagName('INPUT')
+          let node = this.prompt
+            ? this.$refs.modal.$el.getElementsByTagName('INPUT')
+            : this.$refs.modal.$el.getElementsByClassName('q-option')
+
           if (node.length) {
             node[0].focus()
             return
@@ -141,6 +137,11 @@ export default {
       return this.cancel === true
         ? this.$q.i18n.label.cancel
         : this.cancel
+    },
+    buttonClass () {
+      return this.stackButtons
+        ? 'column'
+        : 'row'
     }
   },
   methods: {
@@ -205,7 +206,10 @@ export default {
         }))
       }
 
-      return child
+      return h('div', {
+        staticClass: 'modal-buttons',
+        'class': this.buttonClass
+      }, child)
     },
     __onOk () {
       return this.hide().then(data => {

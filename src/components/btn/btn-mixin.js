@@ -1,11 +1,13 @@
 import Ripple from '../../directives/ripple'
 import { QIcon } from '../icon'
+import AlignMixin from '../../mixins/align'
 
 const sizes = {
   xs: 8, sm: 10, md: 14, lg: 20, xl: 24
 }
 
 export default {
+  mixins: [AlignMixin],
   components: {
     QIcon
   },
@@ -32,11 +34,7 @@ export default {
     glossy: Boolean,
     dense: Boolean,
     noRipple: Boolean,
-    justify: {
-      type: String,
-      default: 'center',
-      validator: v => ['start', 'end', 'center', 'between', 'around'].includes(v)
-    }
+    tabindex: Number
   },
   computed: {
     style () {
@@ -62,9 +60,7 @@ export default {
       return __THEME__ === 'mat' && !this.noRipple && !this.isDisabled
     },
     classes () {
-      const
-        cls = [ this.shape ],
-        color = this.toggled ? this.toggleColor : this.color
+      const cls = [ this.shape ]
 
       if (this.fab) {
         cls.push('q-btn-fab')
@@ -90,28 +86,30 @@ export default {
         cls.push('q-focusable q-hoverable')
       }
 
-      if (color) {
+      if (this.color) {
         if (this.flat || this.outline) {
-          cls.push(`text-${this.textColor || color}`)
+          cls.push(`text-${this.textColor || this.color}`)
         }
         else {
-          cls.push(`bg-${color}`)
+          cls.push(`bg-${this.color}`)
           cls.push(`text-${this.textColor || 'white'}`)
         }
+      }
+      else if (this.textColor) {
+        cls.push(`text-${this.textColor}`)
       }
 
       cls.push({
         'q-btn-no-uppercase': this.noCaps,
         'q-btn-rounded': this.rounded,
         'q-btn-dense': this.dense,
-        'q-btn-toggle-active': this.toggled,
         'glossy': this.glossy
       })
 
       return cls
     },
     innerClasses () {
-      const classes = [`justify-${this.justify}`]
+      const classes = [ this.alignClass ]
       if (this.noWrap) {
         classes.push('no-wrap', 'text-no-wrap')
       }

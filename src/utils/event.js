@@ -1,28 +1,54 @@
-function getEvent (e) {
-  return e || window.event
+function hasPassiveEvents () {
+  let has = false
+
+  try {
+    var opts = Object.defineProperty({}, 'passive', {
+      get () {
+        has = true
+      }
+    })
+    window.addEventListener('qtest', null, opts)
+    window.removeEventListener('qtest', null, opts)
+  }
+  catch (e) {}
+
+  return has
 }
 
-export function rightClick (e) {
-  e = getEvent(e)
-
-  if (e.which) {
-    return e.which === 3
+export const listenOpts = {}
+Object.defineProperty(listenOpts, 'passive', {
+  configurable: true,
+  get () {
+    listenOpts.passive = hasPassiveEvents()
+      ? { passive: true }
+      : void 0
+    return listenOpts.passive
+  },
+  set (val) {
+    Object.defineProperty(this, 'passive', {
+      value: val
+    })
   }
-  if (e.button) {
-    return e.button === 2
-  }
+})
 
-  return false
+export function leftClick (e = window.event) {
+  return e.button === 0
 }
 
-export function getEventKey (e) {
-  e = getEvent(e)
+export function middleClick (e = window.event) {
+  return e.button === 1
+}
+
+export function rightClick (e = window.event) {
+  return e.button === 2
+}
+
+export function getEventKey (e = window.event) {
   return e.which || e.keyCode
 }
 
-export function position (e) {
+export function position (e = window.event) {
   let posx, posy
-  e = getEvent(e)
 
   if (e.touches && e.touches[0]) {
     e = e.touches[0]
@@ -51,9 +77,8 @@ export function position (e) {
   }
 }
 
-export function targetElement (e) {
+export function targetElement (e = window.event) {
   let target
-  e = getEvent(e)
 
   if (e.target) {
     target = e.target
@@ -76,7 +101,7 @@ const
   LINE_HEIGHT = 40,
   PAGE_HEIGHT = 800
 
-export function getMouseWheelDistance (e) {
+export function getMouseWheelDistance (e = window.event) {
   var
     sX = 0, sY = 0, // spinX, spinY
     pX = 0, pY = 0 // pixelX, pixelY
@@ -128,7 +153,7 @@ export function getMouseWheelDistance (e) {
   }
 }
 
-export function stopAndPrevent (e) {
+export function stopAndPrevent (e = window.event) {
   if (!e) {
     return
   }

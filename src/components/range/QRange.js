@@ -4,7 +4,7 @@ import {
   getModel,
   getPercentage,
   notDivides,
-  mixin
+  SliderMixin
 } from '../slider/slider-utils'
 import { QChip } from '../chip'
 
@@ -16,7 +16,7 @@ const dragType = {
 
 export default {
   name: 'q-range',
-  mixins: [mixin],
+  mixins: [SliderMixin],
   props: {
     value: {
       type: Object,
@@ -142,7 +142,7 @@ export default {
           type = dragType.RANGE
           extend(this.dragging, {
             offsetPercentage: percentage,
-            offsetModel: getModel(percentage, this.min, this.max, this.step, this.decimals),
+            offsetModel: getModel(percentage, this.min, this.max, this.step, this.computedDecimals),
             rangeValue: this.dragging.valueMax - this.dragging.valueMin,
             rangePercentage: this.currentMaxPercentage - this.currentMinPercentage
           })
@@ -168,7 +168,7 @@ export default {
     __update (event) {
       let
         percentage = getPercentage(event, this.dragging),
-        model = getModel(percentage, this.min, this.max, this.step, this.decimals),
+        model = getModel(percentage, this.min, this.max, this.step, this.computedDecimals),
         pos
 
       switch (this.dragging.type) {
@@ -234,26 +234,29 @@ export default {
       this.dragging = false
       this.currentMinPercentage = (this.model.min - this.min) / (this.max - this.min)
       this.currentMaxPercentage = (this.model.max - this.min) / (this.max - this.min)
-      this.$emit('change', this.model)
+      this.$nextTick(() => {
+        if (JSON.stringify(this.model) !== JSON.stringify(this.value)) {
+          this.$emit('change', this.model)
+        }
+        this.$emit('dragend', this.model)
+      })
     },
     __updateInput ({min = this.model.min, max = this.model.max}) {
-      const val = {min, max}
-      if (this.model.min !== min || this.model.max !== max) {
-        this.model = val
-        this.$emit('input', val)
-      }
+      const model = {min, max}
+      this.model = model
+      this.$emit('input', model)
     },
     __validateProps () {
       if (this.min >= this.max) {
         console.error('Range error: min >= max', this.$el, this.min, this.max)
       }
-      else if (notDivides((this.max - this.min) / this.step, this.decimals)) {
+      else if (notDivides((this.max - this.min) / this.step, this.computedDecimals)) {
         console.error('Range error: step must be a divisor of max - min', this.min, this.max, this.step)
       }
-      else if (notDivides((this.model.min - this.min) / this.step, this.decimals)) {
+      else if (notDivides((this.model.min - this.min) / this.step, this.computedDecimals)) {
         console.error('Range error: step must be a divisor of initial value.min - min', this.model.min, this.min, this.step)
       }
-      else if (notDivides((this.model.max - this.min) / this.step, this.decimals)) {
+      else if (notDivides((this.model.max - this.min) / this.step, this.computedDecimals)) {
         console.error('Range error: step must be a divisor of initial value.max - min', this.model.max, this.max, this.step)
       }
     },
