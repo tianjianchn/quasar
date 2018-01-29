@@ -28,10 +28,12 @@ export default {
         return
       }
 
+      let contentHeight = height(this.element)
+
       let
         containerHeight = height(this.scrollContainer),
         containerBottom = offset(this.scrollContainer).top + containerHeight,
-        triggerPosition = offset(this.element).top + height(this.element) - (this.offset || containerHeight)
+        triggerPosition = offset(this.element).top + contentHeight - (this.offset || containerHeight)
 
       if (triggerPosition < containerBottom) {
         this.loadMore()
@@ -78,7 +80,7 @@ export default {
         this.scrollContainer.addEventListener('scroll', this.poll)
       }
 
-      this.poll()
+      // this.poll()
     })
   },
   beforeDestroy () {
