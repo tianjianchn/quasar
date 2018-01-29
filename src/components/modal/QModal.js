@@ -48,6 +48,11 @@ let openedModalNumber = 0
 export default {
   name: 'q-modal',
   mixins: [ModelToggleMixin],
+  provide () {
+    return {
+      __qmodal: true
+    }
+  },
   props: {
     position: {
       type: String,
@@ -73,12 +78,15 @@ export default {
       type: Boolean,
       default: false
     },
+    noRouteDismiss: Boolean,
     minimized: Boolean,
     maximized: Boolean
   },
   watch: {
     $route () {
-      this.hide()
+      if (!this.noRouteDismiss) {
+        this.hide()
+      }
     }
   },
   computed: {

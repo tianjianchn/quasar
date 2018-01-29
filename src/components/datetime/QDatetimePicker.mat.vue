@@ -237,6 +237,7 @@ import { position, stopAndPrevent } from '../../utils/event'
 import { QBtn } from '../btn'
 import { isSameDate, adjustDate } from '../../utils/date'
 import DateMixin from './datetime-mixin'
+import FieldParentMixin from '../../mixins/field-parent'
 import Ripple from '../../directives/ripple'
 
 function convertToAmPm (hour) {
@@ -245,7 +246,7 @@ function convertToAmPm (hour) {
 
 export default {
   name: 'q-datetime-picker',
-  mixins: [DateMixin],
+  mixins: [DateMixin, FieldParentMixin],
   props: {
     defaultSelection: [String, Number, Date],
     disable: Boolean,
@@ -394,7 +395,12 @@ export default {
     setDay (value) {
       if (this.editable) {
         this.model = new Date(this.model.setDate(this.__parseTypeValue('date', value)))
-        this.$emit('canClose')
+        if (this.type === 'date') {
+          this.$emit('canClose')
+        }
+        else {
+          this.view = 'hour'
+        }
       }
     },
 

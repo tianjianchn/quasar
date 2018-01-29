@@ -1,12 +1,8 @@
-const alignMap = {
-  left: 'start',
-  center: 'center',
-  right: 'end',
-  justify: 'between'
-}
+import AlignMixin from '../../mixins/align'
 
 export default {
   name: 'q-breadcrumbs',
+  mixins: [AlignMixin],
   props: {
     color: {
       type: String,
@@ -21,33 +17,32 @@ export default {
       default: '/'
     },
     align: {
-      type: String,
-      default: 'left',
-      validator: v => ['left', 'center', 'right', 'justify'].includes(v)
+      default: 'left'
     }
   },
   computed: {
-    computedAlign () {
-      return alignMap[this.align]
+    classes () {
+      return [`text-${this.color}`, this.alignClass]
     }
   },
   render (h) {
     const
       child = [],
       length = this.$slots.default.length - 1,
-      separator = this.$slots.separator
-        ? this.$slots.separator
-        : this.separator,
+      separator = this.$scopedSlots.separator || (() => this.separator),
       color = `text-${this.color}`,
       active = `text-${this.activeColor}`
 
     this.$slots.default.forEach((comp, i) => {
-      if (comp.componentOptions && comp.componentOptions.tag === 'q-breadcrumb-el') {
+      if (comp.componentOptions && comp.componentOptions.tag === 'q-breadcrumbs-el') {
         const middle = i < length
 
-        child.push(h('div', { staticClass: `${middle ? active : color} ${middle ? 'text-weight-bold' : 'q-breadcrumb-last'}` }, [ comp ]))
+        child.push(h('div', {
+          'class': [ middle ? active : color, middle ? 'text-weight-bold' : 'q-breadcrumbs-last' ]
+        }, [ comp ]))
+
         if (middle) {
-          child.push(h('div', { staticClass: `q-breadcrumb-separator ${color}` }, [ separator ]))
+          child.push(h('div', { staticClass: `q-breadcrumbs-separator`, 'class': color }, [ separator() ]))
         }
       }
       else {
@@ -57,7 +52,7 @@ export default {
 
     return h('div', {
       staticClass: 'q-breadcrumbs flex gutter-xs items-center overflow-hidden',
-      'class': [`text-${this.color}`, `justify-${this.computedAlign}`]
+      'class': this.classes
     }, child)
   }
 }

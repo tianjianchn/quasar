@@ -35,6 +35,9 @@
         <q-select @change="onChange" @input="onInput" multiple chips v-model="multipleSelect" :options="selectListOptions" float-label="Some label" max-height="36px" clearable></q-select>
       </q-field>
       <q-field label="gogu" :count="10">
+        <q-select @change="onChange" @input="onInput" multiple chips v-model="multipleSelectColor" :options="selectListOptions" float-label="Some label" max-height="36px" clearable></q-select>
+      </q-field>
+      <q-field label="gogu" :count="10">
         <q-select @change="onChange" @input="onInput" multiple v-model="multipleSelect" :options="selectListOptions" float-label="Some label" max-height="36px"></q-select>
       </q-field>
       <q-select inverted color="dark" frame-color="amber" multiple chips v-model="multipleSelect" :options="selectListOptions" float-label="Some label" max-height="36px"></q-select>
@@ -42,10 +45,12 @@
 
       <p class="caption">Multiple Selection with Checkboxes</p>
       <q-select multiple checkbox v-model="multipleSelect" :options="selectListOptions"></q-select>
+      <q-select multiple checkbox v-model="multipleSelect" :options="selectListOptionColors"></q-select>
       <q-select multiple checkbox v-model="multipleSelect" :options="selectDisabledOptions"></q-select>
 
       <p class="caption">Multiple Selection with Toggle</p>
       <q-select multiple toggle v-model="multipleSelect" :options="selectListOptions"></q-select>
+      <q-select multiple toggle v-model="multipleSelect" :options="selectListOptionColors"></q-select>
       <q-select multiple toggle v-model="multipleSelect" :options="selectDisabledOptions"></q-select>
 
       <p class="caption">Simple</p>
@@ -76,7 +81,6 @@
           <q-item-side icon="supervisor_account" />
           <q-item-main>
             <q-select
-              class="no-margin"
               v-model="select"
               :options="selectOptions"
             />
@@ -89,7 +93,6 @@
           <q-item-main>
             <q-select
               multiple
-              class="no-margin"
               v-model="multipleSelect"
               :options="selectOptions"
             />
@@ -137,6 +140,7 @@ export default {
       select: 'fb',
       selectObject: null,
       multipleSelect: ['goog', 'twtr'],
+      multipleSelectColor: ['goog', 'twtr', 'ora'],
       multipleSelectLong: [],
       selectOptions: [
         {
@@ -213,7 +217,8 @@ export default {
           description: 'Some Java for today?',
           icon: 'mail',
           rightIcon: 'alarm',
-          value: 'ora'
+          value: 'ora',
+          color: 'red-4'
         }
       ],
       selectLongListOptions: [

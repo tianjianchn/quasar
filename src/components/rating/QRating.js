@@ -1,3 +1,4 @@
+import { getEventKey, stopAndPrevent } from '../../utils/event'
 import { between } from '../../utils/format'
 import { QIcon } from '../icon'
 
@@ -29,11 +30,13 @@ export default {
       get () {
         return this.value
       },
-      set (val) {
-        if (this.value !== val) {
-          this.$emit('input', val)
-        }
-        this.$emit('change', val)
+      set (value) {
+        this.$emit('input', value)
+        this.$nextTick(() => {
+          if (JSON.stringify(value) !== JSON.stringify(this.value)) {
+            this.$emit('change', value)
+          }
+        })
       }
     },
     editable () {
@@ -63,7 +66,9 @@ export default {
     }
   },
   render (h) {
-    const child = []
+    const
+      child = [],
+      tabindex = this.editable ? 0 : -1
 
     for (let i = 1; i <= this.max; i++) {
       child.push(h(QIcon, {
@@ -74,10 +79,22 @@ export default {
           exselected: this.mouseModel && this.model >= i && this.mouseModel < i,
           hovered: this.mouseModel === i
         },
+        attrs: { tabindex },
         nativeOn: {
-          click: () => this.set(i),
+          click: e => {
+            e.target.blur()
+            this.set(i)
+          },
           mouseover: () => this.__setHoverValue(i),
-          mouseout: () => { this.mouseModel = 0 }
+          mouseout: () => { this.mouseModel = 0 },
+          keydown: e => {
+            if ([13, 32].includes(getEventKey(e))) {
+              stopAndPrevent(e)
+              this.set(i)
+            }
+          },
+          focus: () => this.__setHoverValue(i),
+          blur: () => { this.mouseModel = 0 }
         }
       }))
     }

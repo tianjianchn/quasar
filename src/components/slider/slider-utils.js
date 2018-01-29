@@ -28,7 +28,7 @@ export function getModel (percentage, min, max, step, decimals) {
   return between(model, min, max)
 }
 
-export let mixin = {
+export let SliderMixin = {
   directives: {
     TouchPan
   },
@@ -45,10 +45,7 @@ export let mixin = {
       type: Number,
       default: 1
     },
-    decimals: {
-      type: Number,
-      default: 0
-    },
+    decimals: Number,
     snap: Boolean,
     markers: Boolean,
     label: Boolean,
@@ -57,6 +54,7 @@ export let mixin = {
     color: String,
     fillHandleAlways: Boolean,
     error: Boolean,
+    warning: Boolean,
     readonly: Boolean,
     disable: Boolean
   },
@@ -74,10 +72,11 @@ export let mixin = {
         disabled: this.disable,
         readonly: this.readonly,
         'label-always': this.labelAlways,
-        'has-error': this.error
+        'has-error': this.error,
+        'has-warning': this.warning
       }
 
-      if (!this.error && this.color) {
+      if (!this.error && !this.warning && this.color) {
         cls[`text-${this.color}`] = true
       }
 
@@ -89,7 +88,10 @@ export let mixin = {
     labelColor () {
       return this.error
         ? 'negative'
-        : this.color || 'primary'
+        : (this.warning ? 'warning' : (this.color || 'primary'))
+    },
+    computedDecimals () {
+      return this.decimals !== void 0 ? this.decimals || 0 : (String(this.step).trim('0').split('.')[1] || '').length
     }
   },
   methods: {
@@ -146,7 +148,11 @@ export let mixin = {
       directives: this.editable
         ? [{
           name: 'touch-pan',
-          modifiers: { horizontal: true },
+          modifiers: {
+            horizontal: true,
+            prevent: true,
+            stop: true
+          },
           value: this.__pan
         }]
         : null
