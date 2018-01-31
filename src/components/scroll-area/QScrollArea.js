@@ -82,8 +82,6 @@ export default {
       }
     },
     __panThumb (e) {
-      e.evt.preventDefault()
-
       if (e.isFirst) {
         this.refPos = this.scrollPosition
         this.__setActive(true, true)
@@ -95,6 +93,7 @@ export default {
           window.getSelection().removeAllRanges()
         }
       }
+
       if (e.isFinal) {
         this.__setActive(false)
         document.body.classList.remove('non-selectable')
@@ -180,7 +179,11 @@ export default {
         },
         directives: [{
           name: 'touch-pan',
-          modifiers: { vertical: true, nomouse: true },
+          modifiers: {
+            vertical: true,
+            noMouse: true,
+            mightPrevent: true
+          },
           value: this.__panContainer
         }]
       }, [
@@ -211,7 +214,10 @@ export default {
         'class': { 'invisible-thumb': this.thumbHidden },
         directives: [{
           name: 'touch-pan',
-          modifiers: { vertical: true },
+          modifiers: {
+            vertical: true,
+            prevent: true
+          },
           value: this.__panThumb
         }]
       })

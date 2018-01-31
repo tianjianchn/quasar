@@ -54,7 +54,7 @@ export default {
         'class': this.classes
       }, [
         side.length
-          ? h('div', { staticClass: 'q-alert-side row col-auto flex-center' }, side)
+          ? h('div', { staticClass: 'q-alert-side col-auto row flex-center' }, side)
           : null,
         h('div', {
           staticClass: 'q-alert-content col self-center'
@@ -64,7 +64,7 @@ export default {
         ]),
         this.actions && this.actions.length
           ? h('div', {
-            staticClass: 'q-alert-actions col-auto gutter-xs flex-center'
+            staticClass: 'q-alert-actions col-auto gutter-xs column flex-center'
           },
           this.actions.map(action =>
             h('div', [
@@ -74,7 +74,7 @@ export default {
                   flat: true,
                   dense: true,
                   icon: action.icon,
-                  justify: 'start',
+                  align: 'left',
                   label: action.closeBtn === true
                     ? (typeof action.label === 'string' ? action.label : this.$q.i18n.label.close)
                     : action.label

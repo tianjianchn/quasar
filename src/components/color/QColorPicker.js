@@ -1,5 +1,6 @@
 import { QBtn } from '../btn'
 import { QSlider } from '../slider'
+import FieldParentMixin from '../../mixins/field-parent'
 import TouchPan from '../../directives/touch-pan'
 import { stopAndPrevent } from '../../utils/event'
 import throttle from '../../utils/throttle'
@@ -9,6 +10,7 @@ import { hexToRgb, rgbToHex, rgbToHsv, hsvToRgb } from '../../utils/colors'
 
 export default {
   name: 'q-color-picker',
+  mixins: [FieldParentMixin],
   directives: {
     TouchPan
   },
@@ -17,9 +19,10 @@ export default {
       type: [String, Object],
       required: true
     },
-    color: {
+    type: {
       type: String,
-      default: 'primary'
+      default: 'auto',
+      validator: v => ['auto', 'hex', 'rgb', 'hexa', 'rgba'].includes(v)
     },
     disable: Boolean,
     readonly: Boolean
@@ -39,10 +42,6 @@ export default {
   watch: {
     value: {
       handler (v) {
-        if (this.avoidModelWatch) {
-          this.avoidModelWatch = false
-          return
-        }
         const model = this.__parseModel(v)
         if (model.hex !== this.model.hex) {
           this.model = model
@@ -52,23 +51,38 @@ export default {
     }
   },
   computed: {
+    forceHex () {
+      return this.type === 'auto'
+        ? null
+        : this.type.indexOf('hex') > -1
+    },
+    forceAlpha () {
+      return this.type === 'auto'
+        ? null
+        : this.type.indexOf('a') > -1
+    },
     isHex () {
       return typeof this.value === 'string'
     },
-    isRgb () {
-      return !this.isHex
+    isOutputHex () {
+      return this.forceHex !== null
+        ? this.forceHex
+        : this.isHex
     },
     editable () {
       return !this.disable && !this.readonly
     },
     hasAlpha () {
+      if (this.forceAlpha !== null) {
+        return this.forceAlpha
+      }
       return this.isHex
         ? this.value.length > 7
         : this.value.a !== void 0
     },
     swatchStyle () {
       return {
-        backgroundColor: `rgba(${this.model.r},${this.model.g},${this.model.b},${this.model.a / 100})`
+        backgroundColor: `rgba(${this.model.r},${this.model.g},${this.model.b},${(this.model.a === void 0 ? 100 : this.model.a) / 100})`
       }
     },
     saturationStyle () {
@@ -88,9 +102,6 @@ export default {
         inp.push('a')
       }
       return inp
-    },
-    rgbColor () {
-      return `rgb(${this.model.r},${this.model.g},${this.model.b})`
     }
   },
   created () {
@@ -119,6 +130,10 @@ export default {
         directives: this.editable
           ? [{
             name: 'touch-pan',
+            modifiers: {
+              prevent: true,
+              stop: true
+            },
             value: this.__saturationPan
           }]
           : null
@@ -154,7 +169,7 @@ export default {
               },
               on: {
                 input: this.__onHueChange,
-                change: val => { this.__onHueChange(val, true) }
+                dragend: val => this.__onHueChange(val, true)
               }
             })
           ]),
@@ -170,12 +185,8 @@ export default {
                   readonly: !this.editable
                 },
                 on: {
-                  input: value => {
-                    this.__onNumericChange({ target: { value } }, 'a', 100)
-                  },
-                  change: value => {
-                    this.__onNumericChange({ target: { value } }, 'a', 100, true)
-                  }
+                  input: value => this.__onNumericChange({ target: { value } }, 'a', 100),
+                  dragend: value => this.__onNumericChange({ target: { value } }, 'a', 100, true)
                 }
               })
             ])
@@ -194,7 +205,7 @@ export default {
               max,
               readonly: !this.editable
             },
-            staticClass: 'full-width text-center q-color-number',
+            staticClass: 'full-width text-center q-no-input-spinner',
             domProps: {
               value: Math.round(this.model[type])
             },
@@ -219,10 +230,13 @@ export default {
           h('div', { staticClass: 'col' }, [
             h('input', {
               domProps: { value: this.model.hex },
-              attrs: { readonly: !this.editable },
+              attrs: {
+                readonly: !this.editable,
+                tabindex: this.editable ? 0 : -1
+              },
               on: {
                 input: this.__onHexChange,
-                blur: evt => { console.log('blur'); this.__onHexChange(evt, true) }
+                blur: evt => this.__onHexChange(evt, true)
               },
               staticClass: 'full-width text-center uppercase'
             }),
@@ -352,39 +366,32 @@ export default {
       this.__update(rgb, hex, change)
     },
     __update (rgb, hex, change) {
+      const value = this.isOutputHex ? hex : rgb
+
       // update internally
       this.model.hex = hex
       this.model.r = rgb.r
       this.model.g = rgb.g
       this.model.b = rgb.b
-      if (this.hasAlpha) {
-        this.model.a = rgb.a
-      }
-
-      // avoid recomputing
-      this.avoidModelWatch = true
+      this.model.a = this.hasAlpha ? rgb.a : void 0
 
       // emit new value
-      const val = this.isHex ? hex : rgb
-
-      this.$emit('input', val)
-      if (change) {
-        this.$emit('change', val)
-      }
+      this.$emit('input', value)
+      this.$nextTick(() => {
+        if (change && JSON.stringify(value) !== JSON.stringify(this.value)) {
+          this.$emit('change', value)
+        }
+      })
     },
     __nextInputView () {
       this.view = this.view === 'hex' ? 'rgba' : 'hex'
     },
     __parseModel (v) {
-      let model
-      if (typeof v === 'string') {
-        model = hexToRgb(v)
-        model.hex = v
+      let model = typeof v === 'string' ? hexToRgb(v) : clone(v)
+      if (this.forceAlpha === (model.a === void 0)) {
+        model.a = this.forceAlpha ? 100 : void 0
       }
-      else {
-        model = clone(v)
-        model.hex = rgbToHex(v)
-      }
+      model.hex = rgbToHex(model)
       return extend({ a: 100 }, model, rgbToHsv(model))
     },
 
@@ -415,7 +422,9 @@ export default {
     },
     __dragStop (event) {
       stopAndPrevent(event.evt)
-      this.saturationDragging = false
+      setTimeout(() => {
+        this.saturationDragging = false
+      }, 100)
       this.__onSaturationChange(
         event.position.left,
         event.position.top,
@@ -429,9 +438,13 @@ export default {
       )
     },
     __saturationClick (evt) {
+      if (this.saturationDragging) {
+        return
+      }
       this.__onSaturationChange(
         evt.pageX - window.pageXOffset,
-        evt.pageY - window.pageYOffset
+        evt.pageY - window.pageYOffset,
+        true
       )
     }
   }

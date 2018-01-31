@@ -3,15 +3,10 @@
 
 .q-if
   min-height 32px
-  margin-top 16px
-  margin-bottom 8px
-  padding-bottom 8px
   color $primary
-
-  /* Remove browser controller for input type="number" */
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button // @stylint ignore
-    -webkit-appearance none
+  outline 0
+  &:not(.q-if-hide-underline)
+    padding-bottom 8px
 
   &:not(.q-if-hide-underline):not(.q-if-inverted)
     &:before, &:after
@@ -77,6 +72,8 @@
   cursor pointer
   color rgba(0, 0, 0, .54)
   font-size 24px
+  &.q-icon
+    cursor pointer
   &:hover
     opacity .7
 .q-if-control-before

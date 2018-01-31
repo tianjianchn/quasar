@@ -6,7 +6,7 @@
       </q-field>
 
       <div>
-        <q-btn-toggle color="primary" toggle-color="red" v-model="loader" label="Show loader" />
+        <q-toggle color="primary" v-model="loader" label="Show loader" />
         <q-toggle color="primary" v-model="selectionToggle" label="Multiple selection" />
         <q-select multiple toggle v-model="visibleColumns" :options="visibleColumnsOptions" />
         <q-radio v-model="separator" val="horizontal" label="Horizontal" />
@@ -70,6 +70,7 @@
         </template>
         <template slot="top-left" slot-scope="props">
           <q-btn size="sm" round flat :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'" @click="props.toggleFullscreen()" />
+          {{visibleColumns}}
         </template>
         <template slot="top-right" slot-scope="props">
           <q-table-columns color="secondary" v-model="visibleColumns" :columns="columns" />

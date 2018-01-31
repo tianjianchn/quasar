@@ -1,11 +1,11 @@
 <template>
   <div
     class="q-uploader relative-position"
+    :class="classes"
     @dragover.prevent.stop="__onDragOver"
   >
     <q-input-frame
       ref="input"
-      class="no-margin"
 
       :prefix="prefix"
       :suffix="suffix"
@@ -87,13 +87,14 @@
         <div class="q-uploader-files scroll" :style="filesStyle">
           <q-item
             v-for="file in files"
-            :key="file.name"
-            class="q-uploader-file"
+            :key="file.name + file.__timestamp"
+            class="q-uploader-file q-pa-xs"
           >
             <q-progress v-if="!hideUploadProgress"
               class="q-uploader-progress-bg absolute-full"
               :color="file.__failed ? 'negative' : 'grey'"
               :percentage="file.__progress"
+              height="100%"
             ></q-progress>
             <div class="q-uploader-progress-text absolute" v-if="!hideUploadProgress">
               {{ file.__progress }}%
@@ -238,6 +239,13 @@ export default {
         cls.push('inverted')
       }
       return cls
+    },
+    classes () {
+      return {
+        'q-uploader-expanded': this.expanded,
+        'q-uploader-dark': this.dark,
+        'q-uploader-files-no-border': this.inverted || !this.hideUnderline
+      }
     }
   },
   watch: {
@@ -276,24 +284,34 @@ export default {
       files = Array.prototype.slice.call(files || e.target.files)
       this.$refs.file.value = ''
 
+      let filesReady = [] // List of image load promises
       files = files.filter(file => !this.queue.some(f => file.name === f.name))
         .map(file => {
           initFile(file)
           file.__size = humanStorageSize(file.size)
+          file.__timestamp = new Date().getTime()
 
           if (this.noThumbnails || !file.type.startsWith('image')) {
             this.queue.push(file)
           }
           else {
             const reader = new FileReader()
-            reader.onload = (e) => {
-              let img = new Image()
-              img.src = e.target.result
-              file.__img = img
-              this.queue.push(file)
-              this.__computeTotalSize()
-            }
+            let p = new Promise((resolve, reject) => {
+              reader.onload = (e) => {
+                let img = new Image()
+                img.src = e.target.result
+                file.__img = img
+                this.queue.push(file)
+                this.__computeTotalSize()
+                resolve(true)
+              }
+              reader.onerror = (e) => {
+                reject(e)
+              }
+            })
+
             reader.readAsDataURL(file)
+            filesReady.push(p)
           }
 
           return file
@@ -301,7 +319,9 @@ export default {
 
       if (files.length > 0) {
         this.files = this.files.concat(files)
-        this.$emit('add', files)
+        Promise.all(filesReady).then(() => {
+          this.$emit('add', files)
+        })
         this.__computeTotalSize()
       }
     },
@@ -330,10 +350,6 @@ export default {
 
       file.__removed = true
       this.files = this.files.filter(obj => obj.name !== name)
-      this.__computeTotalSize()
-    },
-    __removeUploaded () {
-      this.files = this.files.filter(f => !f.__doneUploading)
       this.__computeTotalSize()
     },
     __pick () {

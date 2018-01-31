@@ -1,8 +1,6 @@
 export default {
   props: {
     autofocus: [Boolean, String],
-    name: String,
-    maxLength: [Number, String],
     maxHeight: Number,
     placeholder: String,
     loading: Boolean
@@ -48,11 +46,16 @@ export default {
     __onBlur (e) {
       this.focused = false
       this.$emit('blur', e)
-      let model = this.isNumber && this.isNumberError ? null : this.model
-      if (JSON.stringify(model) !== JSON.stringify(this.value)) {
-        this.$emit('input', model)
+      const isNumberError = this.isNumber && this.isNumberError
+      const value = isNumberError ? null : this.model
+      if (isNumberError) {
+        this.$emit('input', value)
       }
-      this.$emit('change', model)
+      this.$nextTick(() => {
+        if (JSON.stringify(value) !== JSON.stringify(this.value)) {
+          this.$emit('change', value)
+        }
+      })
     },
     __onKeydown (e) {
       this.$emit('keydown', e)

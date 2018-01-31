@@ -60,25 +60,18 @@
 </template>
 
 <script>
-import Mixin from '../../mixins/input-frame'
+import FrameMixin from '../../mixins/input-frame'
+import FieldParentMixin from '../../mixins/field-parent'
 
 export default {
   name: 'q-input-frame',
-  mixins: [Mixin],
+  mixins: [FrameMixin, FieldParentMixin],
   props: {
     topAddons: Boolean,
     focused: Boolean,
     length: Number,
     focusable: Boolean,
     additionalLength: Boolean
-  },
-  data () {
-    return {
-      field: {}
-    }
-  },
-  inject: {
-    __field: { default: null }
   },
   computed: {
     hasStackLabel () {
@@ -120,11 +113,11 @@ export default {
       return cls
     },
     hasError () {
-      return !!(this.field.error || this.error)
+      return !!((this.field && this.field.error) || this.error)
     },
     hasWarning () {
       // error is the higher priority
-      return !!(!this.hasError && (this.field.warning || this.warning))
+      return !!(!this.hasError && ((this.field && this.field.warning) || this.warning))
     }
   },
   methods: {
@@ -151,17 +144,6 @@ export default {
       if (item.handler) {
         item.handler(evt)
       }
-    }
-  },
-  created () {
-    if (this.__field) {
-      this.field = this.__field
-      this.field.__registerInput(this)
-    }
-  },
-  beforeDestroy () {
-    if (this.__field) {
-      this.field.__unregisterInput()
     }
   }
 }

@@ -1,8 +1,72 @@
 <template>
   <div class="layout-padding">
+    <q-toggle v-model="hideToolbar" label="Hide Toolbar" class="q-mb-lg" />
+    <q-editor
+      v-model="model"
+      :toolbar="hideToolbar ? [] : [
+        ['underline', 'print', 'bold', 'italic', 'link'],
+        ['customItalic'],
+        ['save', 'upload'],
+        ['spellcheck'],
+        ['disabledButton'],
+        ['custom_btn']
+      ]"
+      :hide-toolbar="hideToolbar"
+      :definitions="{
+        bold: {cmd: 'bold', label: 'Bold', icon: null, tip: 'My bold tooltip'},
+        italic: {cmd: 'italic', tip: 'My italic tooltip'},
+        customItalic: {cmd: 'italic', icon: 'camera_enhance', tip: 'Italic'},
+        save: {tip: 'Save your work', icon: 'save', label: 'Save', handler: saveWork},
+        spellcheck: {tip: 'Run spell-check', icon: 'spellcheck', handler: spellCheck},
+        upload: {tip: 'Upload to cloud', textColor: 'primary', icon: 'cloud_upload', label: 'Upload', handler: upload},
+        disabledButton: {tip: 'I am disabled...', disable: true, icon: 'cloud_off', handler: saveWork}
+      }"
+    >
+      <q-btn
+        slot="custom_btn"
+        dense
+        color="secondary"
+        icon="import_contacts"
+        label="Import"
+        @click="importSomething"
+      />
+    </q-editor>
+
+    <br><br><br>
+    <q-editor
+      v-model="model"
+      toolbar-text-color="white"
+      toolbar-toggle-color="yellow-8"
+      toolbar-bg="primary"
+      toolbar-flat
+      :toolbar="[
+        ['bold', 'italic', 'underline'],
+        [{
+          label: $q.i18n.editor.formatting,
+          icon: $q.icon.editor.formatting,
+          list: 'no-icons',
+          options: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code']
+        }]
+      ]"
+    />
+    <br><br><br>
+
+    <q-select
+      v-model="btnType"
+      :options="[
+        { label: 'Default', value: 'none' },
+        { label: 'Flat', value: 'flat' },
+        { label: 'Outline', value: 'outline' },
+        { label: 'Push', value: 'push' }
+      ]"
+    />
     <q-editor
       ref="editor"
       v-model="model"
+      :toolbar-flat="flat"
+      :toolbar-push="push"
+      :toolbar-outline="outline"
+      :toolbar-rounded="rounded"
       :toolbar="[
         ['bold', 'italic', 'strike', 'underline', 'subscript', 'superscript'],
         ['token', 'hr', 'link', 'custom_btn'],
@@ -94,10 +158,50 @@
 export default {
   data () {
     return {
+      hideToolbar: false,
+      btnType: 'none',
+      push: false,
+      outline: false,
+      flat: false,
+      rounded: false,
       model: '<div>Editor in <a href="http://quasar-framework.org">Quasar</a></div><div>Second line</div>'
     }
   },
+  watch: {
+    btnType (val) {
+      ['push', 'outline', 'flat'].forEach(type => {
+        this[type] = type === val
+      })
+    }
+  },
   methods: {
+    saveWork () {
+      this.$q.notify({
+        icon: 'done',
+        color: 'positive',
+        message: 'I guess something got saved.'
+      })
+    },
+    upload () {
+      this.$q.notify({
+        icon: 'cloud_upload',
+        color: 'secondary',
+        message: 'Hmm, will upload at another time, ok?'
+      })
+    },
+    spellCheck () {
+      this.$q.notify({
+        icon: 'spellcheck',
+        color: 'secondary',
+        message: `I'll sure run the spellcheck. Later.`
+      })
+    },
+    importSomething () {
+      this.$q.notify({
+        color: 'tertiary',
+        message: `Importing...`
+      })
+    },
     add (name) {
       const edit = this.$refs.editor
       this.$refs.token.hide()

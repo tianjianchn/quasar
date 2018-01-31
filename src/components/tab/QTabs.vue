@@ -65,6 +65,7 @@
 import { width, css, cssTransform } from '../../utils/dom'
 import { debounce } from '../../utils/debounce'
 import { QIcon } from '../icon'
+import { listenOpts } from '../../utils/event'
 
 const
   scrollNavigationSpeed = 5, // in pixels
@@ -126,19 +127,22 @@ export default {
     }
   },
   methods: {
-    selectTab (name) {
-      if (this.data.tabName === name) {
+    selectTab (value) {
+      if (this.data.tabName === value) {
         return
       }
 
-      this.data.tabName = name
-      this.$emit('select', name)
+      this.data.tabName = value
+      this.$emit('select', value)
 
-      if (this.value !== name) {
-        this.$emit('input', name)
-      }
+      this.$emit('input', value)
+      this.$nextTick(() => {
+        if (JSON.stringify(value) !== JSON.stringify(this.value)) {
+          this.$emit('change', value)
+        }
+      })
 
-      const el = this.__getTabElByName(name)
+      const el = this.__getTabElByName(value)
 
       if (el) {
         this.__scrollToTab(el)
@@ -335,8 +339,8 @@ export default {
       if (!this.$refs.scroller) {
         return
       }
-      this.$refs.scroller.addEventListener('scroll', this.__updateScrollIndicator)
-      window.addEventListener('resize', this.__redraw)
+      this.$refs.scroller.addEventListener('scroll', this.__updateScrollIndicator, listenOpts.passive)
+      window.addEventListener('resize', this.__redraw, listenOpts.passive)
 
       if (this.data.tabName !== '' && this.value) {
         this.selectTab(this.value)
@@ -349,8 +353,8 @@ export default {
   beforeDestroy () {
     clearTimeout(this.timer)
     this.__stopAnimScroll()
-    this.$refs.scroller.removeEventListener('scroll', this.__updateScrollIndicator)
-    window.removeEventListener('resize', this.__redraw)
+    this.$refs.scroller.removeEventListener('scroll', this.__updateScrollIndicator, listenOpts.passive)
+    window.removeEventListener('resize', this.__redraw, listenOpts.passive)
     this.__redraw.cancel()
     this.__updateScrollIndicator.cancel()
   }

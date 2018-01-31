@@ -39,7 +39,10 @@
         </small>
       </p>
       <q-datetime format="YYYY-MMMM-dddd Do Qo Q" v-model="model" type="date" align="right" />
-      <q-datetime stack-label="Stack Label" v-model="model" type="date" clearable />
+      @input<q-datetime @change="value => log('@change', value)" @input="value => log('@input', value)" stack-label="Stack Label" v-model="model" type="date" clearable />
+      @change<q-datetime :value="model" @change="value => { model = value; log('@change', value) }" @input="value => log('@input', value)" stack-label="Stack Label" type="date" clearable />
+
+      <q-datetime @change="value => log('@change', value)" @input="value => log('@input', value)" stack-label="Stack Label" v-model="model" type="date" clearable />
       <q-datetime float-label="Float Label" v-model="model" type="date" />
       <q-datetime hide-underline float-label="Float Label (hide underline)" v-model="model" type="date" />
 
@@ -48,10 +51,22 @@
       <q-datetime inverted color="secondary" stack-label="Stack Label" v-model="model" type="date" />
       <q-datetime inverted color="amber" float-label="Float Label" v-model="model" type="date" />
 
+      <p class="caption">Format Model</p>
+      <div class="bg-secondary text-white">
+        Model: <em>{{modelVar}}</em> <strong>{{modelVarType}}</strong>
+      </div>
+      <div class="bg-secondary text-white">
+        Formatted: <em>{{modelVarFormatted}}</em>
+      </div>
+      <q-datetime @change="value => log('@change', value)" @input="value => log('@input', value)" v-model="modelVar" type="date" clearable stack-label="Format Model 'auto'" format-model="auto" />
+      <q-datetime @change="value => log('@change', value)" @input="value => log('@input', value)" v-model="modelVar" type="date" clearable stack-label="Format Model 'date'" format-model="date" />
+      <q-datetime @change="value => log('@change', value)" @input="value => log('@input', value)" v-model="modelVar" type="date" clearable stack-label="Format Model 'number'" format-model="number" />
+      <q-datetime @change="value => log('@change', value)" @input="value => log('@input', value)" v-model="modelVar" type="date" clearable stack-label="Format Model 'string'" format-model="string" />
+
       <p class="caption">
         Lazy Input
       </p>
-      <q-datetime :value="model" @change="val => { model = val }" type="date" />
+      <q-datetime :value="model" @change="val => { model = val; log('@change', val) }" @input="value => log('@input', value)" type="date" clearable />
 
       <p class="caption">
         Time
@@ -72,11 +87,21 @@
       <q-datetime v-model="model" type="time" format24h />
 
       <p class="caption">Date & Time</p>
-      <q-datetime @change="onChange" v-model="model" type="datetime" />
+      <q-datetime @change="value => log('@change', value)" v-model="model" type="datetime" />
 
       <p class="caption">Default Selection</p>
       <q-datetime v-model="model" :default-selection="defaultSelection" type="datetime" />
       <q-datetime v-model="model" :default-selection="defaultSelection" type="time" />
+
+      <p class="caption">With explicit popover</p>
+      <q-datetime v-model="model" popover type="date"     float-label="Pick Date" />
+      <q-datetime v-model="model" popover type="time"     float-label="Pick Time" />
+      <q-datetime v-model="model" popover type="datetime" float-label="Pick DateTime" />
+
+      <p class="caption">With explicit modal</p>
+      <q-datetime v-model="model" modal type="date"     float-label="Pick Date" />
+      <q-datetime v-model="model" modal type="time"     float-label="Pick Time" />
+      <q-datetime v-model="model" modal type="datetime" float-label="Pick DateTime" />
 
       <p class="caption">With Label</p>
       <q-datetime v-model="model" type="date" label="Pick Date" />
@@ -102,13 +127,13 @@
         <q-item>
           <q-item-side icon="access_time" />
           <q-item-main>
-            <q-datetime class="no-margin" v-model="model" type="time" />
+            <q-datetime v-model="model" type="time" />
           </q-item-main>
         </q-item>
         <q-item>
           <q-item-side icon="update" />
           <q-item-main>
-            <q-datetime class="no-margin" v-model="model" type="date" />
+            <q-datetime v-model="model" type="date" />
           </q-item-main>
         </q-item>
         <q-item-separator />
@@ -116,7 +141,7 @@
         <q-item>
           <q-item-side icon="notifications" />
           <q-item-main>
-            <q-datetime class="no-margin" v-model="model" type="datetime" />
+            <q-datetime v-model="model" type="datetime" />
           </q-item-main>
         </q-item>
       </q-list>
@@ -139,9 +164,9 @@
           </span>
         </small>
       </p>
-      <q-datetime-picker v-model="model" type="date" />
+      <q-datetime-picker v-model="model" type="date" @change="value => log('@change', value)" @input="value => log('@input', value)" />
       <br><br>
-      <q-datetime-picker default-view="year" v-model="model" type="date" />
+      <q-datetime-picker default-view="year" :value="model" type="date" @change="value => { model = value; log('@change', value) }" @input="value => log('@input', value)" />
 
       <p class="caption">
         Time
@@ -162,7 +187,8 @@
       <q-datetime-picker v-model="model" type="time" format24h />
 
       <p class="caption">Date & Time</p>
-      <q-datetime-picker @change="onChange" color="secondary" v-model="model" type="datetime" />
+      @input<q-datetime-picker @input="value => log('@input', value)" @change="value => log('@change', value)" color="secondary" v-model="model" type="datetime" />
+      @change<q-datetime-picker :value="model" @input="value => log('@input', value)" @change="value => { model = value; log('@change', value) }" color="secondary" type="datetime" />
 
       <p class="caption">Date - Monday as First</p>
       <q-datetime-picker v-model="model" monday-first type="date" />
@@ -190,6 +216,8 @@ export default {
     return {
       // model: '2016-09-18T10:45:00.000Z',
       model: undefined,
+      modelVar: undefined,
+      // model: 0,
       defaultSelection: '2016-09-18T10:45:00.000Z',
 
       format: 'MMMM D, YYYY [at] h:mm [[]a[\\]]',
@@ -203,11 +231,17 @@ export default {
   computed: {
     modelFormatted () {
       return date.formatDate(this.model, this.format)
+    },
+    modelVarFormatted () {
+      return date.formatDate(this.modelVar, this.format)
+    },
+    modelVarType () {
+      return typeof this.modelVar
     }
   },
   methods: {
-    onChange (val) {
-      console.log('@change', val)
+    log (name, data) {
+      console.log(name, JSON.stringify(data))
     }
   }
 }
