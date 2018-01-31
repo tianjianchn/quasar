@@ -1,6 +1,9 @@
 <template>
   <div>
     <div class="layout-padding">
+      <p class="caption">Remote Query</p>
+      <q-select v-model="selectObject" @change="onChange" @input="onInput" :options="selectOptions" align="right" clearable filter :remote-query="remoteQuery"></q-select>
+      
       <p class="caption">Single Selection</p>
       <q-select v-model="select" @change="onChange" @input="onInput" :options="selectOptions" align="right" clearable ></q-select>
       <q-select v-model="select" :options="selectOptions" separator></q-select>
@@ -221,6 +224,39 @@ export default {
           color: 'red-4'
         }
       ],
+      selectListOptionColors: [
+        {
+          label: 'Google',
+          icon: 'email',
+          value: 'goog'
+        },
+        {
+          label: 'Facebook',
+          inset: true,
+          description: 'Enables communication',
+          value: 'fb'
+        },
+        {
+          label: 'Twitter',
+          inset: true,
+          rightIcon: 'alarm',
+          value: 'twtr'
+        },
+        {
+          label: 'Apple Inc.',
+          inset: true,
+          stamp: '10 min',
+          value: 'appl'
+        },
+        {
+          label: 'Oracle',
+          description: 'Some Java for today?',
+          icon: 'mail',
+          rightIcon: 'alarm',
+          value: 'ora',
+          color: 'red-4'
+        }
+      ],
       selectLongListOptions: [
         {
           label: 'Google',
@@ -405,6 +441,12 @@ export default {
     },
     onInput (val) {
       console.log('@input', JSON.stringify(val))
+    },
+    remoteQuery (term) {
+      this.selectOptions = new Array(10).fill(0).map((zero, index) => {
+        const value = term + Date.now() + index
+        return { label: value, value }
+      })
     }
   }
 }

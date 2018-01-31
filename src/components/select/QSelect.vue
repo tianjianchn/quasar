@@ -180,6 +180,7 @@ export default {
     QChip
   },
   props: {
+    remoteQuery: Function,
     filter: [Function, Boolean],
     filterPlaceholder: String,
     autofocusFilter: Boolean,
@@ -215,6 +216,11 @@ export default {
       this.model = this.multiple && Array.isArray(val)
         ? val.slice()
         : val
+    },
+    terms (val) {
+      if (this.remoteQuery) {
+        this.remoteQuery(this.terms)
+      }
     }
   },
   computed: {
@@ -226,6 +232,10 @@ export default {
       }
     },
     visibleOptions () {
+      if (this.remoteQuery) {
+        return this.options
+      }
+
       let opts = this.options.map((opt, index) => extend({}, opt, { index }))
       if (this.filter && this.terms.length) {
         const lowerTerms = this.terms.toLowerCase()
