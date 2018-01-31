@@ -11248,10 +11248,12 @@ var QInfiniteScroll = {
         return
       }
 
+      var contentHeight = height(this.element);
+
       var
         containerHeight = height(this.scrollContainer),
         containerBottom = offset(this.scrollContainer).top + containerHeight,
-        triggerPosition = offset(this.element).top + height(this.element) - (this.offset || containerHeight);
+        triggerPosition = offset(this.element).top + contentHeight - (this.offset || containerHeight);
 
       if (triggerPosition < containerBottom) {
         this.loadMore();
@@ -11302,7 +11304,7 @@ var QInfiniteScroll = {
         this$1.scrollContainer.addEventListener('scroll', this$1.poll, listenOpts.passive);
       }
 
-      this$1.poll();
+      // this.poll()
     });
   },
   beforeDestroy: function beforeDestroy () {
@@ -14082,6 +14084,7 @@ return _c('q-chip',{key:label,attrs:{"small":"","closable":!_vm.disable && !optD
     QChip: QChip
   },
   props: {
+    remoteQuery: Function,
     filter: [Function, Boolean],
     filterPlaceholder: String,
     autofocusFilter: Boolean,
@@ -14117,6 +14120,11 @@ return _c('q-chip',{key:label,attrs:{"small":"","closable":!_vm.disable && !optD
       this.model = this.multiple && Array.isArray(val)
         ? val.slice()
         : val;
+    },
+    terms: function terms (val) {
+      if (this.remoteQuery) {
+        this.remoteQuery(this.terms);
+      }
     }
   },
   computed: {
@@ -14131,6 +14139,10 @@ return _c('q-chip',{key:label,attrs:{"small":"","closable":!_vm.disable && !optD
     },
     visibleOptions: function visibleOptions () {
       var this$1 = this;
+
+      if (this.remoteQuery) {
+        return this.options
+      }
 
       var opts = this.options.map(function (opt, index) { return extend({}, opt, { index: index }); });
       if (this.filter && this.terms.length) {
