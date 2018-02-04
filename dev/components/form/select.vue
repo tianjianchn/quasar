@@ -2,7 +2,7 @@
   <div>
     <div class="layout-padding">
       <p class="caption">Remote Query</p>
-      <q-select v-model="selectObject" @change="onChange" @input="onInput" :options="selectOptions" align="right" clearable filter :remote-query="remoteQuery"></q-select>
+      <q-select :value="remoteSelected.value" :displayValue="remoteSelected.label" @input="onRemoteInput" :options="selectOptions" align="right" clearable filter :remote-query="remoteQuery"></q-select>
       
       <p class="caption">Single Selection</p>
       <q-select v-model="select" @change="onChange" @input="onInput" :options="selectOptions" align="right" clearable ></q-select>
@@ -141,6 +141,7 @@ export default {
   data () {
     return {
       select: 'fb',
+      remoteSelected: {label: 'Hello', value: 'hello'},
       selectObject: null,
       multipleSelect: ['goog', 'twtr'],
       multipleSelectColor: ['goog', 'twtr', 'ora'],
@@ -442,9 +443,13 @@ export default {
     onInput (val) {
       console.log('@input', JSON.stringify(val))
     },
+    onRemoteInput (val) {
+      this.remoteSelected.value = val
+      this.remoteSelected.label = this.selectOptions.find(o => o.value === val).label
+    },
     remoteQuery (term) {
       this.selectOptions = new Array(10).fill(0).map((zero, index) => {
-        const value = term + Date.now() + index
+        const value = term + ':' + new Date().getSeconds() + ':' + index
         return { label: value, value }
       })
     }
