@@ -14260,7 +14260,7 @@ return _c('q-chip',{key:label,attrs:{"small":"","closable":!_vm.disable && !optD
 
       this.focused = false;
       this.$emit('blur');
-      this.terms = '';
+      if (!this.remoteQuery) { this.terms = ''; }
       this.$nextTick(function () {
         if (JSON.stringify(this$1.model) !== JSON.stringify(this$1.value)) {
           this$1.$emit('change', this$1.model);
