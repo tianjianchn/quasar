@@ -11312,7 +11312,7 @@ var QInfiniteScroll = {
         this$1.scrollContainer.addEventListener('scroll', this$1.poll, listenOpts.passive);
       }
 
-      // this.poll()
+      this$1.poll();
     });
   },
   beforeDestroy: function beforeDestroy () {
