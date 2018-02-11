@@ -81,7 +81,7 @@ export default {
         this.scrollContainer.addEventListener('scroll', this.poll, listenOpts.passive)
       }
 
-      // this.poll()
+      this.poll()
     })
   },
   beforeDestroy () {
