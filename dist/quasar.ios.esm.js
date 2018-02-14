@@ -11333,7 +11333,7 @@ var QInfiniteScroll = {
       }, listenOpts.passive);
     },
     offScroll: function offScroll () {
-      this.offScroll();
+      this.scrollContainer.removeEventListener('scroll', this.poll, listenOpts.passive);
     }
   },
   mounted: function mounted () {
