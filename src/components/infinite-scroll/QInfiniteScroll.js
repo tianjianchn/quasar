@@ -85,7 +85,7 @@ export default {
       }, listenOpts.passive)
     },
     offScroll () {
-      this.offScroll()
+      this.scrollContainer.removeEventListener('scroll', this.poll, listenOpts.passive)
     }
   },
   mounted () {
