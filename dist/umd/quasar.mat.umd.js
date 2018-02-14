@@ -36,6 +36,26 @@ function height (el) {
   return parseFloat(style(el, 'height'))
 }
 
+function onElementHeightChange (elm, callback) {
+  var lastHeight = elm.clientHeight, newHeight;
+  (function run () {
+    if (!elm) { return }
+
+    newHeight = elm.clientHeight;
+    if (lastHeight !== newHeight) { callback(); }
+    lastHeight = newHeight;
+
+    if (elm.onElementHeightChangeTimer) { clearTimeout(elm.onElementHeightChangeTimer); }
+
+    elm.onElementHeightChangeTimer = setTimeout(run, 200);
+  })();
+
+  return function () {
+    if (elm.onElementHeightChangeTimer) { clearTimeout(elm.onElementHeightChangeTimer); }
+    elm = null;
+  }
+}
+
 function width (el) {
   if (el === window) {
     return viewport().width
@@ -93,6 +113,7 @@ var dom = Object.freeze({
 	offset: offset,
 	style: style,
 	height: height,
+	onElementHeightChange: onElementHeightChange,
 	width: width,
 	css: css,
 	viewport: viewport,
@@ -11238,6 +11259,7 @@ var QInfiniteScroll = {
       required: true
     },
     inline: Boolean,
+    immediate: {type: Boolean, default: true}, // trigger loadMore immediately after mounted
     offset: {
       type: Number,
       default: 0
@@ -11280,11 +11302,10 @@ var QInfiniteScroll = {
         this$1.fetching = false;
         if (stopLoading) {
           this$1.stop();
-          return
         }
-        if (this$1.element.closest('body')) {
-          this$1.poll();
-        }
+        // if (this.element.closest('body')) {
+        //   this.poll()
+        // }
       });
     },
     reset: function reset () {
@@ -11292,12 +11313,31 @@ var QInfiniteScroll = {
     },
     resume: function resume () {
       this.working = true;
-      this.scrollContainer.addEventListener('scroll', this.poll, listenOpts.passive);
-      this.poll();
+      this.onScroll();
+      if (this.immediate) { this.poll(); }
     },
     stop: function stop () {
       this.working = false;
-      this.scrollContainer.removeEventListener('scroll', this.poll, listenOpts.passive);
+      this.offScroll();
+    },
+    onScroll: function onScroll () {
+      var this$1 = this;
+
+      var lastScrollPosition = getScrollPosition(this.scrollContainer);
+      this.scrollContainer.addEventListener('scroll', function (e) {
+        // only for scroll event and down direction
+        var scrollPosition = getScrollPosition(this$1.scrollContainer);
+        if (scrollPosition < lastScrollPosition) {
+          lastScrollPosition = scrollPosition;
+          return
+        }
+
+        lastScrollPosition = scrollPosition;
+        this$1.poll();
+      }, listenOpts.passive);
+    },
+    offScroll: function offScroll () {
+      this.offScroll();
     }
   },
   mounted: function mounted () {
@@ -11307,16 +11347,22 @@ var QInfiniteScroll = {
       this$1.poll = debounce(this$1.poll, 50);
       this$1.element = this$1.$refs.content;
 
+      this$1.offElementHeightChange = onElementHeightChange(this$1.element, this$1.poll);
+
       this$1.scrollContainer = this$1.inline ? this$1.$el : getScrollTarget(this$1.$el);
       if (this$1.working) {
-        this$1.scrollContainer.addEventListener('scroll', this$1.poll, listenOpts.passive);
+        this$1.onScroll();
       }
 
-      this$1.poll();
+      if (this$1.immediate) { this$1.poll(); }
     });
   },
   beforeDestroy: function beforeDestroy () {
-    this.scrollContainer.removeEventListener('scroll', this.poll, listenOpts.passive);
+    this.offScroll();
+    if (this.offElementHeightChange) {
+      this.offElementHeightChange();
+      this.offElementHeightChange = null;
+    }
   },
   render: function render (h) {
     return h('div', { staticClass: 'q-infinite-scroll' }, [
