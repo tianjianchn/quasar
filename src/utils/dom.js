@@ -18,6 +18,19 @@ export function height (el) {
   return parseFloat(style(el, 'height'))
 }
 
+export function onElementHeightChange (elm, callback) {
+  var lastHeight = elm.clientHeight, newHeight;
+  (function run () {
+    newHeight = elm.clientHeight
+    if (lastHeight !== newHeight) { callback() }
+    lastHeight = newHeight
+
+    if (elm.onElementHeightChangeTimer) { clearTimeout(elm.onElementHeightChangeTimer) }
+
+    elm.onElementHeightChangeTimer = setTimeout(run, 200)
+  })()
+}
+
 export function width (el) {
   if (el === window) {
     return viewport().width

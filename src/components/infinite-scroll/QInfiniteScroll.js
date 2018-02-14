@@ -1,6 +1,6 @@
-import { height, offset } from '../../utils/dom'
+import { height, onElementHeightChange, offset } from '../../utils/dom'
 import { debounce } from '../../utils/debounce'
-import { getScrollTarget } from '../../utils/scroll'
+import { getScrollTarget, getScrollPosition } from '../../utils/scroll'
 import { listenOpts } from '../../utils/event'
 
 export default {
@@ -11,6 +11,7 @@ export default {
       required: true
     },
     inline: Boolean,
+    immediate: {type: Boolean, default: true}, // trigger loadMore immediately after mounted
     offset: {
       type: Number,
       default: 0
@@ -51,11 +52,10 @@ export default {
         this.fetching = false
         if (stopLoading) {
           this.stop()
-          return
         }
-        if (this.element.closest('body')) {
-          this.poll()
-        }
+        // if (this.element.closest('body')) {
+        //   this.poll()
+        // }
       })
     },
     reset () {
@@ -63,12 +63,29 @@ export default {
     },
     resume () {
       this.working = true
-      this.scrollContainer.addEventListener('scroll', this.poll, listenOpts.passive)
-      this.poll()
+      this.onScroll()
+      if (this.immediate) this.poll()
     },
     stop () {
       this.working = false
-      this.scrollContainer.removeEventListener('scroll', this.poll, listenOpts.passive)
+      this.offScroll()
+    },
+    onScroll () {
+      let lastScrollPosition = getScrollPosition(this.scrollContainer)
+      this.scrollContainer.addEventListener('scroll', (e) => {
+        // only for scroll event and down direction
+        let scrollPosition = getScrollPosition(this.scrollContainer)
+        if (scrollPosition < lastScrollPosition) {
+          lastScrollPosition = scrollPosition
+          return
+        }
+
+        lastScrollPosition = scrollPosition
+        this.poll()
+      }, listenOpts.passive)
+    },
+    offScroll () {
+      this.offScroll()
     }
   },
   mounted () {
@@ -76,16 +93,20 @@ export default {
       this.poll = debounce(this.poll, 50)
       this.element = this.$refs.content
 
+      onElementHeightChange(this.element, () => {
+        this.poll()
+      })
+
       this.scrollContainer = this.inline ? this.$el : getScrollTarget(this.$el)
       if (this.working) {
-        this.scrollContainer.addEventListener('scroll', this.poll, listenOpts.passive)
+        this.onScroll()
       }
 
-      this.poll()
+      if (this.immediate) this.poll()
     })
   },
   beforeDestroy () {
-    this.scrollContainer.removeEventListener('scroll', this.poll, listenOpts.passive)
+    this.offScroll()
   },
   render (h) {
     return h('div', { staticClass: 'q-infinite-scroll' }, [
