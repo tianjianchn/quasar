@@ -93,9 +93,7 @@ export default {
       this.poll = debounce(this.poll, 50)
       this.element = this.$refs.content
 
-      onElementHeightChange(this.element, () => {
-        this.poll()
-      })
+      this.offElementHeightChange = onElementHeightChange(this.element, this.poll)
 
       this.scrollContainer = this.inline ? this.$el : getScrollTarget(this.$el)
       if (this.working) {
@@ -107,6 +105,10 @@ export default {
   },
   beforeDestroy () {
     this.offScroll()
+    if (this.offElementHeightChange) {
+      this.offElementHeightChange()
+      this.offElementHeightChange = null
+    }
   },
   render (h) {
     return h('div', { staticClass: 'q-infinite-scroll' }, [

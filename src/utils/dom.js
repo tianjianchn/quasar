@@ -19,8 +19,10 @@ export function height (el) {
 }
 
 export function onElementHeightChange (elm, callback) {
-  var lastHeight = elm.clientHeight, newHeight;
+  let lastHeight = elm.clientHeight, newHeight;
   (function run () {
+    if (!elm) return
+
     newHeight = elm.clientHeight
     if (lastHeight !== newHeight) { callback() }
     lastHeight = newHeight
@@ -29,6 +31,11 @@ export function onElementHeightChange (elm, callback) {
 
     elm.onElementHeightChangeTimer = setTimeout(run, 200)
   })()
+
+  return () => {
+    if (elm.onElementHeightChangeTimer) { clearTimeout(elm.onElementHeightChangeTimer) }
+    elm = null
+  }
 }
 
 export function width (el) {
