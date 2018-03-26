@@ -4,13 +4,13 @@ export default {
     positive: 'mdi-check-circle',
     negative: 'mdi-alert',
     info: 'mdi-info',
-    warning: 'mdi-priority-high'
+    warning: 'mdi-exclamation'
   },
   arrow: {
-    up: 'mdi-arrow-upward',
-    right: 'mdi-arrow-forward',
-    down: 'mdi-arrow-downward',
-    left: 'mdi-arrow-back'
+    up: 'mdi-arrow-up',
+    right: 'mdi-arrow-right',
+    down: 'mdi-arrow-down',
+    left: 'mdi-arrow-left'
   },
   chevron: {
     left: 'mdi-chevron-left',
@@ -18,13 +18,13 @@ export default {
   },
 
   pullToRefresh: {
-    arrow: 'mdi-arrow-downward',
+    arrow: 'mdi-arrow-down',
     refresh: 'mdi-refresh'
   },
   search: {
     icon: 'mdi-magnify',
     clear: 'mdi-close-circle',
-    clearInverted: 'mdi-close-circle-outline'
+    clearInverted: 'mdi-close'
   },
   carousel: {
     left: 'mdi-chevron-left',
@@ -52,7 +52,7 @@ export default {
     add: 'mdi-send'
   },
   collapsible: {
-    icon: 'mdi-chevron-down'
+    icon: 'mdi-menu-down'
   },
   datetime: {
     arrowLeft: 'mdi-chevron-left',
@@ -90,7 +90,7 @@ export default {
     font: 'mdi-format-font'
   },
   fab: {
-    icon: 'mdi-add',
+    icon: 'mdi-plus',
     activeIcon: 'mdi-close'
   },
   input: {
@@ -98,7 +98,8 @@ export default {
     hidePass: 'mdi-eye-off',
     showNumber: 'mdi-keyboard',
     hideNumber: 'mdi-keyboard-close',
-    clear: 'mdi-close',
+    clear: 'mdi-close-circle',
+    clearInverted: 'mdi-close',
     dropdown: 'mdi-menu-down'
   },
   pagination: {
@@ -130,7 +131,7 @@ export default {
     right: 'mdi-chevron-right'
   },
   table: {
-    arrowUp: 'mdi-arrow-upward',
+    arrowUp: 'mdi-arrow-up',
     warning: 'mdi-alert',
     prevPage: 'mdi-chevron-left',
     nextPage: 'mdi-chevron-right'
@@ -139,8 +140,9 @@ export default {
     icon: 'mdi-play'
   },
   uploader: {
-    done: 'mdi-done',
-    clear: 'mdi-close',
+    done: 'mdi-check',
+    clear: 'mdi-close-circle',
+    clearInverted: 'mdi-close',
     add: 'mdi-plus',
     upload: 'mdi-cloud-upload',
     expand: 'mdi-chevron-down',

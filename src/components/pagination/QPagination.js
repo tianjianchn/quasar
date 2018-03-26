@@ -5,7 +5,7 @@ import extend from '../../utils/extend'
 import { getEventKey } from '../../utils/event'
 
 export default {
-  name: 'q-pagination',
+  name: 'QPagination',
   props: {
     value: {
       type: Number,
@@ -23,6 +23,7 @@ export default {
       type: String,
       default: 'primary'
     },
+    textColor: String,
     size: String,
     disable: Boolean,
     input: Boolean,
@@ -99,6 +100,15 @@ export default {
     },
     __ellipses () {
       return this.__getBool(this.ellipses, !this.input)
+    },
+    icons () {
+      const ico = [
+        this.$q.icon.pagination.first,
+        this.$q.icon.pagination.prev,
+        this.$q.icon.pagination.next,
+        this.$q.icon.pagination.last
+      ]
+      return this.$q.i18n.rtl ? ico.reverse() : ico
     }
   },
   methods: {
@@ -112,8 +122,8 @@ export default {
       this.model = this.newPage
       this.newPage = null
     },
-    __getRepeatEasing (from = 300, step = 10, to = 100) {
-      return (cnt) => cnt ? Math.max(to, from - cnt * cnt * step) : 100
+    __repeatTimeout (count) {
+      return Math.max(100, 300 - count * count * 10)
     },
     __getBool (val, otherwise) {
       return [true, false].includes(val)
@@ -141,7 +151,7 @@ export default {
         key: 'bls',
         props: {
           disable: this.disable || this.value <= this.min,
-          icon: this.$q.icon.pagination.first
+          icon: this.icons[0]
         },
         on: {
           click: () => this.set(this.min)
@@ -151,7 +161,7 @@ export default {
         key: 'ble',
         props: {
           disable: this.disable || this.value >= this.max,
-          icon: this.$q.icon.pagination.last
+          icon: this.icons[3]
         },
         on: {
           click: () => this.set(this.max)
@@ -164,8 +174,8 @@ export default {
         key: 'bdp',
         props: {
           disable: this.disable || this.value <= this.min,
-          icon: this.$q.icon.pagination.prev,
-          repeatTimeout: this.__getRepeatEasing()
+          icon: this.icons[1],
+          repeatTimeout: this.__repeatTimeout
         },
         on: {
           click: () => this.setByOffset(-1)
@@ -175,8 +185,8 @@ export default {
         key: 'bdn',
         props: {
           disable: this.disable || this.value >= this.max,
-          icon: this.$q.icon.pagination.next,
-          repeatTimeout: this.__getRepeatEasing()
+          icon: this.icons[2],
+          repeatTimeout: this.__repeatTimeout
         },
         on: {
           click: () => this.setByOffset(1)
@@ -225,7 +235,7 @@ export default {
         maxPages = 1 + Math.floor(maxPages / 2) * 2
         pgFrom = Math.max(this.min, Math.min(this.max - maxPages + 1, this.value - Math.floor(maxPages / 2)))
         pgTo = Math.min(this.max, pgFrom + maxPages - 1)
-        if (this.__boundaryNumbers && pgFrom > this.min) {
+        if (this.__boundaryNumbers) {
           boundaryStart = true
           pgFrom += 1
         }
@@ -233,7 +243,7 @@ export default {
           ellipsesStart = true
           pgFrom += 1
         }
-        if (this.__boundaryNumbers && pgTo < this.max) {
+        if (this.__boundaryNumbers) {
           boundaryEnd = true
           pgTo -= 1
         }
@@ -243,15 +253,19 @@ export default {
         }
       }
       const style = {
-        minWidth: `${Math.max(1.5, String(this.max).length)}em`
+        minWidth: `${Math.max(2, String(this.max).length)}em`
       }
       if (boundaryStart) {
+        const active = this.min === this.value
         contentStart.push(this.__getBtn(h, {
           key: 'bns',
           style,
           props: {
-            disable: this.disable || this.value <= this.min,
-            label: this.min
+            disable: this.disable,
+            flat: !active,
+            textColor: active ? this.textColor : null,
+            label: this.min,
+            noRipple: true
           },
           on: {
             click: () => this.set(this.min)
@@ -259,12 +273,16 @@ export default {
         }))
       }
       if (boundaryEnd) {
+        const active = this.max === this.value
         contentEnd.unshift(this.__getBtn(h, {
           key: 'bne',
           style,
           props: {
-            disable: this.disable || this.value >= this.max,
-            label: this.max
+            disable: this.disable,
+            flat: !active,
+            textColor: active ? this.textColor : null,
+            label: this.max,
+            noRipple: true
           },
           on: {
             click: () => this.set(this.max)
@@ -278,7 +296,7 @@ export default {
           props: {
             disable: this.disable,
             label: '…',
-            repeatTimeout: this.__getRepeatEasing()
+            repeatTimeout: this.__repeatTimeout
           },
           on: {
             click: () => this.set(pgFrom - 1)
@@ -292,7 +310,7 @@ export default {
           props: {
             disable: this.disable,
             label: '…',
-            repeatTimeout: this.__getRepeatEasing()
+            repeatTimeout: this.__repeatTimeout
           },
           on: {
             click: () => this.set(pgTo + 1)
@@ -300,12 +318,14 @@ export default {
         }))
       }
       for (let i = pgFrom; i <= pgTo; i++) {
+        const active = i === this.value
         contentMiddle.push(this.__getBtn(h, {
-          key: `${i}.${i === this.value}`,
+          key: `${i}.${active}`,
           style,
           props: {
             disable: this.disable,
-            flat: i !== this.value,
+            flat: !active,
+            textColor: active ? this.textColor : null,
             label: i,
             noRipple: true
           },
@@ -317,12 +337,12 @@ export default {
     }
 
     return h('div', {
-      staticClass: 'q-pagination',
+      staticClass: 'q-pagination row no-wrap items-center',
       'class': { disabled: this.disable }
     }, [
       contentStart,
 
-      h('div', { staticClass: 'row wrap justify-center' }, [
+      h('div', { staticClass: 'row justify-center' }, [
         contentMiddle
       ]),
 

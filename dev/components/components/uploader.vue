@@ -34,23 +34,28 @@
       <q-uploader style="max-width: 320px" no-thumbnails color="amber" :url="url" />
 
       <q-toggle v-model="inverted" label="Inverted" />
-      <p class="caption">Multiple File Upload</p>
-      <q-uploader
-        :inverted="inverted"
-        auto-expand
-        style="max-width: 320px"
-        float-label="Upload files"
-        multiple
-        :url="url"
-        ref="upld"
-        @start="emit('start')"
-        @finish="emit('finish')"
-        @uploaded="uploaded"
-        @add="add"
-        @remove:done="removeDone"
-        @remove:abort="removeAbort"
-        @remove:cancel="removeCancel"
-      />
+      <q-toggle v-model="dark" label="Dark" />
+      <p class="caption">Multiple File Upload (Only .jpg)</p>
+      <div class="q-pa-sm" :class="this.dark ? 'bg-grey-10 text-orange' : ''">
+        <q-uploader
+          extensions=".jpg"
+          :inverted="inverted"
+          :dark="dark"
+          auto-expand
+          style="max-width: 320px"
+          float-label="Upload files"
+          multiple
+          :url="url"
+          ref="upld"
+          @start="emit('start')"
+          @finish="emit('finish')"
+          @uploaded="uploaded"
+          @add="add"
+          @remove:done="removeDone"
+          @remove:abort="removeAbort"
+          @remove:cancel="removeCancel"
+        />
+      </div>
 
       <q-btn color="primary" @click="pick" style="margin-top: 15px">Pick Files</q-btn>
       <q-btn color="primary" @click="reset" style="margin-top: 15px">Reset the above Uploader</q-btn>
@@ -102,7 +107,7 @@
 
       <div class="absolute-right no-pointer-events">
         <q-btn @click="clear" style="pointer-events: all" color="primary">Clear Debug Log</q-btn>
-        <div v-for="evt in events">
+        <div v-for="evt in events" :key="evt">
           {{evt}}
         </div>
       </div>
@@ -116,7 +121,8 @@ export default {
     return {
       url: 'http://1.1.1.195/upload.php',
       events: [],
-      inverted: false
+      inverted: false,
+      dark: false
     }
   },
   methods: {

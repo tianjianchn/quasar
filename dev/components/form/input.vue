@@ -3,7 +3,6 @@
     <div class="layout-padding input-example" style="max-width: 600px;">
       <q-input ref="xi" :attributes="{gigi: 'yes'}" @change="onChange" v-model="text" />
       <q-btn @click="$refs.xi.select()">Select</q-btn>
-      <q-input v-model="text" stack-label="Stack Label" />
       <q-card>
         <q-card-title class="bg-dark text-white q-px-small q-py-smaller">Text value: {{JSON.stringify(text)}}</q-card-title>
         <q-card-main>
@@ -107,6 +106,7 @@
       <q-input v-model="text" inverted stack-label="Colored" color="amber" />
       <q-input v-model="text" inverted stack-label="Colored" :after="[{icon: 'arrow_forward', content: true, handler () {}}]"/>
       <q-input v-model="text" inverted type="textarea" stack-label="Colored" color="tertiary" :min-rows="5" />
+      <q-input v-model="text" inverted type="textarea" stack-label="Colored" color="white" :dark="false" :min-rows="5" />
 
       <p class="caption">On dark background</p>
       <div class="bg-grey-9" style="width: 500px; padding: 25px">

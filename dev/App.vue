@@ -9,16 +9,20 @@
       class="bg-white shadow-4 fixed z-top"
     >
       <q-select
-        stack-label="I18n"
         hide-underline
+        stack-label="I18n"
         :options="[
           { label: 'English (US)', value: 'en-us' }
           ,{ label: 'English (UK)', value: 'en-uk' }
           ,{ label: 'Romanian', value: 'ro' }
+          ,{ label: 'Hebrew', value: 'he' }
           ,{ label: 'Chinese (Simplified)', value: 'zh-hans' }
           ,{ label: 'Italian', value: 'it' }
           ,{ label: 'Spanish', value: 'es' }
+          ,{ label: 'Swedish', value: 'sv' }
+          ,{ label: 'Farsi', value: 'fa-ir' }
           ,{ label: 'French', value: 'fr' }
+          ,{ label: 'Dutch', value: 'nl' }
           ,{ label: 'German', value: 'de' }
           ,{ label: 'Indonezian', value: 'id' }
           ,{ label: 'Croatian', value: 'hr' }
@@ -79,12 +83,11 @@ export default {
 }
 </script>
 
-<style lang="stylus" src="quasar-css"></style>
-
 <style lang="stylus">
 p.caption
   margin 35px 0
   padding 12px 0 12px 12px
   border-left 4px solid #027be3
   font-weight bold
+  margin-left 10px
 </style>

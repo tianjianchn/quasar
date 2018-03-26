@@ -5,7 +5,7 @@ import { QSpinner } from '../spinner'
 import Ripple from '../../directives/ripple'
 
 export default {
-  name: 'q-tree',
+  name: 'QTree',
   directives: {
     Ripple
   },
@@ -425,7 +425,7 @@ export default {
       return h('div', {
         key,
         staticClass: 'q-tree-node',
-        'class': { 'q-tree-node-parent': isParent }
+        'class': { 'q-tree-node-parent': isParent, 'q-tree-node-child': !isParent }
       }, [
         h('div', {
           staticClass: 'q-tree-node-header relative-position row no-wrap items-center',
@@ -448,7 +448,7 @@ export default {
               isParent
                 ? h(QIcon, {
                   staticClass: 'q-tree-arrow q-mr-xs transition-generic',
-                  'class': { 'rotate-90': meta.expanded },
+                  'class': { 'q-tree-arrow-rotate': meta.expanded },
                   props: { name: this.computedIcon },
                   nativeOn: {
                     click: e => {

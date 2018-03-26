@@ -3,7 +3,6 @@
 
 .q-tabs-scroller
   overflow hidden
-  color $tabs-color
 
 .q-tab-pane
   padding $tabs-pane-padding
@@ -25,26 +24,17 @@
   user-select none
   padding $tabs-padding
   min-height $tabs-min-height
-  text-transform $tabs-text-transform
 
   > .q-icon, .q-tab-label
     transition transform .2s
   > .q-icon + .q-tab-label
-    margin-top 7px
-  .q-tab-label
-    text-align center
-
-  &.icon-and-label:not(.hide-icon):not(.hide-label)
-    padding $tabs-padding-with-icon
-    min-height $tabs-min-height-with-icon
-
-  .q-tab-icon
-    font-size $tabs-icon-font-size
+    margin-top 3px
 
   .q-chip
     top 5px
-    right 0
-    left initial
+    right 5px
+    left auto
+    min-height auto
     color white
     background alpha($dot-color, .75)
 
@@ -56,13 +46,24 @@
   &:active
     background rgba(255, 255, 255, .3)
 
+.q-tab-label
+  text-align center
+  line-height 1.3
+
+.q-tab-only-label
+  font-size $tabs-big-font-size
+
+.q-tab-icon
+  font-size $tabs-icon-font-size
+
 @media (max-width $breakpoint-sm-max)
   .q-tab
     &.hide-icon .q-tab-icon,
     &.hide-label .q-tab-label
       display none !important
     &.hide-icon .q-tab-label
-        margin-top 0
+      font-size $tabs-big-font-size
+      margin-top 0
 
 @media (max-width $breakpoint-md-max)
   .q-tabs-head:not(.scrollable)
@@ -70,9 +71,11 @@
       flex 1 1 auto
 
 @media (min-width $breakpoint-lg-min)
-  .q-tab, .q-tab.icon-and-label:not(.hide-icon):not(.hide-label)
+  .q-tab
     padding-left $tabs-big-screen-horiz-padding
     padding-right $tabs-big-screen-horiz-padding
+  .q-tab-label
+    font-size $tabs-big-font-size
   .q-tabs-head:not(.scrollable)
     padding-left $tabs-big-screen-side-padding
     padding-right $tabs-big-screen-side-padding
@@ -80,7 +83,6 @@
 .q-tabs-head
   min-height $tabs-min-height
   overflow hidden
-  background $tabs-background
   font-size $tabs-font-size
   font-weight $tabs-font-weight
   transition color .18s ease-in, box-shadow .18s ease-in
@@ -95,21 +97,22 @@
   height 100%
   cursor pointer
   color white
+  top 0
   .q-icon
     text-shadow 0 0 10px black
     font-size (1.2 * $tabs-icon-font-size)
     visibility hidden
-  &:hover .q-icon
-    visibility visible
   &.disabled
     display none
+.q-tabs:hover
+  .q-tabs-left-scroll, .q-tabs-right-scroll
+    .q-icon
+      visibility visible
 
 .q-tabs-left-scroll
-  left 0
-  background linear-gradient(to left, transparent, rgba(255, 255, 255, .5))
+  left 0 /* rtl:ignore */
 .q-tabs-right-scroll
-  right 0
-  background linear-gradient(to right, transparent, rgba(255, 255, 255, .5))
+  right 0 /* rtl:ignore */
 
 .q-tabs-align-justify
   .q-tabs-scroller, .q-tab
@@ -132,22 +135,11 @@
 
 .q-tabs-inverted
   .q-tab
-    color $tabs-inverted-color
-    &.active
-      color $tabs-background
     &:active
       background rgba(0, 0, 0, .1)
 
-  .q-tabs-scroller
-    color $tabs-background
-
-  .q-tabs-left-scroll
-    background linear-gradient(to left, transparent, rgba(0, 0, 0, .1))
-  .q-tabs-right-scroll
-    background linear-gradient(to right, transparent, rgba(0, 0, 0, .1))
-
   .q-tabs-head
-    background transparent
+    background white
 
   &.q-tabs-position-top
     .q-tabs-panes

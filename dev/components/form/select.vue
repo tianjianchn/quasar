@@ -19,6 +19,7 @@
       <q-select color="amber" v-model="select" :options="selectListOptions"></q-select>
       <q-select inverted color="secondary" v-model="select" :options="selectListOptions"></q-select>
       <q-select inverted float-label="Float Label" color="amber" v-model="select" :options="selectListOptions"></q-select>
+      <q-select inverted float-label="Float Label" color="white" :dark="false" v-model="select" :options="selectListOptions"></q-select>
 
       <p class="caption">Single Selection with Radio</p>
       <q-field label="gogu">
@@ -43,8 +44,8 @@
       <q-field label="gogu" :count="10">
         <q-select @change="onChange" @input="onInput" multiple v-model="multipleSelect" :options="selectListOptions" float-label="Some label" max-height="36px"></q-select>
       </q-field>
-      <q-select inverted color="dark" frame-color="amber" multiple chips v-model="multipleSelect" :options="selectListOptions" float-label="Some label" max-height="36px"></q-select>
-      <q-select inverted color="dark" frame-color="amber" multiple chips v-model="multipleSelect" :options="selectDisabledOptions" float-label="Some label" max-height="36px"></q-select>
+      <q-select inverted inverted-light color="amber" multiple chips v-model="multipleSelect" :options="selectListOptions" float-label="Some label" max-height="36px"></q-select>
+      <q-select inverted inverted-light color="amber" multiple chips v-model="multipleSelect" :options="selectDisabledOptions" float-label="Some label" max-height="36px"></q-select>
 
       <p class="caption">Multiple Selection with Checkboxes</p>
       <q-select multiple checkbox v-model="multipleSelect" :options="selectListOptions"></q-select>
@@ -72,7 +73,7 @@
       <p class="caption">Disabled State</p>
       <q-select disable float-label="Disabled Select" multiple v-model="multipleSelect" :options="selectOptions"></q-select>
       <q-select disable @change="onChange" @input="onInput" multiple chips v-model="multipleSelect" :options="selectListOptions" float-label="Disabled Select" max-height="36px" clearable></q-select>
-      <q-select disable inverted color="dark" frame-color="amber" multiple chips v-model="multipleSelect" :options="selectListOptions" float-label="Disabled Select" max-height="36px"></q-select>
+      <q-select disable inverted inverted-light color="amber" multiple chips v-model="multipleSelect" :options="selectListOptions" float-label="Disabled Select" max-height="36px"></q-select>
 
       <p class="caption">Error State</p>
       <q-select error multiple v-model="multipleSelect" :options="selectOptions"></q-select>

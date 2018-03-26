@@ -3,7 +3,7 @@ import { position, leftClick } from '../utils/event'
 function updateBinding (el, binding) {
   const ctx = el.__qtouchhold
 
-  ctx.duration = parseInt(binding.arg, 10) || 800
+  ctx.duration = parseInt(binding.arg, 10) || 600
 
   if (binding.oldValue !== binding.value) {
     ctx.handler = binding.value
@@ -72,6 +72,7 @@ export default {
   },
   unbind (el, binding) {
     let ctx = el.__qtouchhold
+    if (!ctx) { return }
     el.removeEventListener('touchstart', ctx.start)
     el.removeEventListener('touchend', ctx.abort)
     el.removeEventListener('touchmove', ctx.abort)

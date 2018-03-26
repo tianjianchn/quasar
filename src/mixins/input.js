@@ -12,13 +12,6 @@ export default {
       isNumberError: false
     }
   },
-  computed: {
-    inputPlaceholder () {
-      if ((!this.floatLabel && !this.stackLabel) || this.labelIsAbove) {
-        return this.placeholder
-      }
-    }
-  },
   methods: {
     focus () {
       if (!this.disable) {
@@ -46,6 +39,9 @@ export default {
     __onBlur (e) {
       this.focused = false
       this.$emit('blur', e)
+      this.__emit()
+    },
+    __emit () {
       const isNumberError = this.isNumber && this.isNumberError
       const value = isNumberError ? null : this.model
       if (isNumberError) {

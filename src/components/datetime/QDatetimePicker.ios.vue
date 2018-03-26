@@ -1,5 +1,5 @@
 <template>
-  <div class="q-datetime" :class="['type-' + type, disable ? 'disabled' : '', readonly ? 'readonly' : '']">
+  <div class="q-datetime" :class="['type-' + type, disable ? 'disabled' : '', readonly ? 'readonly' : '', dark ? 'q-datetime-dark' : '']">
     <slot></slot>
     <div class="q-datetime-content non-selectable">
       <div class="q-datetime-inner full-height flex justify-center" @touchstart.stop.prevent>
@@ -91,21 +91,21 @@
 
 <script>
 import { between, capitalize } from '../../utils/format'
-import { position, stopAndPrevent } from '../../utils/event'
+import { position } from '../../utils/event'
 import { css } from '../../utils/dom'
 import { isSameDate, adjustDate } from '../../utils/date'
 import DateMixin from './datetime-mixin'
-import FieldParentMixin from '../../mixins/field-parent'
+import ParentFieldMixin from '../../mixins/parent-field'
 import TouchPan from '../../directives/touch-pan'
 
 export default {
-  name: 'q-datetime-picker',
-  mixins: [DateMixin, FieldParentMixin],
+  name: 'QDatetimePicker',
+  mixins: [DateMixin, ParentFieldMixin],
   directives: {
     TouchPan
   },
   props: {
-    defaultSelection: [String, Number, Date],
+    defaultValue: [String, Number, Date],
     disable: Boolean,
     readonly: Boolean
   },
@@ -173,28 +173,6 @@ export default {
     }
   },
   methods: {
-    __dragMonth (e) {
-      this.__drag(e, 'month')
-    },
-    __dragDate (e) {
-      this.__drag(e, 'date')
-    },
-    __dragYear (e) {
-      this.__drag(e, 'year')
-    },
-    __dragHour (e) {
-      this.__drag(e, 'hour')
-    },
-    __dragMinute (e) {
-      this.__drag(e, 'minute')
-    },
-    __drag (e, type) {
-      const method = e.isFirst
-        ? '__dragStart' : (e.isFinal ? '__dragStop' : '__dragMove')
-
-      this[method](e.evt, type)
-    },
-
     /* date */
     setYear (value) {
       if (this.editable) {
@@ -282,12 +260,31 @@ export default {
     },
 
     /* common */
+    __dragMonth (e) {
+      this.__drag(e, 'month')
+    },
+    __dragDate (e) {
+      this.__drag(e, 'date')
+    },
+    __dragYear (e) {
+      this.__drag(e, 'year')
+    },
+    __dragHour (e) {
+      this.__drag(e, 'hour')
+    },
+    __dragMinute (e) {
+      this.__drag(e, 'minute')
+    },
+    __drag (e, type) {
+      const method = e.isFirst
+        ? '__dragStart' : (e.isFinal ? '__dragStop' : '__dragMove')
+
+      this[method](e.evt, type)
+    },
     __dragStart (ev, type) {
       if (!this.editable) {
         return
       }
-
-      stopAndPrevent(ev)
 
       this[type + 'DragOffset'] = 0
       this.dragging = type
@@ -300,8 +297,6 @@ export default {
         return
       }
 
-      stopAndPrevent(ev)
-
       const offset = (this.__dragPosition - position(ev).top) / 36
       this[type + 'DragOffset'] = offset
       this.__updatePositions(type, this[this.__actualType] + offset + this.__typeOffset)
@@ -310,7 +305,6 @@ export default {
       if (this.dragging !== type || !this.editable) {
         return
       }
-      stopAndPrevent(ev)
       this.dragging = false
 
       let

@@ -12,7 +12,7 @@ import Expand from './table-expand'
 import FullscreenMixin from '../../mixins/fullscreen'
 
 export default {
-  name: 'q-table',
+  name: 'QTable',
   mixins: [
     FullscreenMixin,
     Top,
@@ -39,8 +39,9 @@ export default {
       type: String,
       default: 'grey-8'
     },
+    dense: Boolean,
     columns: Array,
-    loader: Boolean,
+    loading: Boolean,
     title: String,
     hideHeader: Boolean,
     hideBottom: Boolean,
@@ -52,7 +53,7 @@ export default {
     },
     noDataLabel: String,
     noResultsLabel: String,
-    loaderLabel: String,
+    loadingLabel: String,
     selectedRowsLabel: Function,
     rowsPerPageLabel: String,
     paginationLabel: Function,
@@ -66,17 +67,20 @@ export default {
     }
   },
   computed: {
-    computedRows () {
+    computedData () {
       let rows = this.data.slice().map((row, i) => {
         row.__index = i
         return row
       })
 
       if (rows.length === 0) {
-        return []
+        return {
+          rowsNumber: 0,
+          rows: []
+        }
       }
       if (this.isServerSide) {
-        return rows
+        return { rows }
       }
 
       const { sortBy, descending, rowsPerPage } = this.computedPagination
@@ -89,16 +93,21 @@ export default {
         rows = this.sortMethod(rows, sortBy, descending)
       }
 
+      const rowsNumber = rows.length
+
       if (rowsPerPage) {
         rows = rows.slice(this.firstRowIndex, this.lastRowIndex)
       }
 
-      return rows
+      return { rowsNumber, rows }
+    },
+    computedRows () {
+      return this.computedData.rows
     },
     computedRowsNumber () {
       return this.isServerSide
         ? this.computedPagination.rowsNumber || 0
-        : this.data.length
+        : this.computedData.rowsNumber
     },
     nothingToDisplay () {
       return this.computedRows.length === 0
@@ -113,6 +122,7 @@ export default {
         'class': {
           'q-table-container': true,
           'q-table-dark': this.dark,
+          'q-table-dense': this.dense,
           fullscreen: this.inFullscreen,
           scroll: this.inFullscreen
         }

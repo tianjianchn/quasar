@@ -1,28 +1,19 @@
 <template>
   <div
     class="q-tabs flex no-wrap"
-    :class="[
-      `q-tabs-position-${position}`,
-      `q-tabs-${inverted ? 'inverted' : 'normal'}`,
-      noPaneBorder ? 'q-tabs-no-pane-border' : '',
-      twoLines ? 'q-tabs-two-lines' : ''
-    ]"
+    :class="classes"
   >
     <div
       class="q-tabs-head row"
       ref="tabs"
-      :class="{
-        [`q-tabs-align-${align}`]: true,
-        glossy: glossy,
-        [`bg-${color}`]: !inverted && color
-      }"
+      :class="innerClasses"
     >
       <div ref="scroller" class="q-tabs-scroller row no-wrap">
         <slot name="title"></slot>
         <div
           v-if="$q.theme !== 'ios'"
           class="relative-position self-stretch q-tabs-global-bar-container"
-          :class="[inverted && color ? `text-${color}` : '', data.highlight ? 'highlight' : '']"
+          :class="posbarClasses"
         >
           <div
             ref="posbar"
@@ -72,11 +63,12 @@ const
   debounceDelay = 50 // in ms
 
 export default {
-  name: 'q-tabs',
+  name: 'QTabs',
   provide () {
     return {
       data: this.data,
-      selectTab: this.selectTab
+      selectTab: this.selectTab,
+      selectTabRouter: this.selectTabRouter
     }
   },
   components: {
@@ -94,7 +86,11 @@ export default {
       default: 'top',
       validator: v => ['top', 'bottom'].includes(v)
     },
-    color: String,
+    color: {
+      type: String,
+      default: 'primary'
+    },
+    textColor: String,
     inverted: Boolean,
     twoLines: Boolean,
     noPaneBorder: Boolean,
@@ -111,6 +107,7 @@ export default {
         highlight: true,
         tabName: this.value || '',
         color: this.color,
+        textColor: this.textColor,
         inverted: this.inverted
       }
     }
@@ -122,8 +119,39 @@ export default {
     color (v) {
       this.data.color = v
     },
+    textColor (v) {
+      this.data.textColor = v
+    },
     inverted (v) {
       this.data.inverted = v
+    }
+  },
+  computed: {
+    classes () {
+      return [
+        `q-tabs-position-${this.position}`,
+        `q-tabs-${this.inverted ? 'inverted' : 'normal'}`,
+        this.noPaneBorder ? 'q-tabs-no-pane-border' : '',
+        this.twoLines ? 'q-tabs-two-lines' : ''
+      ]
+    },
+    innerClasses () {
+      const cls = [ `q-tabs-align-${this.align}` ]
+      this.glossy && cls.push('glossy')
+      if (this.inverted) {
+        cls.push(`text-${this.textColor || this.color}`)
+      }
+      else {
+        cls.push(`bg-${this.color}`)
+        cls.push(`text-${this.textColor || 'white'}`)
+      }
+      return cls
+    },
+    posbarClasses () {
+      const cls = []
+      this.inverted && cls.push(`text-${this.textColor || this.color}`)
+      this.data.highlight && cls.push('highlight')
+      return cls
     }
   },
   methods: {
@@ -133,24 +161,57 @@ export default {
       }
 
       this.data.tabName = value
-      this.$emit('select', value)
-
       this.$emit('input', value)
-      this.$nextTick(() => {
-        if (JSON.stringify(value) !== JSON.stringify(this.value)) {
-          this.$emit('change', value)
-        }
-      })
+      this.$emit('select', value)
 
       const el = this.__getTabElByName(value)
 
       if (el) {
         this.__scrollToTab(el)
+
+        if (__THEME__ !== 'ios') {
+          this.currentEl = el
+
+          if (this.oldEl) {
+            this.__repositionBar()
+          }
+          else {
+            this.oldEl = el
+          }
+        }
+      }
+      else {
+        this.oldEl = null
+      }
+    },
+    selectTabRouter (params) {
+      const
+        { value, selectable, exact, selected, priority } = params,
+        first = !this.buffer.length,
+        existingIndex = first ? -1 : this.buffer.findIndex(t => t.value === value)
+
+      if (existingIndex > -1) {
+        const buffer = this.buffer[existingIndex]
+        exact && (buffer.exact = exact)
+        selectable && (buffer.selectable = selectable)
+        selected && (buffer.selected = selected)
+        priority && (buffer.priority = priority)
+      }
+      else {
+        this.buffer.push(params)
       }
 
-      if (__THEME__ !== 'ios') {
-        this.currentEl = el
-        this.__repositionBar()
+      if (first) {
+        this.bufferTimer = setTimeout(() => {
+          let tab = this.buffer.find(t => t.exact && t.selected) ||
+            this.buffer.find(t => t.selectable && t.selected) ||
+            this.buffer.find(t => t.exact) ||
+            this.buffer.filter(t => t.selectable).sort((t1, t2) => t2.priority - t1.priority)[0] ||
+            this.buffer[0]
+
+          this.buffer.length = 0
+          this.selectTab(tab.value)
+        }, 100)
       }
     },
     __repositionBar () {
@@ -205,7 +266,10 @@ export default {
         return
       }
       this.posbar = {width, left}
-      css(this.$refs.posbar, cssTransform(`translateX(${left}px) scaleX(${width})`))
+      const xPos = this.$q.i18n.rtl
+        ? left + width
+        : left
+      css(this.$refs.posbar, cssTransform(`translateX(${xPos}px) scaleX(${width})`))
     },
     __updatePosbarTransition () {
       if (
@@ -226,10 +290,11 @@ export default {
       if (!this.$q.platform.is.desktop) {
         return
       }
-      if (width(this.$refs.scroller) === 0 && this.$refs.scroller.scrollWidth === 0) {
+      this.scrollerWidth = width(this.$refs.scroller)
+      if (this.scrollerWidth === 0 && this.$refs.scroller.scrollWidth === 0) {
         return
       }
-      if (width(this.$refs.scroller) + 5 < this.$refs.scroller.scrollWidth) {
+      if (this.scrollerWidth + 5 < this.$refs.scroller.scrollWidth) {
         this.$refs.tabs.classList.add('scrollable')
         this.scrollable = true
         this.__updateScrollIndicator()
@@ -326,7 +391,10 @@ export default {
     }
   },
   created () {
+    this.timer = null
     this.scrollTimer = null
+    this.bufferTimer = null
+    this.buffer = []
     this.scrollable = !this.$q.platform.is.desktop
 
     // debounce some costly methods;
@@ -352,6 +420,7 @@ export default {
   },
   beforeDestroy () {
     clearTimeout(this.timer)
+    clearTimeout(this.bufferTimer)
     this.__stopAnimScroll()
     this.$refs.scroller.removeEventListener('scroll', this.__updateScrollIndicator, listenOpts.passive)
     window.removeEventListener('resize', this.__redraw, listenOpts.passive)

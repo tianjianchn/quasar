@@ -5,8 +5,9 @@ import { isSSR } from '../../plugins/platform'
 const
   xhr = isSSR ? null : XMLHttpRequest,
   send = isSSR ? null : xhr.prototype.send
+let highjackCount = 0
 
-function translate ({p, pos, active, horiz, reverse}) {
+function translate ({p, pos, active, horiz, reverse, dir}) {
   let x = 1, y = 1
 
   if (horiz) {
@@ -18,7 +19,7 @@ function translate ({p, pos, active, horiz, reverse}) {
   if (reverse) { y = -1 }
   if (pos === 'right') { x = -1 }
 
-  return cssTransform(`translate3d(${active ? 0 : x * -200}%, ${y * (p - 100)}%, 0)`)
+  return cssTransform(`translate3d(${active ? 0 : dir * x * -200}%, ${y * (p - 100)}%, 0)`)
 }
 
 function inc (p, amount) {
@@ -55,14 +56,18 @@ function highjackAjax (startHandler, endHandler) {
 
     send.apply(this, args)
   }
+  highjackCount += 1
 }
 
 function restoreAjax () {
-  xhr.prototype.send = send
+  highjackCount = Math.max(0, highjackCount - 1)
+  if (!highjackCount) {
+    xhr.prototype.send = send
+  }
 }
 
 export default {
-  name: 'q-ajax-bar',
+  name: 'QAjaxBar',
   props: {
     position: {
       type: String,
@@ -101,19 +106,23 @@ export default {
     classes () {
       return [
         this.position,
-        { 'no-trantion': this.animate }
+        this.animate ? '' : 'no-transition'
       ]
     },
     innerClasses () {
       return `bg-${this.color}`
     },
     style () {
+      const reverse = this.$q.i18n.rtl && ['top', 'bottom'].includes(this.position)
+        ? !this.reverse
+        : this.reverse
       let o = translate({
         p: this.progress,
         pos: this.position,
         active: this.active,
         horiz: this.horizontal,
-        reverse: this.reverse
+        reverse,
+        dir: this.$q.i18n.rtl ? -1 : 1
       })
       o[this.sizeProp] = this.size
       return o

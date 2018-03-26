@@ -3,7 +3,17 @@ import { QIcon } from '../icon'
 import AlignMixin from '../../mixins/align'
 
 const sizes = {
-  xs: 8, sm: 10, md: 14, lg: 20, xl: 24
+  xs: 8,
+  sm: 10,
+  md: 14,
+  lg: 20,
+  xl: 24,
+  form: 12.446,
+  'form-label': 17.11,
+  'form-hide-underline': 9.335,
+  'form-label-hide-underline': 14,
+  'form-inverted': 15.555,
+  'form-label-inverted': 20.22
 }
 
 export default {
@@ -15,6 +25,7 @@ export default {
     Ripple
   },
   props: {
+    loading: Boolean,
     disable: Boolean,
     label: [Number, String],
     noCaps: Boolean,
@@ -58,6 +69,9 @@ export default {
     },
     hasRipple () {
       return __THEME__ === 'mat' && !this.noRipple && !this.isDisabled
+    },
+    computedTabIndex () {
+      return this.isDisabled ? -1 : this.tabindex || 0
     },
     classes () {
       const cls = [ this.shape ]
@@ -110,18 +124,9 @@ export default {
     },
     innerClasses () {
       const classes = [ this.alignClass ]
-      if (this.noWrap) {
-        classes.push('no-wrap', 'text-no-wrap')
-      }
+      this.noWrap && classes.push('no-wrap', 'text-no-wrap')
+      this.repeating && classes.push('non-selectable')
       return classes
-    }
-  },
-  methods: {
-    removeFocus (e) {
-      // if is touch enabled and focus was received from pointer
-      if (this.$q.platform.has.touch && e.detail) {
-        this.$el.blur()
-      }
     }
   }
 }

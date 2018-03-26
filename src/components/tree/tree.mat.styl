@@ -73,15 +73,23 @@ body.desktop
     pointer-events none
 .q-tree-icon
   font-size 1.5em
-.q-tree-arrow
-  font-size 1rem
-  width 1rem
-  height 1rem
 .q-tree-img
   height 3em
   &.avatar
     width 2em
     height 2em
+
+.q-tree-arrow
+  font-size 1rem
+  width 1rem
+  height 1rem
+.q-tree-arrow-rotate
+  transform rotate(90deg)
+[dir=rtl]
+  .q-tree-arrow
+    transform rotate(180deg) /* rtl:ignore */
+  .q-tree-arrow-rotate
+    transform rotate(90deg) /* rtl:ignore */
 
 .q-tree
   // Remove connectors before root
@@ -89,3 +97,6 @@ body.desktop
     padding 0
     &:after, > .q-tree-node-header:before
       display none
+  // leave space for root empty node
+  > .q-tree-node-child > .q-tree-node-header
+    padding-left 24px

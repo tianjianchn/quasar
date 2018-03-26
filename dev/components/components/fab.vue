@@ -56,7 +56,6 @@
         There's also the absolute positioned one on bottom
         right of screen which maintains position on Page scroll.
         It has a click/tap event injected on itself when expanded.
-        You can close it by clicking/tapping on the whitey backdrop.
       </p>
 
       <q-fab
@@ -80,6 +79,7 @@
 
       <q-fab
         color="primary"
+        icon="add"
         active-icon="alarm"
         direction="up"
         class="fixed-bottom-right"

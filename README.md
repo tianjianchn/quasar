@@ -5,7 +5,7 @@
 > Build responsive websites, PWAs, hybrid mobile Apps (that look native!) and Electron apps using same code, powered with Vue.
 
 <a href="https://badge.fury.io/js/quasar-framework" target="_blank"><img src="https://badge.fury.io/js/quasar-framework.svg"></a>
-[![Join the chat at https://gitter.im/quasarframework/Lobby](https://badges.gitter.im/quasarframework/Lobby.svg)](https://gitter.im/quasarframework/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://discord.gg/5TDhbDg](https://img.shields.io/badge/chat-on%20discord-7289da.svg)](https://discord.gg/5TDhbDg)
 <a href="http://forum.quasar-framework.org" target="_blank"><img src="https://img.shields.io/badge/community-forum-brightgreen.svg"></a>
 
 Please submit a PR to https://github.com/quasarframework/quasar-awesome with your website/app/Quasar tutorial/video etc. Thank you!
@@ -15,7 +15,7 @@ Quasar Framework is an MIT-licensed open source project. Its ongoing development
 
 ### Proudly sponsored by:
 
-[![Truelogic](http://quasar-framework.org/images/truelogic_logo.png)](http://truelogic.com)
+[![Truelogic](http://quasar-framework.org/images/logo_truelogic.png)](http://truelogic.com)
 
 ## Documentation
 
@@ -68,6 +68,6 @@ Until Quasar reaches a 1.0 release (soon), breaking changes will be released wit
 
 ## License
 
-Copyright (c) 2016-2017 Razvan Stoenescu
+Copyright (c) 2016-present Razvan Stoenescu
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)

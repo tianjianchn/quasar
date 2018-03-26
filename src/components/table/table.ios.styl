@@ -2,11 +2,12 @@
   border-radius $table-border-radius
   box-shadow $table-box-shadow
   position relative
-  background white
+  &.fullscreen
+    background-color inherit
 
 .q-table-top
   min-height 64px
-  padding 4px 24px
+  padding 8px 24px
   &:before
     content ''
     position absolute
@@ -17,16 +18,19 @@
     left 0
     opacity .2
     transition $table-transition
+  .q-table-control
+    min-height 36px
+    padding 8px 0
+    flex-wrap wrap
+.q-table-title
+  font-size 20px
+  letter-spacing 0.005em
+  font-weight 400
 .q-table-separator
   min-width 8px !important
 .q-table-nodata .q-icon
   font-size 200%
   padding-right 15px
-
-.q-table-title
-  font-size 20px
-  letter-spacing .005em
-  font-weight 400
 
 .q-table-progress
   height 0 !important
@@ -43,8 +47,14 @@
 
 .q-table-bottom
   min-height 48px
-  padding 0 14px 0 24px
+  padding 4px 14px 4px 24px
   font-size 12px
+  .q-table-control
+    min-height 24px
+
+.q-table-control
+  display flex
+  align-items center
 
 .q-table-sort-icon
   transition $table-transition
@@ -98,8 +108,14 @@
     font-weight 400
     font-size 13px
 
+  .q-radial-ripple
+    margin-bottom -100%
+
 .q-table-col-auto-width
   width 1px
+
+.q-table-bottom-item
+  margin-right 24px
 
 /*
  * Separators
@@ -127,22 +143,34 @@
 /*
  * dense size
  */
-@media (max-width $breakpoint-sm-max)
+
+table-dense()
   .q-table-top
-    min-height 54px
+    min-height 48px
   .q-table-top, .q-table-bottom
-    padding-left 10px
-    padding-right 10px
+    padding-left 8px
+    padding-right 8px
   .q-table-bottom
-    min-height 47px
+    min-height 42px
 
   .q-table-sort-icon
     font-size 110%
   .q-table
     th, td
-      padding 5px 8px
-    thead tr, tbody td
-      height 42px
+      padding 4px 8px
+    thead tr
+      height 40px
+    tbody td
+      height 28px
+
+  .q-table-bottom-item
+    margin-right 8px
+
+.q-table-dense
+  table-dense()
+
+@media (max-width $breakpoint-sm-max)
+  table-dense()
 
 /*
  * On light background
@@ -186,3 +214,4 @@
       background $table-dark-selected-background
     &:hover
       background $table-dark-hover-background
+

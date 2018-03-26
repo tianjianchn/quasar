@@ -6,7 +6,6 @@ import { QPopover } from '../popover'
 import QColorPicker from './QColorPicker'
 import { QBtn } from '../btn'
 import { QModal } from '../modal'
-import { QFieldReset } from '../field'
 import clone from '../../utils/clone'
 import { getEventKey, stopAndPrevent } from '../../utils/event'
 
@@ -23,7 +22,7 @@ const contentCss = __THEME__ === 'ios'
   }
 
 export default {
-  name: 'q-color',
+  name: 'QColor',
   mixins: [FrameMixin, DisplayModeMixin],
   props: {
     value: {
@@ -33,29 +32,33 @@ export default {
       type: String,
       default: 'primary'
     },
-    defaultSelection: {
+    defaultValue: {
       type: [String, Object],
       default: null
     },
-    type: {
+    formatModel: {
       type: String,
       default: 'auto',
       validator: v => ['auto', 'hex', 'rgb', 'hexa', 'rgba'].includes(v)
     },
     displayValue: String,
     placeholder: String,
-    clearable: Boolean,
     okLabel: String,
-    cancelLabel: String,
-    disable: Boolean,
-    readonly: Boolean
+    cancelLabel: String
+  },
+  watch: {
+    value (v) {
+      if (!this.disable && this.$refs.popup && this.$refs.popup.showing) {
+        this.model = clone(v)
+      }
+    }
   },
   data () {
     let data = this.isPopover ? {} : {
       transition: __THEME__ === 'ios' ? 'q-modal-bottom' : 'q-modal'
     }
     data.focused = false
-    data.model = clone(this.value || this.defaultSelection)
+    data.model = clone(this.value || this.defaultValue)
     return data
   },
   computed: {
@@ -63,15 +66,19 @@ export default {
       if (this.displayValue) {
         return this.displayValue
       }
-      if (!this.value) {
-        return this.placeholder || ''
-      }
 
       if (this.value) {
         return typeof this.value === 'string'
           ? this.value
           : `rgb${this.value.a !== void 0 ? 'a' : ''}(${this.value.r},${this.value.g},${this.value.b}${this.value.a !== void 0 ? `,${this.value.a / 100}` : ''})`
       }
+
+      return ''
+    },
+    modalBtnColor () {
+      return this.$q.theme === 'mat'
+        ? this.color
+        : (this.dark ? 'light' : 'dark')
     }
   },
   methods: {
@@ -80,8 +87,12 @@ export default {
     },
     show () {
       if (!this.disable) {
-        if (!this.focused) {
-          this.__setModel(this.value || this.defaultSelection)
+        const val = this.value || this.defaultValue
+        if (this.focused) {
+          this.model = clone(val)
+        }
+        else {
+          this.__setModel(val)
         }
         return this.$refs.popup.show()
       }
@@ -104,14 +115,18 @@ export default {
       }
     },
     __onFocus () {
-      if (this.focused) {
+      if (this.disable || this.focused) {
         return
       }
-      this.__setModel(this.value || this.defaultSelection)
+      this.__setModel(this.value || this.defaultValue)
       this.focused = true
       this.$emit('focus')
     },
     __onBlur (e) {
+      if (this.$refs.popup && this.$refs.popup.showing) {
+        return
+      }
+
       this.__onHide()
       setTimeout(() => {
         const el = document.activeElement
@@ -120,74 +135,83 @@ export default {
         }
       }, 1)
     },
-    __onHide () {
+    __onHide (forceUpdate) {
       this.focused = false
       this.$emit('blur')
-      if (this.isPopover && !this.$refs.popup.showing) {
-        this.__update(true)
+      if (forceUpdate || (this.isPopover && this.$refs.popup.showing)) {
+        this.__update(forceUpdate)
       }
     },
     __setModel (val, forceUpdate) {
       this.model = clone(val)
       if (forceUpdate || (this.isPopover && this.$refs.popup.showing)) {
-        this.__update()
+        this.__update(forceUpdate)
       }
+    },
+    __hasModelChanged () {
+      return JSON.stringify(this.model) !== JSON.stringify(this.value)
     },
     __update (change) {
       this.$nextTick(() => {
-        this.$emit('input', this.model)
-        this.$nextTick(() => {
-          if (change && JSON.stringify(this.model) !== JSON.stringify(this.value)) {
+        if (this.__hasModelChanged()) {
+          this.$emit('input', this.model)
+          if (change) {
             this.$emit('change', this.model)
           }
-        })
+        }
       })
     },
 
     __getPicker (h, modal) {
       const child = [
-        h(QFieldReset, [
-          h(QColorPicker, {
-            staticClass: `no-border${modal ? ' full-width' : ''}`,
-            props: extend({
-              value: this.model || '#000',
-              disable: this.disable,
-              readonly: this.readonly,
-              type: this.type
-            }, this.$attrs),
-            on: {
-              input: v => this.$nextTick(() => this.__setModel(v))
-            }
-          })
-        ])
+        h(QColorPicker, {
+          staticClass: `no-border${modal ? ' full-width' : ''}`,
+          props: extend({
+            value: this.model || '#000',
+            disable: this.disable,
+            readonly: this.readonly,
+            formatModel: this.formatModel,
+            dark: this.dark,
+            noParentField: true
+          }, this.$attrs),
+          on: {
+            input: v => this.$nextTick(() => this.__setModel(v))
+          }
+        })
       ]
 
       if (modal) {
         child[__THEME__ === 'mat' ? 'push' : 'unshift'](h('div', {
-          staticClass: 'modal-buttons modal-buttons-top row full-width'
+          staticClass: 'modal-buttons modal-buttons-top row full-width',
+          'class': this.dark ? 'bg-black' : null
         }, [
           h('div', { staticClass: 'col' }),
           h(QBtn, {
             props: {
-              color: this.color,
+              color: this.modalBtnColor,
               flat: true,
               label: this.cancelLabel || this.$q.i18n.label.cancel,
-              waitForRipple: true
+              noRipple: true
             },
-            on: { click: this.hide }
+            on: {
+              click: () => {
+                this.__onHide()
+                this.hide()
+              }
+            }
           }),
           this.editable
             ? h(QBtn, {
               props: {
-                color: this.color,
+                color: this.modalBtnColor,
                 flat: true,
                 label: this.okLabel || this.$q.i18n.label.set,
-                waitForRipple: true
+                noRipple: true
               },
               on: {
                 click: () => {
+                  this.__onHide(true)
                   this.hide()
-                  this.__update(true)
                 }
               }
             })
@@ -200,6 +224,7 @@ export default {
   },
   render (h) {
     return h(QInputFrame, {
+      staticClass: 'q-color-input',
       props: {
         prefix: this.prefix,
         suffix: this.suffix,
@@ -209,13 +234,15 @@ export default {
         warning: this.warning,
         disable: this.disable,
         inverted: this.inverted,
+        invertedLight: this.invertedLight,
         dark: this.dark,
         hideUnderline: this.hideUnderline,
         before: this.before,
         after: this.after,
         color: this.color,
+        noParentField: this.noParentField,
 
-        focused: this.focused,
+        focused: this.focused || (this.$refs.popup && this.$refs.popup.showing),
         focusable: true,
         length: this.actualValue.length
       },
@@ -227,25 +254,23 @@ export default {
       }
     }, [
       h('div', {
-        staticClass: 'col row items-center q-input-target',
-        'class': this.alignClass,
-        domProps: {
-          innerHTML: this.actualValue
-        }
-      }),
+        staticClass: 'col q-input-target ellipsis',
+        'class': this.fakeInputClasses
+      }, [
+        this.fakeInputValue
+      ]),
 
       this.isPopover
         ? h(QPopover, {
           ref: 'popup',
           props: {
-            offset: [0, 10],
             disable: this.disable,
             anchorClick: false,
             maxHeight: '100vh'
           },
           on: {
             show: this.__onFocus,
-            hide: this.__onHide
+            hide: val => this.__onHide(true)
           }
         }, this.__getPicker(h))
         : h(QModal, {
@@ -258,21 +283,20 @@ export default {
             transition: this.transition
           },
           on: {
-            show: this.__onFocus,
-            hide: this.__onHide
+            dismiss: this.__onHide
           }
         }, this.__getPicker(h, true)),
 
       this.editable && this.clearable && this.actualValue.length
-        ? h('q-icon', {
+        ? h('QIcon', {
           slot: 'after',
-          props: { name: this.$q.icon.input.clear },
+          props: { name: this.$q.icon.input[`clear${this.isInverted ? 'Inverted' : ''}`] },
           nativeOn: { click: this.clear },
           staticClass: 'q-if-control'
         })
         : null,
 
-      h('q-icon', {
+      h('QIcon', {
         slot: 'after',
         props: { name: this.$q.icon.input.dropdown },
         staticClass: 'q-if-control'

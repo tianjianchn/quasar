@@ -3,9 +3,11 @@ import { QInput } from '../input'
 import { QBtn } from '../btn'
 import { QOptionGroup } from '../option-group'
 import clone from '../../utils/clone'
+import extend from '../../utils/extend'
+import { getEventKey } from '../../utils/event'
 
 export default {
-  name: 'q-dialog',
+  name: 'QDialog',
   props: {
     value: Boolean,
     title: String,
@@ -13,12 +15,14 @@ export default {
     prompt: Object,
     options: Object,
     ok: {
-      type: [String, Boolean],
+      type: [String, Object, Boolean],
       default: true
     },
-    cancel: [String, Boolean],
+    cancel: [String, Object, Boolean],
     stackButtons: Boolean,
     preventClose: Boolean,
+    noBackdropDismiss: Boolean,
+    noEscDismiss: Boolean,
     position: String,
     color: {
       type: String,
@@ -80,8 +84,8 @@ export default {
       props: {
         value: this.value,
         minimized: true,
-        noBackdropDismiss: this.preventClose,
-        noEscDismiss: this.preventClose,
+        noBackdropDismiss: this.noBackdropDismiss || this.preventClose,
+        noEscDismiss: this.noEscDismiss || this.preventClose,
         position: this.position
       },
       on: {
@@ -91,7 +95,7 @@ export default {
         show: () => {
           this.$emit('show')
 
-          if (!this.$q.platform.is.desktop) {
+          if (!this.$q.platform.is.desktop || (!this.prompt && !this.options)) {
             return
           }
 
@@ -142,6 +146,24 @@ export default {
       return this.stackButtons
         ? 'column'
         : 'row'
+    },
+    okProps () {
+      return Object(this.ok) === this.ok
+        ? extend({
+          color: this.color,
+          label: this.$q.i18n.label.ok,
+          noRipple: true
+        }, this.ok)
+        : { color: this.color, flat: true, label: this.okLabel, noRipple: true }
+    },
+    cancelProps () {
+      return Object(this.cancel) === this.cancel
+        ? extend({
+          color: this.color,
+          label: this.$q.i18n.label.cancel,
+          noRipple: true
+        }, this.cancel)
+        : { color: this.color, flat: true, label: this.cancelLabel, noRipple: true }
     }
   },
   methods: {
@@ -169,7 +191,13 @@ export default {
             noPassToggle: true
           },
           on: {
-            change: v => { this.prompt.model = v }
+            input: v => { this.prompt.model = v },
+            keyup: evt => {
+              // if ENTER key
+              if (getEventKey(evt) === 13) {
+                this.__onOk()
+              }
+            }
           }
         })
       ]
@@ -195,13 +223,13 @@ export default {
 
       if (this.cancel) {
         child.push(h(QBtn, {
-          props: { color: this.color, flat: true, label: this.cancelLabel, waitForRipple: true },
+          props: this.cancelProps,
           on: { click: this.__onCancel }
         }))
       }
       if (this.ok) {
         child.push(h(QBtn, {
-          props: { color: this.color, flat: true, label: this.okLabel, waitForRipple: true },
+          props: this.okProps,
           on: { click: this.__onOk }
         }))
       }

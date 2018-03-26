@@ -1,7 +1,6 @@
 import {
   positionValidator,
   offsetValidator,
-  getTransformProperties,
   parsePosition,
   setPosition
 } from '../../utils/popup'
@@ -13,17 +12,15 @@ import ModelToggleMixin from '../../mixins/model-toggle'
 import { listenOpts } from '../../utils/event'
 
 export default {
-  name: 'q-popover',
+  name: 'QPopover',
   mixins: [ModelToggleMixin],
   props: {
     anchor: {
       type: String,
-      default: 'bottom left',
       validator: positionValidator
     },
     self: {
       type: String,
-      default: 'top left',
       validator: positionValidator
     },
     fit: Boolean,
@@ -49,27 +46,25 @@ export default {
     }
   },
   computed: {
-    transformCSS () {
-      return getTransformProperties({selfOrigin: this.selfOrigin})
-    },
     anchorOrigin () {
-      return parsePosition(this.anchor)
+      return parsePosition(this.anchor || `bottom ${this.$q.i18n.rtl ? 'right' : 'left'}`)
     },
     selfOrigin () {
-      return parsePosition(this.self)
+      return parsePosition(this.self || `top ${this.$q.i18n.rtl ? 'right' : 'left'}`)
     }
   },
   render (h) {
     return h('div', {
-      staticClass: 'q-popover animate-scale',
-      style: this.transformCSS,
+      staticClass: 'q-popover scroll',
       on: {
         click (e) { e.stopPropagation() }
       }
-    }, this.$slots.default)
+    }, [
+      this.$slots.default
+    ])
   },
   created () {
-    this.__updatePosition = frameDebounce(() => { this.reposition() })
+    this.__updatePosition = frameDebounce((_, event, animate) => this.reposition(event, animate))
   },
   mounted () {
     this.$nextTick(() => {
@@ -99,7 +94,7 @@ export default {
       this.scrollTarget = getScrollTarget(this.anchorEl)
       this.scrollTarget.addEventListener('scroll', this.__updatePosition, listenOpts.passive)
       window.addEventListener('resize', this.__updatePosition, listenOpts.passive)
-      this.reposition(evt)
+      this.__updatePosition(0, evt, true)
 
       clearTimeout(this.timer)
       this.timer = setTimeout(() => {
@@ -130,27 +125,29 @@ export default {
       document.body.removeChild(this.$el)
       this.hidePromise && this.hidePromiseResolve()
     },
-    reposition (event) {
-      this.$nextTick(() => {
-        if (this.fit) {
-          this.$el.style.minWidth = width(this.anchorEl) + 'px'
-        }
-        const { top } = this.anchorEl.getBoundingClientRect()
-        const { height } = viewport()
-        if (top < 0 || top > height) {
-          return this.hide()
-        }
-        setPosition({
-          event,
-          el: this.$el,
-          offset: this.offset,
-          anchorEl: this.anchorEl,
-          anchorOrigin: this.anchorOrigin,
-          selfOrigin: this.selfOrigin,
-          maxHeight: this.maxHeight,
-          anchorClick: this.anchorClick,
-          touchPosition: this.touchPosition
-        })
+    reposition (event, animate) {
+      if (this.fit) {
+        this.$el.style.minWidth = width(this.anchorEl) + 'px'
+      }
+      const
+        { top } = this.anchorEl.getBoundingClientRect(),
+        { height } = viewport()
+
+      if (top < 0 || top > height) {
+        return this.hide()
+      }
+
+      setPosition({
+        event,
+        animate,
+        el: this.$el,
+        offset: this.offset,
+        anchorEl: this.anchorEl,
+        anchorOrigin: this.anchorOrigin,
+        selfOrigin: this.selfOrigin,
+        maxHeight: this.maxHeight,
+        anchorClick: this.anchorClick,
+        touchPosition: this.touchPosition
       })
     }
   }

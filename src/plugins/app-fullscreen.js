@@ -30,8 +30,9 @@ export default {
     if (this.__installed) { return }
     this.__installed = true
 
+    $q.fullscreen = this
+
     if (isSSR) {
-      $q.fullscreen = this
       return
     }
 
@@ -56,21 +57,20 @@ export default {
       exit
     }
 
-    this.isActive = (document.fullscreenElement ||
+    this.isActive = !!(document.fullscreenElement ||
       document.mozFullScreenElement ||
       document.webkitFullscreenElement ||
-      document.msFullscreenElement) !== undefined
+      document.msFullscreenElement)
 
     ;[
       'onfullscreenchange',
-      'MSFullscreenChange', 'onmozfullscreenchange', 'onwebkitfullscreenchange'
+      'onmsfullscreenchange', 'onmozfullscreenchange', 'onwebkitfullscreenchange'
     ].forEach(evt => {
       document[evt] = () => {
         this.isActive = !this.isActive
       }
     })
 
-    Vue.util.defineReactive({}, 'isActive', this)
-    $q.fullscreen = this
+    Vue.util.defineReactive(this, 'isActive', this.isActive)
   }
 }

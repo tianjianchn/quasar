@@ -4,11 +4,23 @@ import QBtnGroup from './QBtnGroup'
 import { QPopover } from '../popover'
 
 export default {
-  name: 'q-btn-dropdown',
+  name: 'QBtnDropdown',
   mixins: [BtnMixin],
   props: {
     value: Boolean,
-    split: Boolean
+    split: Boolean,
+    contentClass: [Array, String, Object],
+    contentStyle: [Array, String, Object]
+  },
+  data () {
+    return {
+      showing: this.value
+    }
+  },
+  watch: {
+    value (val) {
+      this.$refs.popover[val ? 'show' : 'hide']()
+    }
   },
   render (h) {
     const
@@ -17,19 +29,22 @@ export default {
         {
           ref: 'popover',
           props: {
-            value: this.value,
             disable: this.disable,
             fit: true,
             anchorClick: !this.split,
             anchor: 'bottom right',
             self: 'top right'
           },
+          'class': this.contentClass,
+          style: this.contentStyle,
           on: {
             show: e => {
+              this.showing = true
               this.$emit('show', e)
               this.$emit('input', true)
             },
             hide: e => {
+              this.showing = false
               this.$emit('hide', e)
               this.$emit('input', false)
             }
@@ -38,7 +53,7 @@ export default {
         [ this.$slots.default ]
       ),
       Icon = h(
-        'q-icon',
+        'QIcon',
         {
           props: {
             name: this.$q.icon.input.dropdown
@@ -53,6 +68,7 @@ export default {
       ),
       Btn = h(QBtn, {
         props: {
+          loading: this.loading,
           disable: this.disable,
           noCaps: this.noCaps,
           noWrap: this.noWrap,
@@ -95,7 +111,7 @@ export default {
           rounded: this.rounded,
           push: this.push
         },
-        staticClass: 'q-btn-dropdown q-btn-dropdown-split no-wrap'
+        staticClass: 'q-btn-dropdown q-btn-dropdown-split no-wrap q-btn-item'
       },
       [
         Btn,
@@ -104,6 +120,7 @@ export default {
           {
             props: {
               disable: this.disable,
+              outline: this.outline,
               flat: this.flat,
               rounded: this.rounded,
               push: this.push,
@@ -134,5 +151,12 @@ export default {
     hide () {
       return this.$refs.popover.hide()
     }
+  },
+  mounted () {
+    this.$nextTick(() => {
+      if (this.value) {
+        this.$refs.popover.show()
+      }
+    })
   }
 }
