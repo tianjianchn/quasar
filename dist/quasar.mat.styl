@@ -1,5 +1,5 @@
 /*!
- * Quasar Framework v0.15.0-beta.11
+ * Quasar Framework v0.15.9
  * (c) 2016-present Razvan Stoenescu
  * Released under the MIT License.
  */
@@ -52,7 +52,7 @@ $flex-gutter = {
   lg: $flex-gutter-lg,
   xl: $flex-gutter-xl
 }
-$sizes = {
+$sizes ?= {
   xs: 0,
   sm: $breakpoint-xs + 1, 
   md: $breakpoint-sm + 1, 
@@ -69,14 +69,16 @@ $breakpoint-lg-min = $sizes[lg]
 $breakpoint-lg-max = $breakpoint-lg
 $breakpoint-xl-min = $sizes[xl]
 $breakpoint-xl-max = 9999px
-$backdrop-opacity     ?= .3
-$backdrop-background  ?= rgba(0, 0, 0, $backdrop-opacity)
+$backdrop-opacity    ?= .3
+$backdrop-background ?= rgba(0, 0, 0, $backdrop-opacity)
+$router-link-active       ?= router-link-active
+$router-link-exact-active ?= router-link-exact-active
 $headings = {
   display-4: {
     size: 112px,
     weight: 300,
     opacity: .54,
-    line-height: 1,
+    line-height: $min-line-height,
     letter-spacing: -.04em
   },
   display-3: {
@@ -111,7 +113,7 @@ $headings = {
     size: 20px,
     weight: 500,
     opacity: .87
-    line-height: 1,
+    line-height: $min-line-height,
     letter-spacing: .02em
   },
   subheading: {
@@ -158,12 +160,12 @@ $positive  ?= #21BA45
 $negative  ?= #DB2828
 $info      ?= #31CCEC
 $warning   ?= #F2C037
-$white     ?= #fff
 $light     ?= #bdbdbd
-$dark      ?= #757575
+$dark      ?= #424242
 $faded     ?= #777
-$link-color          ?= lighten($primary, 25%)
-$link-color-active   ?= $primary
+$form-light    ?= #a7a7a7
+$form-dark     ?= #979797
+$form-autofill ?= #ff9800
 $dimmed-background       ?= rgba(0, 0, 0, .4)
 $light-dimmed-background ?= rgba(255, 255, 255, .6)
 $red = #f44336
@@ -492,17 +494,17 @@ max(value1, value2)
   else
     value1
 $ios-statusbar-height ?= 20px
-$z-fab            ?= 990
-$z-side           ?= 1000
-$z-marginals      ?= 2000
-$z-fixed-drawer   ?= 3000
-$z-modal          ?= 5000
-$z-fullscreen     ?= 6000
-$z-top            ?= 7000
-$z-popover        ?= 8000
-$z-tooltip        ?= 9000
-$z-notify         ?= 9500
-$z-max            ?= 9998
+$z-fab          ?= 990
+$z-side         ?= 1000
+$z-marginals    ?= 2000
+$z-fixed-drawer ?= 3000
+$z-modal        ?= 5000
+$z-fullscreen   ?= 6000
+$z-top          ?= 7000
+$z-popover      ?= 8000
+$z-tooltip      ?= 9000
+$z-notify       ?= 9500
+$z-max          ?= 9998
 $shadow-color ?= black
 $shadow-transition ?= box-shadow .28s cubic-bezier(.4, 0, .2, 1)
 $inset-shadow = 0 7px 9px -7px alpha($shadow-color, .7) inset
@@ -559,24 +561,18 @@ $shadow-up-21 = 0 -10px 13px -6px $elevation-umbra, 0 -21px 33px 3px $elevation-
 $shadow-up-22 = 0 -10px 14px -6px $elevation-umbra, 0 -22px 35px 3px $elevation-penumbra, 0 -8px 42px 7px $elevation-ambient
 $shadow-up-23 = 0 -11px 14px -7px $elevation-umbra, 0 -23px 36px 3px $elevation-penumbra, 0 -9px 44px 8px $elevation-ambient
 $shadow-up-24 = 0 -11px 15px -7px $elevation-umbra, 0 -24px 38px 3px $elevation-penumbra, 0 -9px 46px 8px $elevation-ambient
-$generic-border-radius       ?= 2px
-$typography-font-family      ?= 'Roboto', '-apple-system', 'Helvetica Neue', Helvetica, Arial, sans-serif
+$generic-border-radius      ?= 2px
+$typography-font-family     ?= 'Roboto', '-apple-system', 'Helvetica Neue', Helvetica, Arial, sans-serif
+$min-line-height            ?= 1.12
 $action-sheet-background       ?= white
 $action-sheet-hover-background ?= #d0d0d0
 $alert-padding       ?= 12px
 $alert-border-radius ?= $generic-border-radius
 $alert-min-width     ?= 200px
-$breadcrumb-radius    ?= $generic-border-radius
-$breadcrumb-height    ?= 34px
-$breadcrumb-separator ?= 15px
-$breadcrumb-primary   ?= $primary
-$breadcrumb-secondary ?= lighten($breadcrumb-primary, 10%)
-$breadcrumb-hover     ?= $tertiary
-$breadcrumb-active    ?= darken($breadcrumb-hover, 15%)
 $button-border-radius         ?= $generic-border-radius
 $button-padding               ?= 4px 16px
 $button-dense-padding         ?= 4px
-$button-transition            ?= .12s ease-in
+$button-transition            ?= .3s cubic-bezier(.25, .8, .5, 1)
 $button-font-size             ?= 14px
 $button-font-weight           ?= 500
 $button-shadow                ?= $shadow-2
@@ -607,6 +603,7 @@ $chip-padding-horizontal ?= 0
 $chip-padding-vertical   ?= 12px
 $chip-height             ?= 32px
 $chip-icon-size          ?= 24px
+$chip-small-icon-size    ?= 16px
 $chip-small-height       ?= 26px
 $chip-color              ?= black
 $chip-background         ?= $grey-3
@@ -620,6 +617,14 @@ $item-side-color                   ?= #737373
 $item-label-color                  ?= $grey-7
 $item-content-secondary-text-color ?= $grey-7
 $item-separator-color              ?= rgb(224, 224, 224)
+$item-base-dark-color                   ?= $grey-7
+$item-highlight-dark-color              ?= alpha($item-base-dark-color, 30%)
+$item-stripe-dark-color                 ?= alpha($item-base-dark-color, 45%)
+$item-active-dark-color                 ?= alpha($item-base-dark-color, 20%)
+$item-side-dark-color                   ?= #bbb
+$item-label-dark-color                  ?= rgba(255,255,255,0.64)
+$item-content-secondary-text-dark-color ?= $grey-5
+$item-separator-dark-color              ?= rgba(255,255,255,0.32)
 $item-min-height                   ?= 40px
 $item-padding                      ?= 16px
 $item-gutter                       ?= 10px
@@ -638,8 +643,8 @@ $datetime-input-min-width ?= 70px
 $dot-color             ?= $red
 $dot-opacity           ?= .8
 $dot-size              ?= 10px
-$dot-position-top      ?= 10px
-$dot-position-right    ?= 10px
+$dot-position-top      ?= 8px
+$dot-position-right    ?= 4px
 $editor-border-color            ?= #ccc
 $editor-border                  ?= 1px solid $editor-border-color
 $editor-content-padding         ?= 10px
@@ -649,8 +654,8 @@ $editor-hr-color                ?= $editor-border-color
 $editor-button-gutter           ?= 5px
 $fab-margin    ?= 5px
 $field-icon-size        ?= 28px
-$field-label-color      ?= $dark
-$field-dark-label-color ?= $light
+$field-label-color      ?= $form-dark
+$field-dark-label-color ?= $form-light
 $table-transition               ?= .3s cubic-bezier(.25, .8, .5, 1)
 $table-border-radius            ?= $generic-border-radius
 $table-box-shadow               ?= $shadow-2
@@ -660,19 +665,17 @@ $table-header-color             ?= rgba(0, 0, 0, .54)
 $table-hover-background         ?= rgba(0, 0, 0, .03)
 $table-selected-background      ?= rgba(0, 0, 0, .06)
 $table-dark-border-color        ?= rgba(255, 255, 255, .12)
-$table-dark-color               ?= white
+$table-dark-color               ?= $grey-3
 $table-dark-header-color        ?= rgba(255, 255, 255, .64)
 $table-dark-hover-background    ?= rgba(255, 255, 255, .1)
 $table-dark-selected-background ?= rgba(255, 255, 255, .2)
 $input-frame-transition ?= all .45s cubic-bezier(.23, 1, .32, 1)
-$toolbar-color              ?= white
-$toolbar-background         ?= $primary
-$toolbar-min-height         ?= 50px
-$toolbar-padding            ?= 4px 12px
-$toolbar-title-font-size    ?= 18px
-$toolbar-subtitle-font-size ?= 12px
-$toolbar-title-font-weight  ?= 500
-$toolbar-title-padding      ?= 0 12px
+$toolbar-min-height          ?= 50px
+$toolbar-padding             ?= 4px 12px
+$toolbar-title-font-size     ?= 18px
+$toolbar-subtitle-font-size  ?= 12px
+$toolbar-title-font-weight   ?= 500
+$toolbar-title-padding       ?= 0 12px
 $layout-aside-background   ?= white
 $layout-aside-left-width   ?= 300px
 $layout-aside-right-width  ?= 300px
@@ -699,30 +702,23 @@ $popover-box-shadow   ?= $shadow-24
 $popover-max-width    ?= 100vw
 $progress-track-height         ?= 5px
 $progress-track-color          ?= currentColor
-$progress-color                ?= $primary
 $progress-track-opacity        ?= .2
 $progress-transition           ?= width .3s linear
-$pull-to-refresh-color              ?= $primary
 $pull-to-refresh-font-size          ?= 1rem
 $pull-to-refresh-icon-size          ?= 2rem
 $rating-grade-color     ?= $yellow
 $rating-shadow          ?= 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .24)
-$stepper-color                 ?= $primary
 $stepper-divider-color         ?= rgba(0, 0, 0, .12)
 $stepper-label-color           ?= rgba(0, 0, 0, .56)
 $stepper-label-inactive-color  ?= rgba(0, 0, 0, .42)
 $stepper-hover-background      ?= rgba(0, 0, 0, .05)
 $stepper-pane-padding          ?= 16px
 $stepper-border-radius         ?= $generic-border-radius
-$tabs-padding                  ?= 14px 12px
-$tabs-padding-with-icon        ?= 8px 10px
+$tabs-padding                  ?= 8px
 $tabs-big-screen-horiz-padding ?= 25px
 $tabs-min-height               ?= 48px
-$tabs-min-height-with-icon     ?= 72px
 $tabs-big-screen-side-padding  ?= 12px
 $tabs-pane-padding             ?= 12px
-$tabs-color                    ?= $toolbar-color
-$tabs-background               ?= $toolbar-background
 $tabs-pane-border              ?= 1px solid rgba(0, 0, 0, .1)
 $tabs-unselected-opacity       ?= .7
 $tabs-font-size                ?= .95rem
@@ -809,6 +805,7 @@ input[type='search']::-webkit-search-decoration
   min-height 56px
   padding 0 16px
   color $faded
+  color var(--q-color-faded)
 .q-actionsheet-body
   max-height 500px
 .q-actionsheet-grid
@@ -829,18 +826,19 @@ input[type='search']::-webkit-search-decoration
     height 48px
   span
     color $faded
+    color var(--q-color-faded)
 .q-loading-bar
   position fixed
   z-index $z-max
-  transition all .2s cubic-bezier(0, 0, .2, 1)
+  transition all .7s cubic-bezier(0, 0, .2, 1)
   &.top
-    left 0
-    right 0
+    left 0 /* rtl:ignore */
+    right 0 /* rtl:ignore */
     top 0
     width 100%
   &.bottom
-    left 0
-    right 0
+    left 0 /* rtl:ignore */
+    right 0 /* rtl:ignore */
     bottom 0
     width 100%
   &.right
@@ -866,6 +864,7 @@ input[type='search']::-webkit-search-decoration
 .q-alert-side, .q-alert-content
   padding 12px
   font-size 16px
+  word-break break-word
 .q-alert-side
   font-size 24px
   background rgba(0, 0, 0, .1)
@@ -878,8 +877,11 @@ input[type='search']::-webkit-search-decoration
     font-size 150%
 .q-breadcrumbs-el
   color inherit !important
+  text-decoration none
 .q-breadcrumbs-last a
   pointer-events none
+[dir=rtl] .q-breadcrumbs-separator .q-icon
+  transform scaleX(-1) /* rtl:ignore */
 .q-btn
   outline 0
   border 0
@@ -888,23 +890,23 @@ input[type='search']::-webkit-search-decoration
   -webkit-appearance button
   padding $button-padding
   font-size $button-font-size
-  font-weight $button-font-weight
   text-decoration none
   color inherit
-  min-height 2.572em
   background transparent
-  box-shadow $button-shadow
   transition $button-transition
+  min-height 2.572em
+  box-shadow $button-shadow
+  font-weight $button-font-weight
   text-transform uppercase
-  .q-icon
+  .q-icon, .q-spinner
     font-size 1.4em
-  .q-spinner
-    height 1.39em
-    width 1.39em
+  
+  .q-btn-inner:before
+    content ''
   &.disabled
     opacity .7 !important
   &:not(.disabled):not(.q-btn-flat):not(.q-btn-outline):not(.q-btn-push)
-    &:after
+    &:before
       
       
       
@@ -918,9 +920,7 @@ input[type='search']::-webkit-search-decoration
       border-radius inherit
       z-index -1
       transition $button-transition
-    &:active:after
-      
-      
+    &:active:before
       box-shadow $shadow-8
 .q-btn-progress
   transition all .3s
@@ -944,6 +944,9 @@ input[type='search']::-webkit-search-decoration
     box-shadow none
     transform translateY(3px)
     border-bottom-color transparent
+  .q-focus-helper, .q-ripple-container
+    height auto
+    bottom -3px
 .q-btn-rounded
   border-radius $button-rounded-border-radius
 .q-btn-round
@@ -981,19 +984,28 @@ input[type='search']::-webkit-search-decoration
   border-radius $button-border-radius
   box-shadow $button-shadow
   vertical-align middle
+  > .q-btn-item
+    box-shadow none
   > .q-btn-group
-    box-shadow none
-  .q-btn
-    box-shadow none
-  .q-btn:not(:last-child)
+    > .q-btn:first-child
+      border-top-left-radius inherit
+      border-bottom-left-radius inherit
+    > .q-btn:last-child
+      border-top-right-radius inherit
+      border-bottom-right-radius inherit
+  > .q-btn-group:not(:first-child) > .q-btn:first-child
+    border-left 0
+  > .q-btn-group:not(:last-child) > .q-btn:last-child
+    border-right 0
+  > .q-btn-item:not(:last-child)
     border-top-right-radius 0
     border-bottom-right-radius 0
-  .q-btn + .q-btn
+  > .q-btn-item + .q-btn-item
     border-top-left-radius 0
     border-bottom-left-radius 0
 .q-btn-group-push
   border-radius $button-push-border-radius
-  .q-btn-push
+  > .q-btn-push
     .q-btn-inner
       transition $button-transition
     &:active:not(.disabled)
@@ -1006,11 +1018,9 @@ input[type='search']::-webkit-search-decoration
 .q-btn-group-flat, .q-btn-group-outline
   box-shadow none
 .q-btn-group-outline
-  .q-btn + .q-btn
+  > .q-btn-item + .q-btn-item
     border-left 0
-  .q-btn:not(:first-child)
-    border-left 0
-  .q-btn:not(:last-child)
+  > .q-btn-item:not(:last-child)
     border-right 0
 .q-card
   border-radius $generic-border-radius
@@ -1164,7 +1174,7 @@ input[type='search']::-webkit-search-decoration
 .q-message-text
   background currentColor
   padding $chat-message-text-padding
-  line-height 1.2
+  line-height max(1.2, $min-line-height)
   word-break break-word
   position relative
   transform translate3d(0, 0, 0)
@@ -1200,99 +1210,124 @@ $checkbox-size = 21px
   .q-icon
     font-size $chip-icon-size
     line-height 1
+.q-chip-main
+  line-height initial
+.q-chip-side
+  border-radius 50%
+  height $chip-height
+  width $chip-height
+  min-width $chip-height
+  overflow hidden
+  img
+    width 100%
+    height 100%
+.q-chip-left
+  margin-left -12px
+  margin-right 8px
+.q-chip-right
+  margin-left 2px
+  margin-right -12px
+.q-chip-square
+  border-radius 2px
+.q-chip-floating
+  position absolute
+  top -.3em
+  right -.3em
+  pointer-events none
+.q-chip-tag
+  position relative
+  padding-left 1.7rem
+  &:after
+    content ''
+    position absolute
+    top 50%
+    left .5rem
+    margin-top -.25rem
+    background white
+    width .5rem
+    height .5rem
+    box-shadow 0 -1px 1px 0 rgba(0, 0, 0, .3)
+    border-radius 50%
+.q-chip-pointing
+  position relative
+  &:before
+    content ''
+    z-index -1
+    background inherit
+    width 16px
+    height 16px
+    position absolute
+.q-chip-pointing-up
+  margin-top .8rem
+  &:before
+    top 0
+    left 50%
+    transform translateX(-50%) translateY(-22%) rotate(45deg)
+.q-chip-pointing-down
+  margin-bottom .8rem
+  &:before
+    right auto
+    top 100%
+    left 50%
+    transform translateX(-50%) translateY(-78%) rotate(45deg)
+.q-chip-pointing-right
+  margin-right .8rem
+  &:before
+    top 50%
+    right 2px
+    bottom auto
+    left auto
+    transform translateX(33%) translateY(-50%) rotate(45deg)
+.q-chip-pointing-left
+  margin-left .8rem
+  &:before
+    top 50%
+    left 2px
+    bottom auto
+    right auto
+    transform translateX(-33%) translateY(-50%) rotate(45deg)
+.q-chip-detail
+  background rgba(0, 0, 0, .1)
+  opacity .8
+  padding 0 5px
+  border-radius inherit
+  border-top-right-radius 0
+  border-bottom-right-radius 0
+.q-chip-small
+  min-height $chip-small-height
   .q-chip-main
+    padding 4px 0
     line-height initial
   .q-chip-side
-    border-radius 50%
-    height $chip-height
-    width $chip-height
-    min-width $chip-height
-    overflow hidden
-    img
-      width 100%
-      height 100%
-    &.chip-left
-      margin-left -12px
-      margin-right 8px
-    &.chip-right
-      margin-left 2px
-      margin-right -12px
-  &.square
-    border-radius 2px
-  &.floating
-    position absolute
-    top -.7rem
-    left 100%
-    margin 0 0 0 -1.5rem !important
-    pointer-events none
-  &.tag
-    position relative
-    padding-left 1.7rem
-    &:after
-      content ''
-      position absolute
-      top 50%
-      left .5rem
-      margin-top -.25rem
-      background white
-      width .5rem
-      height .5rem
-      box-shadow 0 -1px 1px 0 rgba(0, 0, 0, .3)
-      border-radius 50%
-  &.pointing
-    position relative
-    &:before
-      content ''
-      z-index -1
-      background inherit
-      width 16px
-      height 16px
-      position absolute
-  &.pointing-up
-    margin-top .8rem
-    &:before
-      top 0
-      left 50%
-      transform translateX(-50%) translateY(-22%) rotate(45deg)
-  &.pointing-down
-    margin-bottom .8rem
-    &:before
-      right auto
-      top 100%
-      left 50%
-      transform translateX(-50%) translateY(-78%) rotate(45deg)
-  &.pointing-right
-    margin-right .8rem
-    &:before
-      top 50%
-      right 2px
-      bottom auto
-      left auto
-      transform translateX(33%) translateY(-50%) rotate(45deg)
-  &.pointing-left
-    margin-left .8rem
-    &:before
-      top 50%
-      left 2px
-      bottom auto
-      right auto
-      transform translateX(-33%) translateY(-50%) rotate(45deg)
-  .chip-detail
-    background rgba(0, 0, 0, .1)
-    opacity .8
-    padding 0 5px
-    border-radius inherit
-    border-top-right-radius 0
-    border-bottom-right-radius 0
-  &.small
-    min-height $chip-small-height
-    .q-chip-main
-      padding 4px 0
-      line-height initial
-    .q-chip-side
-      height $chip-small-height
-      width $chip-small-height
-      min-width $chip-small-height
+    height $chip-small-height
+    width $chip-small-height
+    min-width $chip-small-height
+  .q-chip-icon
+    font-size $chip-small-icon-size
+.q-chip-dense
+  min-height 1px
+  padding 0 3px
+  font-size 12px
+  &.q-chip-tag
+    padding-left 1.3rem
+  &.q-chip-pointing:before
+    width 9px
+    height 9px
+  .q-chip-main
+    padding 1px
+  .q-chip-side
+    height 18px
+    width 18px
+    min-width 16px
+    font-size 14px
+  .q-chip-left
+    margin-left -3px
+    margin-right 2px
+  .q-chip-right
+    margin-left 2px
+    margin-right -2px
+  .q-icon
+    font-size 16px
 .q-chips-input input
   min-width 70px
 .q-collapsible-sub-item
@@ -1302,7 +1337,7 @@ $checkbox-size = 21px
     padding-right 0
   .q-card
     margin-bottom 0
-.q-collapsible.router-link-active > .q-item
+.q-collapsible.{$router-link-active} > .q-item
   background $collapsible-active-color
 .q-collapsible
   transition padding .5s
@@ -1321,11 +1356,18 @@ $checkbox-size = 21px
     padding-top 0
   &:last-child
     padding-bottom 0
+.q-collapsible-cursor-pointer > .q-collapsible-inner > .q-item
+  cursor pointer
+.q-collapsible-toggle-icon
+  border-radius 50%
+  width 1em
+  text-align center
 .q-color
   max-width 100vw
   border 1px solid $grey-4
   display inline-block
   width 240px
+  background white
 .q-color-saturation
   width 100%
   height 123px
@@ -1340,22 +1382,14 @@ $checkbox-size = 21px
   box-shadow 0 0 0 1.5px white, inset 0 0 1px 1px rgba(0, 0, 0, .3), 0 0 1px 2px rgba(0, 0, 0, .4)
   border-radius 50%
   transform translate(-5px, -5px)
-.q-color-swatch:after, .q-color-alpha .q-slider-track
+.q-color-swatch, .q-color-alpha .q-slider-track
   background-image url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAH0lEQVQoU2NkYGAwZkAFZ5G5jPRRgOYEVDeB3EBjBQBOZwTVugIGyAAAAABJRU5ErkJggg==') !important
 .q-color-swatch
   position relative
   width 32px
   height 32px
   border-radius 50%
-  &:after
-    content ''
-    position absolute
-    left 0
-    right 0
-    top 0
-    bottom 0
-    border-radius $generic-border-radius
-    z-index -1
+  background white
 .q-color-hue .q-slider-track
   border-radius 2px
   background linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%) 
@@ -1388,25 +1422,40 @@ $checkbox-size = 21px
     display none
 .q-color-inputs
   font-size 11px
+  color $grey-7
   input
     border 1px solid $grey-4
     outline 0
 .q-color-padding
   padding 0 2px
 .q-color-label
-  color $grey-7
   padding-top 4px
+.q-color-dark
+  background black
+  border 1px solid $grey-9
+  input
+    background black
+    color $light
+    color var(--q-color-light)
+    border 1px solid $dark
+    border 1px solid var(--q-color-dark)
+  .q-color-inputs
+    color $light
+    color var(--q-color-light)
+  .q-color-swatch
+    border 1px solid $dark
+    border 1px solid var(--q-color-dark)
 .q-datetime-input
   min-width $datetime-input-min-width
 .q-datetime-controls
   padding 0 10px 8px
 .q-datetime
-  font-size 1rem
+  font-size 12px
   text-align center
   user-select none
   line-height initial
-.q-datetime-dark
-  color black
+  .modal-buttons
+    padding-top 8px
 .q-datetime-header
   background currentColor
   > div
@@ -1432,16 +1481,20 @@ div + .q-datetime-time
     opacity 1
 .q-datetime-clockstring
   font-size 2.7rem
+  direction: ltr /* rtl:ignore */
 .q-datetime-selector
   height 310px
   overflow auto
 .q-datetime-view-day
   width 250px
-  height 300px
+  height 285px
+  color black
+.q-datetime-view-year, .q-datetime-view-month
+  > .q-btn:not(.active)
+    color black
+.q-datetime-month-stamp
+  font-size 16px
 .q-datetime-weekdays
-  color rgba(0, 0, 0, .87)
-  font-size .75rem
-  margin-top 10px
   margin-bottom 5px
   div
     opacity .6
@@ -1454,27 +1507,24 @@ div + .q-datetime-time
     min-height 0
     background transparent
 .q-datetime-days div
-  font-size 12px
-  line-height 35px
-  width 35px
-  height 35px
+  margin 1px
+  line-height 33px
+  width 33px
+  height 33px
   border-radius 50%
-  &:not(.q-datetime-day-active)
-    color black
   &.q-datetime-day-active
     background currentColor
     > span
       color white
+      font-weight bold
   &.q-datetime-day-today
     color currentColor
     font-weight bold
-    font-size 105%
+    font-size 14px
   &:not(.q-datetime-fillerday):not(.disabled):not(.q-datetime-day-active):hover
     background $grey-4
 .q-datetime-btn
   font-weight normal
-  &:not(.active)
-    color black !important
   &.active
     font-size 1.5rem
     padding-top 1rem
@@ -1522,8 +1572,28 @@ div + .q-datetime-time
     min-height 0
     transform translate(-50%, -50%)
     background currentColor
+.q-datetime-arrow
+  color $grey-7
+.q-datetime-dark
+  background $dark
+  background var(--q-color-dark)
+  .q-datetime-arrow
+    color $light
+    color var(--q-color-light)
+  .q-datetime-header, .q-datetime-clock
+    background $grey-8
+  .q-datetime-view-day
+    color white
+  .q-datetime-view-year, .q-datetime-view-month
+    > .q-btn:not(.active)
+      color white
+  .q-datetime-days div
+    &.q-datetime-day-active > span, &:not(.q-datetime-fillerday):not(.disabled):not(.q-datetime-day-active):hover
+      color black
 body.desktop .q-datetime-clock-position:not(.active):hover
   background $grey-2 !important
+body.desktop .q-datetime-dark .q-datetime-clock-position:not(.active):hover
+  color black
 .q-datetime-clock-position
   position absolute
   min-height 32px
@@ -1533,10 +1603,12 @@ body.desktop .q-datetime-clock-position:not(.active):hover
   line-height 32px
   margin 0
   padding 0
-  transform translate(-50%, -50%)
+  transform translate(-50%, -50%) /* rtl:ignore */
   border-radius 50%
   &:not(.active)
     color black
+    .q-datetime-dark &
+      color white
   &.active
     background currentColor
     > span
@@ -1545,12 +1617,12 @@ for $pos in 0..12
   $degree = (270 + 30 * $pos)
   .q-datetime-clock-pos-{$pos}
     top round(((1 + sin($degree * 1deg)) * 100%) / 2, 2)
-    left round(((1 + cos($degree * 1deg)) * 100%) / 2, 2)
+    left round(((1 + cos($degree * 1deg)) * 100%) / 2, 2) /* rtl:ignore */
 for $pos in 0..23
   $degree = (270 + 15 * $pos)
   .q-datetime-clock-pos-{$pos}.fmt24
     top round(((1 + sin($degree * 1deg)) * 100%) / 2, 2)
-    left round(((1 + cos($degree * 1deg)) * 100%) / 2, 2)
+    left round(((1 + cos($degree * 1deg)) * 100%) / 2, 2) /* rtl:ignore */
 .q-datetime-range
   &.row
     .q-datetime-range-left
@@ -1570,10 +1642,14 @@ for $pos in 0..23
       margin-top 1.3rem
   .q-datetime
     width 290px
-    &:not(.no-border) .q-datetime-content
-      border-width 0 1px 1px 1px
-      border-style solid
-      border-color $grey-4
+    &:not(.no-border)
+      &:not(.q-datetime-dark) .q-datetime-content
+        border-width 0 1px 1px 1px
+        border-style solid
+        border-color $grey-4
+      &.q-datetime-dark
+        border 1px solid $dark
+        border 1px solid var(--q-color-dark)
 @media (min-width $breakpoint-md-min)
   .q-datetime-datestring
     padding 10px 0
@@ -1593,10 +1669,14 @@ for $pos in 0..23
     width 290px
   .q-datetime
     width 480px
-    &:not(.no-border) .q-datetime-content
-      border-width 1px 1px 1px 0
-      border-style solid
-      border-color $grey-4
+    &:not(.no-border)
+      &:not(.q-datetime-dark) .q-datetime-content
+        border-width 1px 1px 1px 0
+        border-style solid
+        border-color $grey-4
+      &.q-datetime-dark
+        border 1px solid $dark
+        border 1px solid var(--q-color-dark)
 .q-dot
   position absolute
   top $dot-position-top
@@ -1719,7 +1799,7 @@ for $pos in 0..23
 .q-field-bottom
   font-size 12px
   padding-top 8px
-  color rgba(0, 0, 0, .46)
+  color $form-dark
 .q-field-no-input
   margin-top 8px
   border-top 1px solid rgba(0, 0, 0, .12)
@@ -1728,19 +1808,23 @@ for $pos in 0..23
   padding-left 8px
 .q-field-dark
   .q-field-label, .q-field-icon, .q-field-counter, .q-field-bottom
-    color $field-dark-label-color
+    color $form-light
   .q-field-no-input
     border-top 1px solid $field-label-color
 .q-field-with-error
   .q-field-icon, .q-field-label, .q-field-bottom
     color $negative
+    color var(--q-color-negative)
   .q-field-no-input
     border-top 1px solid $negative
+    border-top 1px solid var(--q-color-negative)
 .q-field-with-warning
   .q-field-icon, .q-field-label, .q-field-bottom
     color $warning
+    color var(--q-color-warning)
   .q-field-no-input
     border-top 1px solid $warning
+    border-top 1px solid var(--q-color-warning)
 qfield-vertical()
   .q-field-label + .q-field-content
     padding-top 8px
@@ -1787,10 +1871,8 @@ qfield-horizontal()
   transition $input-frame-transition
 .q-if
   min-height 32px
-  color $primary
   outline 0
-  &:not(.q-if-hide-underline)
-    padding-bottom 8px
+  padding-bottom 8px
   &:not(.q-if-hide-underline):not(.q-if-inverted)
     &:before, &:after
       content ''
@@ -1802,28 +1884,34 @@ qfield-horizontal()
     background currentColor
   &:before
     height 1px
-    color rgba(0, 0, 0, .12)
+    color $light
+    color var(--q-color-light)
     transform scaleY(1)
   &:after
     width 0
     height 2px
     color currentColor
   &:hover:before
-    color rgba(0, 0, 0, .36)
+    color black
   .group
     margin -5px
+    &:not(:first-child)
+      margin-top 0
+.q-if-hide-underline:not(.q-if-inverted)
+  min-height 24px
+  padding-bottom 0
 .q-if-focusable
   outline 0
   cursor pointer
 .q-if-inner
   min-height 24px !important
+  align-items center
 .q-if-has-label
   min-height 41px
   .q-if-inner
-    min-height 34px !important
-    padding-top 15px
+    min-height 36px !important
+    padding-top 12px
 .q-if-label
-  color rgba(0, 0, 0, .46)
   pointer-events none
   user-select none
   top 15px
@@ -1835,7 +1923,6 @@ qfield-horizontal()
   transform scale(.75) translate(0, -22px)
 .q-if-addon
   pointer-events none
-  color rgba(0, 0, 0, .46)
   opacity 0
 .q-if-addon-left
   padding-right 1px
@@ -1845,8 +1932,8 @@ qfield-horizontal()
   opacity 1
 .q-if-control
   cursor pointer
-  color rgba(0, 0, 0, .54)
   font-size 24px
+  align-self flex-end
   &.q-icon
     cursor pointer
   &:hover
@@ -1854,35 +1941,47 @@ qfield-horizontal()
 .q-if-control-before
   margin-left 0
   margin-right 4px
-.q-if-dark
-  &:before, .q-if-label, .q-if-control
-    color rgba(255, 255, 255, .7)
-  &:hover:before, .q-if-addon
-    color rgba(255, 255, 255, .9)
-.q-if-focused
-  &:after
-    width 100%
-  .q-if-label
-    color currentColor
+.q-if-label, .q-if-addon, .q-if-control
+  color $form-dark
 .q-if-inverted
   min-height 38px
   border-radius 2px
-  padding-top 8px
-  padding-left 8px
-  padding-right 8px
+  padding 8px
   box-shadow $shadow-1
-  .q-if-control
+  .q-input-target
+    color inherit
+  .q-if-label, .q-if-addon,  .q-if-control
+    color #ddd
+div.q-input-target
+  min-width 35px
+.q-if-dark
+  &:hover:before
     color white
+  &:not(.q-if-inverted-light)
+    .q-input-target
+      color white
+.q-if-inverted-light
+  .q-if-label, .q-if-addon,  .q-if-control
+    color #656565
+.q-if-focused
+  &:after
+    width 100%
+  .q-if-label, .q-if-addon, .q-if-control
+    color currentColor !important
 .q-if-error
-  &:before, &:after, &:not(.q-if-inverted) .q-if-label, .q-if-addon
+  &:before, &:after, &:not(.q-if-inverted) .q-if-label
     color $negative
+    color var(--q-color-negative)
   &:hover:before
-    color lighten($negative, 26%)
+    color lighten($negative, 46%)
+    color var(--q-color-negative-l)
 .q-if-warning
-  &:before, &:after, &:not(.q-if-inverted) .q-if-label, .q-if-addon
+  &:before, &:after, &:not(.q-if-inverted) .q-if-label
     color $warning
+    color var(--q-color-warning)
   &:hover:before
-    color lighten($warning, 26%)
+    color lighten($warning, 46%)
+    color var(--q-color-warning-l)
 .q-if-disabled
   cursor not-allowed !important
   .q-if-label, .q-if-control
@@ -1894,23 +1993,31 @@ qfield-horizontal()
     background-position bottom
     background-size 3px 1px
     background-repeat repeat-x
-@-webkit-keyframes autofill
+  &.q-if-dark:before
+    background-image linear-gradient(90deg, rgba(255, 255, 255, .7) 0, rgba(255, 255, 255, .7) 33%, transparent 0)
+@keyframes webkit-autofill-on
+  to
+    background transparent
+    color $form-autofill
+@keyframes webkit-autofill-off
   to
     background transparent
 .q-input-target, .q-input-shadow
   border 0
   outline 0
   padding 0
-  color black
   background transparent
   min-height 18px
   font-size inherit
-  overflow hidden
   resize none
   display flex
   align-items center
+  color black
   &:-webkit-autofill
-    -webkit-animation-name autofill
+    -webkit-animation-name webkit-autofill-on
+    -webkit-animation-fill-mode both
+  &.q-input-autofill:not(:-webkit-autofill)
+    -webkit-animation-name webkit-autofill-off
     -webkit-animation-fill-mode both
   &::-ms-clear, &::-ms-reveal
     display none
@@ -1919,21 +2026,40 @@ qfield-horizontal()
   &:invalid
     box-shadow inherit
 input.q-input-target
-  height 18px
+  height 19px
   outline 0
 .q-input-chips
   min-height 36px !important
-.q-if-dark .q-input-target
-  color white
-  &::-webkit-input-placeholder /* Chrome/Opera/Safari */
-    color rgba(255, 255, 255, .6) !important
-  &::-moz-placeholder 
-    color rgba(255, 255, 255, .6) !important
-  &:-ms-input-placeholder 
-    color rgba(255, 255, 255, .6) !important
-  &::selection
-    background white
-    color black
+.q-if
+  .q-input-target-placeholder
+    color $form-dark !important
+  .q-input-target
+    &::-webkit-input-placeholder /* Chrome/Opera/Safari */
+      color $form-dark !important
+    &::-moz-placeholder 
+      color $form-dark !important
+    &:-ms-input-placeholder 
+      color $form-dark !important
+.q-if-dark
+  .q-input-target-placeholder
+    color #979797 !important
+  .q-input-target
+    &::-webkit-input-placeholder /* Chrome/Opera/Safari */
+      color #979797 !important
+    &::-moz-placeholder 
+      color #979797 !important
+    &:-ms-input-placeholder 
+      color #979797 !important
+.q-if-inverted:not(.q-if-inverted-light)
+  .q-input-target-placeholder
+    color #ddd !important
+  .q-input-target
+    &::-webkit-input-placeholder /* Chrome/Opera/Safari */
+      color #ddd !important
+    &::-moz-placeholder 
+      color #ddd !important
+    &:-ms-input-placeholder 
+      color #ddd !important
 .q-input-shadow
   overflow hidden
   visibility hidden
@@ -1955,6 +2081,7 @@ input.q-input-target
   bottom 0
   i
     font-size 130%
+$layout-transition = all .12s ease-in
 .q-layout
   width 100%
   min-height 100vh
@@ -1972,24 +2099,18 @@ input.q-input-target
   bottom 0
   background $layout-aside-background
   z-index $z-side
-  &.fixed.on-screen
-    box-shadow $layout-aside-shadow
   &.on-top
     z-index $z-fixed-drawer
+.q-layout-drawer-delimiter
+  box-shadow $layout-aside-shadow
 .q-layout-drawer-left
   left 0
+  transform translateX(-100%)
   width $layout-aside-left-width
-  &.off-screen
-    transform translateX(-100%)
-  &.on-screen
-    transform translateX(0)
 .q-layout-drawer-right
   right 0
+  transform translateX(100%)
   width $layout-aside-right-width
-  &.off-screen
-    transform translateX(100%)
-  &.on-screen
-    transform translateX(0)
 .q-layout, .q-layout-header, .q-layout-footer, .q-layout-page
   position relative
 .q-layout-header, .q-layout-footer
@@ -1997,23 +2118,25 @@ input.q-input-target
 .q-layout-backdrop
   z-index ($z-fixed-drawer - 1) !important
   will-change background-color
-.q-layout-backdrop-transition
-  transition background .12s
 .q-layout-drawer-opener
   z-index ($z-marginals + 1)
   height 100vh
   width 15px
+.q-page-sticky-shrink
+  pointer-events none
+  > span
+    pointer-events auto
 body
   &.q-layout-animate .q-layout-transition
-    transition all .12s ease-in
-  &.with-layout-drawer-opened
-    overflow hidden
-  &.with-layout-drawer-opened-above
-    overflow-x hidden
+    transition $layout-transition
   &.cordova.platform-ios
-    .q-layout-header > .q-toolbar:first-child, .q-layout-drawer.top-padding
+    .q-layout-header > .q-toolbar:first-child,
+    .q-layout-header > .q-tabs:first-child .q-tabs-head
+    .q-layout-drawer.top-padding
       padding-top $ios-statusbar-height
       min-height ($toolbar-min-height + $ios-statusbar-height)
+.q-drawer-scroll
+  overflow-x hidden
 .layout-padding
   @media (max-width $breakpoint-sm-max)
     padding 1.5rem .5rem
@@ -2051,16 +2174,14 @@ body
   border-radius 50%
 .q-item-letter, .q-item-icon
   font-size $item-icon-size
-.q-item-letter-inverted, .q-item-icon-inverted
+.q-item-inverted
   border-radius 50%
   color white
   background $item-side-color
-.q-item-letter-inverted
-  padding 5px 0
-  text-align center
-.q-item-icon-inverted
-  font-size $item-inverted-icon-size
-  padding 9px
+  height $item-primary-size
+  width $item-primary-size
+  &, .q-icon
+    font-size $item-inverted-icon-size
 .q-item-main
   flex 1 1 auto
   min-width 0
@@ -2084,7 +2205,7 @@ body
   text-align left
   padding ($item-padding / 2) $item-padding
   min-height $item-min-height
-  &.active, &.router-link-active, &:focus
+  &.active, &.{$router-link-active}, &:focus
     background $item-active-color
   &:focus
     outline 0
@@ -2143,6 +2264,37 @@ body
   padding-left $item-padding
 .q-list-header-inset
   padding-left ($item-padding + $item-gutter + $item-primary-size)
+.q-list-dark, .q-item-dark
+  .q-item-side
+    color $item-side-dark-color
+  .q-item-inverted
+    color black
+    background $item-side-dark-color
+  .q-item-label > span, .q-item-sublabel
+    color $item-content-secondary-text-dark-color
+  .q-item
+    color white
+    &.active, &.{$router-link-active}, &:focus
+      background $item-active-dark-color
+.q-list-dark
+  border 1px solid $item-separator-dark-color
+  &.q-list-separator > .q-item-division + .q-item-division, .q-item-division + .q-item-separator
+    border-top 1px solid $item-separator-dark-color
+  &.q-list-inset-separator > .q-item-division + .q-item-division, .q-item-division + .q-item-inset-separator
+    &:after
+      background $item-separator-dark-color
+  &.q-list-striped > .q-item:nth-child(even)
+    background-color $item-stripe-dark-color
+  &.q-list-striped-odd > .q-item:nth-child(odd)
+    background-color $item-stripe-dark-color
+  .q-item-separator-component
+    background-color $item-separator-dark-color
+  .q-list-header
+    color $item-label-dark-color
+  &.q-list-highlight > .q-item, .q-item-highlight,
+  &.q-list-link > .q-item, .q-item-link
+    &:hover
+      background $item-highlight-dark-color
 body.with-loading
   overflow hidden
 .q-loading
@@ -2152,8 +2304,6 @@ body.with-loading
     max-width 450px
     text-align center
     text-shadow 0 0 7px black
-body.with-modal
-  overflow hidden !important
 minimized-modal()
   max-width 80vw
   max-height 80vh
@@ -2192,6 +2342,8 @@ maximized-modal()
       .modal-content
         transform translateY(30%)
 @media (max-width $breakpoint-sm-max)
+  .q-responsive-modal
+    overflow hidden
   .modal:not(.minimized)
     .modal-content
       maximized-modal()
@@ -2203,6 +2355,8 @@ maximized-modal()
       transform scale(1.2)
     &.q-modal-leave-active .modal-content
       transform scale(.8)
+.q-maximized-modal
+  overflow hidden
 .modal, .modal-content
   transition all .2s ease-in-out
 .modal-header
@@ -2227,6 +2381,7 @@ maximized-modal()
   padding $modal-buttons-padding
   justify-content flex-end
   color $primary
+  color var(--q-color-primary)
   &.row
     .q-btn + .q-btn
       margin-left 8px
@@ -2272,6 +2427,7 @@ maximized-modal()
   margin 10px 10px 0
   transition all 1s
   z-index $z-notify
+  max-width 100%
 .q-notification-
   &top-left-enter, &top-left-leave-to,
   &top-enter, &top-leave-to,
@@ -2326,13 +2482,13 @@ maximized-modal()
   margin -5px
   padding 5px 0
 .q-pagination
-  display inline-flex
   input
     text-align center
   .q-btn
     padding 0 5px !important
     &.disabled
       color $faded
+      color var(--q-color-faded)
 .q-parallax
   position relative
   width 100%
@@ -2358,6 +2514,10 @@ maximized-modal()
   overflow-y auto
   overflow-x hidden
   max-width $popover-max-width
+  > .q-list:only-child
+    border none
+body div .q-popover
+  display none
 .q-progress
   position relative
   height $progress-track-height
@@ -2365,7 +2525,6 @@ maximized-modal()
   width 100%
   background-clip padding-box
   overflow hidden
-  color $progress-color
 .q-progress-model
   background currentColor
   &.animate
@@ -2439,7 +2598,6 @@ maximized-modal()
   max-height 100vh
 .pull-to-refresh-message
   height 65px
-  color $pull-to-refresh-color
   font-size $pull-to-refresh-font-size
   .q-icon
     font-size $pull-to-refresh-icon-size
@@ -2472,16 +2630,18 @@ $radio-size = 21px
     position relative
     cursor default
     opacity .4
-  i + i
-    margin-left .3rem
-  i.hovered
-    transform scale(1.3)
-  i.exselected
-    opacity .7
-  i.active
-    opacity 1
+    &.hovered
+      transform scale(1.3)
+    &.exselected
+      opacity .7
+    &.active
+      opacity 1
+    & + i
+      margin-left .3rem
   &.editable i
     cursor pointer
+  &:not(.editable) i:focus
+    outline none
 .q-scrollarea-thumb
   background black
   width 10px
@@ -2492,6 +2652,8 @@ $radio-size = 21px
     opacity 0 !important
 .q-toolbar .q-search
   background rgba(255, 255, 255, .25)
+body.desktop .q-select-highlight
+  background rgba(0, 0, 0, .2) !important
 $slider-height              = 28px
 $slider-track-height        = 2px
 $slider-mark-height         = 10px
@@ -2533,7 +2695,7 @@ $slider-label-transform     = translateX(-50%) translateY(-139%) scale(1)
   opacity 0
   transform translateX(-50%) translateY(0) scale(0)
   transition all .2s
-  padding 5px 9px
+  padding 2px 4px
   &.label-always
     opacity 1
     transform $slider-label-transform
@@ -2590,14 +2752,17 @@ $slider-label-transform     = translateX(-50%) translateY(-139%) scale(1)
   height $slider-height
   width 100%
   color $primary
+  color var(--q-color-primary)
   cursor pointer
   &.label-always, &.with-padding
-    padding 55px 0 5px
-    height 85px
+    padding 36px 0 8px
+    height 64px
   &.has-error
     color $negative
+    color var(--q-color-negative)
   &.has-warning
     color $warning
+    color var(--q-color-warning)
 .q-spinner
   vertical-align middle
 .q-spinner-mat
@@ -2619,7 +2784,6 @@ $slider-label-transform     = translateX(-50%) translateY(-139%) scale(1)
     stroke-dasharray 89, 200
     stroke-dashoffset -124px
 .q-stepper
-  color $stepper-color
   border-radius $generic-border-radius
   box-shadow $shadow-2
 .q-stepper-title
@@ -2645,9 +2809,9 @@ $slider-label-transform     = translateX(-50%) translateY(-139%) scale(1)
     color black
     .q-stepper-dot
       color $stepper-label-inactive-color
-  &.step-done
-    cursor pointer
+  &.step-navigation
     user-select none
+    cursor pointer
   &.step-color
     color currentColor
   &.step-active .q-stepper-title
@@ -2656,10 +2820,12 @@ $slider-label-transform     = translateX(-50%) translateY(-139%) scale(1)
     color $stepper-label-inactive-color
   &.step-error
     color $negative
+    color var(--q-color-negative)
     .q-stepper-dot
       background transparent
       span
         color $negative
+        color var(--q-color-negative)
         font-size 24px
 .q-stepper-header
   min-height 72px
@@ -2750,7 +2916,7 @@ $slider-label-transform     = translateX(-50%) translateY(-139%) scale(1)
   .q-stepper-dot:after
     top 100%
     margin-top 8px
-body.desktop .q-stepper-tab.step-done:hover
+body.desktop .q-stepper-tab.step-navigation:hover
   background $stepper-hover-background
 @media (max-width $breakpoint-sm-max)
   .q-stepper-horizontal.q-stepper-contractable
@@ -2769,7 +2935,6 @@ body.desktop .q-stepper-tab.step-done:hover
   flex-direction column
 .q-tabs-scroller
   overflow hidden
-  color $tabs-color
 .q-tab-pane
   padding $tabs-pane-padding
   border $tabs-pane-border
@@ -2778,8 +2943,6 @@ body.desktop .q-stepper-tab.step-done:hover
 .q-tabs-panes:empty
   display none
 .q-tabs-normal
-  .q-tabs-bar
-    color white
   .q-tab-icon, .q-tab-label
     opacity $tabs-unselected-opacity
 .q-tab
@@ -2791,23 +2954,21 @@ body.desktop .q-stepper-tab.step-done:hover
   min-height $tabs-min-height
   text-transform $tabs-text-transform
   > .q-icon + .q-tab-label
-    margin-top 7px
-  .q-tab-label
-    text-align center
-  &.icon-and-label:not(.hide-icon):not(.hide-label)
-    padding $tabs-padding-with-icon
-    min-height $tabs-min-height-with-icon
-  .q-tab-icon
-    font-size $tabs-icon-font-size
+    margin-top 4px
   .q-chip
     top 5px
-    right 0
-    left initial
+    right 5px
+    left auto
+    min-height auto
     color white
     background alpha($dot-color, .75)
   &.active
     .q-tab-icon, .q-tab-label
       opacity 1
+.q-tab-label
+  text-align center
+.q-tab-icon
+  font-size $tabs-icon-font-size
 @media (max-width $breakpoint-sm-max)
   .q-tab
     &.hide-icon .q-tab-icon,
@@ -2820,7 +2981,7 @@ body.desktop .q-stepper-tab.step-done:hover
     .q-tabs-scroller, .q-tab
       flex 1 1 auto
 @media (min-width $breakpoint-lg-min)
-  .q-tab, .q-tab.icon-and-label:not(.hide-icon):not(.hide-label)
+  .q-tab
     padding-left $tabs-big-screen-horiz-padding
     padding-right $tabs-big-screen-horiz-padding
   .q-tabs-head:not(.scrollable)
@@ -2829,7 +2990,6 @@ body.desktop .q-stepper-tab.step-done:hover
 .q-tabs-head
   min-height $tabs-min-height
   overflow hidden
-  background $tabs-background
   font-size $tabs-font-size
   font-weight $tabs-font-weight
   transition color .18s ease-in, box-shadow .18s ease-in
@@ -2842,20 +3002,21 @@ body.desktop .q-stepper-tab.step-done:hover
   height 100%
   cursor pointer
   color white
+  top 0
   .q-icon
     text-shadow 0 0 10px black
     font-size (1.2 * $tabs-icon-font-size)
     visibility hidden
-  &:hover .q-icon
-    visibility visible
   &.disabled
     display none
+.q-tabs:hover
+  .q-tabs-left-scroll, .q-tabs-right-scroll
+    .q-icon
+      visibility visible
 .q-tabs-left-scroll
-  left 0
-  background linear-gradient(to left, transparent, rgba(255, 255, 255, .5))
+  left 0 /* rtl:ignore */
 .q-tabs-right-scroll
-  right 0
-  background linear-gradient(to right, transparent, rgba(255, 255, 255, .5))
+  right 0 /* rtl:ignore */
 .q-tabs-align-justify
   .q-tabs-scroller, .q-tab
     flex 1 1 auto
@@ -2900,14 +3061,8 @@ body.desktop .q-stepper-tab.step-done:hover
   .q-tabs-panes
     order -1
 .q-tabs-inverted
-  .q-tabs-scroller
-    color $tabs-background
-  .q-tabs-left-scroll
-    background linear-gradient(to left, transparent, rgba(0, 0, 0, .1))
-  .q-tabs-right-scroll
-    background linear-gradient(to right, transparent, rgba(0, 0, 0, .1))
   .q-tabs-head
-    background transparent
+    background white
   &.q-tabs-position-top
     .q-tabs-panes
       border-top $tabs-pane-border
@@ -2927,10 +3082,11 @@ body.mobile .q-tabs-scroller
   border-radius $table-border-radius
   box-shadow $table-box-shadow
   position relative
-  background white
+  &.fullscreen
+    background-color inherit
 .q-table-top
   min-height 64px
-  padding 4px 24px
+  padding 8px 24px
   &:before
     content ''
     position absolute
@@ -2941,15 +3097,19 @@ body.mobile .q-tabs-scroller
     left 0
     opacity .2
     transition $table-transition
+  .q-table-control
+    min-height 36px
+    padding 8px 0
+    flex-wrap wrap
+.q-table-title
+  font-size 20px
+  letter-spacing 0.005em
+  font-weight 400
 .q-table-separator
   min-width 8px !important
 .q-table-nodata .q-icon
   font-size 200%
   padding-right 15px
-.q-table-title
-  font-size 20px
-  letter-spacing .005em
-  font-weight 400
 .q-table-progress
   height 0 !important
   td
@@ -2963,8 +3123,13 @@ body.mobile .q-tabs-scroller
   max-width 100%
 .q-table-bottom
   min-height 48px
-  padding 0 14px 0 24px
+  padding 4px 14px 4px 24px
   font-size 12px
+  .q-table-control
+    min-height 24px
+.q-table-control
+  display flex
+  align-items center
 .q-table-sort-icon
   transition $table-transition
   will-change opacity, transform
@@ -3009,8 +3174,12 @@ body.mobile .q-tabs-scroller
     height 48px
     font-weight 400
     font-size 13px
+  .q-radial-ripple
+    margin-bottom -100%
 .q-table-col-auto-width
   width 1px
+.q-table-bottom-item
+  margin-right 24px
 .q-table-horizontal-separator
   thead, tbody td
     border-width 0 0 1px 0
@@ -3028,21 +3197,29 @@ body.mobile .q-tabs-scroller
     border-left 0
   td:last-child
     border-right 0
-@media (max-width $breakpoint-sm-max)
+table-dense()
   .q-table-top
-    min-height 54px
+    min-height 48px
   .q-table-top, .q-table-bottom
-    padding-left 10px
-    padding-right 10px
+    padding-left 8px
+    padding-right 8px
   .q-table-bottom
-    min-height 47px
+    min-height 42px
   .q-table-sort-icon
     font-size 110%
   .q-table
     th, td
-      padding 5px 8px
-    thead tr, tbody td
-      height 42px
+      padding 4px 8px
+    thead tr
+      height 40px
+    tbody td
+      height 28px
+  .q-table-bottom-item
+    margin-right 8px
+.q-table-dense
+  table-dense()
+@media (max-width $breakpoint-sm-max)
+  table-dense()
 .q-table-bottom 
   color $table-header-color
   border-top 1px solid $table-border-color
@@ -3261,11 +3438,8 @@ $toggle-base-height = round($toggle-handle-size / 1.7)
   min-height $toolbar-min-height
   overflow hidden
   width 100%
-  color $toolbar-color
-  background $toolbar-background
 .q-toolbar-inverted
-  color $toolbar-background
-  background transparent
+  background white
 .q-toolbar-title
   flex 1
   min-width 1px
@@ -3358,21 +3532,31 @@ body.desktop
     pointer-events none
 .q-tree-icon
   font-size 1.5em
-.q-tree-arrow
-  font-size 1rem
-  width 1rem
-  height 1rem
 .q-tree-img
   height 3em
   &.avatar
     width 2em
     height 2em
+.q-tree-arrow
+  font-size 1rem
+  width 1rem
+  height 1rem
+.q-tree-arrow-rotate
+  transform rotate(90deg)
+[dir=rtl]
+  .q-tree-arrow
+    transform rotate(180deg) /* rtl:ignore */
+  .q-tree-arrow-rotate
+    transform rotate(90deg) /* rtl:ignore */
 .q-tree
   
   > .q-tree-node
     padding 0
     &:after, > .q-tree-node-header:before
       display none
+  
+  > .q-tree-node-child > .q-tree-node-header
+    padding-left 24px
 .q-uploader-expanded .q-if
   border-bottom-left-radius 0
   border-bottom-right-radius 0
@@ -3412,8 +3596,13 @@ body.desktop
   .q-uploader-files
     color white
     border 1px solid $field-dark-label-color
+  .q-uploader-bg
+    color white
+  .q-uploader-progress-text
+    opacity .2
   .q-uploader-file:not(:last-child)
-    border-bottom 1px solid $field-dark-label-color
+    border-bottom 1px solid $dark
+    border-bottom 1px solid var(--q-color-dark)
 img
   &.responsive
     max-width 100%
@@ -3431,54 +3620,92 @@ img
   iframe, object, embed
     width 100%
     height 100%
+:root
+  --q-color-primary      $primary
+  --q-color-secondary    $secondary
+  --q-color-tertiary     $tertiary
+  --q-color-positive     $positive
+  --q-color-negative     $negative
+  --q-color-negative-l   lighten($negative, 46%)
+  --q-color-info         $info
+  --q-color-warning      $warning
+  --q-color-warning-l    lighten($warning, 46%)
+  --q-color-light        $light
+  --q-color-light-d      darken($light, 10%)
+  --q-color-faded        $faded
+  --q-color-dark         $dark
 .text-primary
   color $primary !important
+  color var(--q-color-primary) !important
 .bg-primary
   background $primary !important
+  background var(--q-color-primary) !important
 .text-secondary
   color $secondary !important
+  color var(--q-color-secondary) !important
 .bg-secondary
   background $secondary !important
+  background var(--q-color-secondary) !important
 .text-tertiary
   color $tertiary !important
+  color var(--q-color-tertiary) !important
 .bg-tertiary
   background $tertiary !important
+  background var(--q-color-tertiary) !important
 .text-faded
   color $faded !important
+  color var(--q-color-faded) !important
 .bg-faded
   background $faded !important
+  background var(--q-color-faded) !important
 .text-positive
   color $positive !important
+  color var(--q-color-positive) !important
 .bg-positive
   background $positive !important
+  background var(--q-color-positive) !important
 .text-negative
   color $negative !important
+  color var(--q-color-negative) !important
 .bg-negative
   background $negative !important
+  background var(--q-color-negative) !important
 .text-info
   color $info !important
+  color var(--q-color-info) !important
 .bg-info
   background $info !important
+  background var(--q-color-info) !important
 .text-warning
   color $warning !important
+  color var(--q-color-warning) !important
 .bg-warning
   background $warning !important
+  background var(--q-color-warning) !important
 .text-white
-  color white !important
+  color #fff !important
 .bg-white
-  background white !important
+  background #fff !important
 .text-black
-  color black !important
+  color #000 !important
 .bg-black
-  background black !important
+  background #000 !important
 .text-light
   color $light !important
+  color var(--q-color-light) !important
 .bg-light
   background $light !important
+  background var(--q-color-light) !important
 .text-dark
   color $dark !important
+  color var(--q-color-dark) !important
 .bg-dark
   background $dark !important
+  background var(--q-color-dark) !important
+.text-transparent
+  color transparent !important
+.bg-transparent
+  background transparent !important
 .text-red
   color $red !important
 .text-red-1
@@ -4714,6 +4941,8 @@ for $name, $size in $sizes
     align-content flex-end
   &center
     align-content center
+  &stretch
+    align-content stretch
   &between
     align-content space-between
   &around
@@ -4783,10 +5012,6 @@ for $name, $size in $sizes
   &.active
     display block
     background $backdrop-background
-.no-border
-  border 0 !important
-.no-outline
-  outline 0 !important
 .round-borders
   border-radius $generic-border-radius !important
 .generic-margin, .group > * 
@@ -4824,15 +5049,15 @@ body.with-mixin-fullscreen
   animation q-highlight 2s
 @keyframes q-rotate
   0%
-    transform rotate(0)
+    transform rotate(0) /* rtl:ignore */
   25%
-    transform rotate(90deg)
+    transform rotate(90deg) /* rtl:ignore */
   50%
-    transform rotate(180deg)
+    transform rotate(180deg) /* rtl:ignore */
   75%
-    transform rotate(270deg)
+    transform rotate(270deg) /* rtl:ignore */
   100%
-    transform rotate(360deg)
+    transform rotate(360deg) /* rtl:ignore */
 .transition-generic
   transition all .3s
 .animate-spin, .animate-spin-reverse
@@ -4854,9 +5079,9 @@ body.with-mixin-fullscreen
     visibility hidden
 @keyframes q-spin
   0%
-    transform rotate(0deg)
+    transform rotate(0deg) /* rtl:ignore */
   100%
-    transform rotate(359deg)
+    transform rotate(359deg) /* rtl:ignore */
 @keyframes q-pop
   0%
     opacity 0
@@ -4885,6 +5110,28 @@ body.with-mixin-fullscreen
     transform translateY(-30px)
   60%
     transform translateY(-15px)
+.animate-popup-up, .animate-popup-down
+  animation-timing-function cubic-bezier(0.23, 1, 0.32, 1)
+.animate-popup-down
+  animation q-popup-down .42s
+  transform-origin left top 0px
+.animate-popup-up
+  animation q-popup-up .42s
+  transform-origin left bottom 0px
+@keyframes q-popup-down
+  0%
+    opacity 0
+    transform translateY(-20px) scaleY(.3)
+    pointer-events none
+  100%
+    opacity 1
+@keyframes q-popup-up
+  0%
+    opacity 0
+    transform translateY(20px) scaleY(.3)
+    pointer-events none
+  100%
+    opacity 1
 .animated
   animation-duration 1s
   animation-fill-mode both
@@ -4913,20 +5160,22 @@ body.with-mixin-fullscreen
   cursor pointer !important
 .cursor-not-allowed
   cursor not-allowed !important
+.cursor-inherit
+  cursor inherit !important
 .rotate-45
-  transform rotate(45deg)
+  transform rotate(45deg) /* rtl:ignore */
 .rotate-90
-  transform rotate(90deg)
+  transform rotate(90deg) /* rtl:ignore */
 .rotate-135
-  transform rotate(135deg)
+  transform rotate(135deg) /* rtl:ignore */
 .rotate-180
-  transform rotate(180deg)
+  transform rotate(180deg) /* rtl:ignore */
 .rotate-205
-  transform rotate(205deg)
+  transform rotate(205deg) /* rtl:ignore */
 .rotate-270
-  transform rotate(270deg)
+  transform rotate(270deg) /* rtl:ignore */
 .rotate-315
-  transform rotate(315deg)
+  transform rotate(315deg) /* rtl:ignore */
 .flip-horizontal
   transform scale(-1, 1)
 .flip-vertical
@@ -5019,10 +5268,10 @@ body.with-mixin-fullscreen
     color inherit
     border-radius inherit
     position absolute
-    width 100%
-    height 100%
     left 0
     top 0
+    width 100%
+    height 100%
     overflow hidden
     z-index 0
     pointer-events none
@@ -5030,7 +5279,7 @@ body.with-mixin-fullscreen
     color inherit
     position absolute
     top 0
-    left 0
+    left 0 /* rtl:ignore */
     border-radius 50%
     background currentColor
     opacity 0
@@ -5132,16 +5381,6 @@ body
   background $body-background
   color $body-color
   min-height 100vh
-a
-  color $link-color
-  text-decoration none
-  cursor pointer
-  outline 0
-  transition color .25s
-  &:hover
-    color $link-color-active
-  &:active, &:hover
-    outline-width 0
 for $heading, $value in $h-tags
   {$heading}
     font-size: $value.size
@@ -5208,26 +5447,31 @@ blockquote
   margin 0
   font-size 16px
   border-left: $spaces.xs.x solid $primary
+  border-left: $spaces.xs.x solid var(--q-color-primary)
   &.text-right
     padding-right: $spaces.md.x
     padding-left 0
     border-right: $spaces.xs.x solid $primary
+    border-right: $spaces.xs.x solid var(--q-color-primary)
     border-left 0
     text-align right
   small
     display block
     line-height 1.4
     color $faded
+    color var(--q-color-faded)
     &:before
       content '\2014 \00A0'
 .quote
   padding 10px 20px
   margin 0 0 20px
   border-left 5px solid $primary
+  border-left 5px solid var(--q-color-primary)
   &.text-right
     padding-right 15px
     padding-left 0
     border-right 5px solid $primary
+    border-right 5px solid var(--q-color-primary)
     border-left 0
     text-align right
 dt
@@ -5250,19 +5494,6 @@ dl
       white-space nowrap
     dd
       margin-left 30%
-::-webkit-selection,
-::-moz-selection,
-::selection
-  background $primary
-  color alpha(opposite-non-color($primary), .87)
-textarea::-webkit-selection,
-input::-webkit-selection,
-textarea::-moz-selection,
-input::-moz-selection,
-textarea::selection,
-input::selection
-  background alpha($primary, .4)
-  color alpha(opposite-non-color($primary), .87)
 .no-margin
   margin 0 !important
 .no-padding
@@ -5273,6 +5504,8 @@ input::selection
   border-radius 0 !important
 .no-box-shadow
   box-shadow none !important
+.no-outline
+  outline 0 !important
 .ellipsis
   text-overflow ellipsis
   white-space nowrap
@@ -5352,26 +5585,30 @@ for type in desktop mobile cordova electron ios mat touch within-iframe platform
 .q-focus-helper
   position absolute
   top 0
-  right 0
-  bottom 0
-  left 0
+  left 0 /* rtl:ignore */
+  width 100%
+  height 100%
   pointer-events none
   border-radius inherit
-  background currentColor
-  opacity 0
-  transition opacity .12s ease-in
-.q-focusable:focus, body.no-touch .q-hoverable:hover, body.touch .q-hoverable:active
-  .q-focus-helper
-    opacity .15
-body.ios .q-hoverable:active .q-focus-helper
-  opacity .3
+  opacity .15
+  transition background-color .3s cubic-bezier(.25, .8, .5, 1)
+body
+  &.desktop
+    .q-focusable:focus, .q-hoverable:hover
+      .q-focus-helper
+        background currentColor
+  &.ios .q-hoverable:active .q-focus-helper
+    background currentColor
+    opacity .3
 ie_style = @block
   
-  .absolute .q-if-inner, .fixed .q-if-inner
-    min-width 10em
+  .absolute, .fixed
+    .q-if-inner, .q-input-target
+      min-width auto
+      flex-basis auto
+  .q-if-inner
+    min-height 21px
   
-  .q-alert-container
-    max-width 100%
   .row > .col
     &.q-alert-content
       flex-basis auto
@@ -5380,38 +5617,34 @@ ie_style = @block
     > .q-chip.inline.row
       display -ms-inline-grid
   
-  .q-btn.row
-    &:not(.q-btn-round)
-      &.inline
-        display inline-block
-      &.block
-        display block
+  .q-btn
     &:active
       .q-btn-inner
         margin -1px 1px 1px -1px
-      &.q-btn-push .q-btn-inner
-        margin 0 1px 0 -1px
+      &.q-btn-push
+        .q-btn-inner
+          margin 0 1px 0 -1px
+        &.disabled
+          .q-btn-inner
+            margin -1px 1px 1px -1px
+  .q-btn-group > .q-btn.q-btn-push:not(.disabled):active .q-btn-inner
+    margin 0
   
-  .q-chip
-    .q-chip-main
-      line-height $chip-height
-    &.small .q-chip-main
-      line-height normal
-  .q-btn
-    .q-chip
-      display inline-block
-      .q-chip-main
-        line-height normal
-  .q-tab
-    .q-chip
-      left auto
+  .q-chip:not(.q-chip-small):not(.q-chip-dense) .q-chip-main
+    line-height $chip-height
+  .q-btn .q-chip
+    display inline-block
+  .q-tab .q-chip .q-chip-main
+    line-height normal
   
   .q-fab-actions
     &.q-fab-left
     &.q-fab-right
       display block
       white-space nowrap
-      top -6px
+  
+  .q-item-main
+    min-width 1px
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none)
   {ie_style}
 @supports (-ms-ime-align:auto)
