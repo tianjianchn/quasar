@@ -55,6 +55,14 @@
       <q-btn color="amber" text-color="black" icon="map" label="Some label" />
       <q-btn text-color="amber" icon="map" label="Some label" />
 
+      <br><br>
+      <p class="caption">Keep holding click</p>
+      <!-- Click and hold to triger every second -->
+      <q-btn @click="clickHandler" :repeat-timeout="1000" label="click me" />
+      <!-- Click and hold to triger faster over time -->
+      <q-btn @click="clickHandler" :repeat-timeout="repeatFunction" label="click me" />
+      <q-chip>{{ clickTimes }}</q-chip>
+
       <p class="caption">Regular (rectangle) and Circular</p>
       <q-btn color="primary">Some very, but very long button title that should wrap to the next line without any problems</q-btn>
       <p class="group">
@@ -79,6 +87,7 @@
 
         <q-btn label="Button" />
         <q-btn color="amber" label="Button" />
+        <q-btn round icon="card_giftcard" />
         <q-btn round color="secondary" icon="card_giftcard" />
 
         <q-btn icon="alarm" label="Icoon" />
@@ -91,33 +100,75 @@
       </p>
 
       <p class="group">
-        <q-btn loader @click="simulateProgress" label="Button">
+        <q-btn :loading="!!loading[0]" @click="simulateProgress(0)" label="Button">
           <q-spinner-oval slot="loading" />
         </q-btn>
-        <q-btn loader  @click="simulateProgress" label="Button">
+        <q-btn :loading="!!loading[1]"  @click="simulateProgress(1)" label="Button">
           <span slot="loading">Loading...</span>
         </q-btn>
-        <q-btn loader color="orange" @click="simulateProgress" label="Button" />
-        <q-btn loader color="secondary" @click="simulateProgress" label="Button" />
-        <q-btn loader color="amber" @click="simulateProgress" label="Button" />
-        <q-btn loader color="dark" size="xs" @click="simulateProgress" label="Button" />
-        <q-btn loader color="dark" size="sm" @click="simulateProgress" label="Button" />
-        <q-btn loader color="dark" size="md" @click="simulateProgress" label="Button" />
-        <q-btn loader color="dark" size="lg" @click="simulateProgress" label="Button" />
-        <q-btn loader color="dark" size="xl" @click="simulateProgress" label="Button" />
-        <q-btn size="xs" round loader @click="simulateProgress" color="primary" icon="mail" />
-        <q-btn size="sm" round loader @click="simulateProgress" color="primary" icon="mail" />
-        <q-btn round loader @click="simulateProgress" color="primary" icon="mail" />
-        <q-btn size="lg" round loader @click="simulateProgress" color="primary" icon="mail" />
-        <q-btn size="xl" round loader @click="simulateProgress" color="primary" icon="mail" />
+        <q-btn :loading="!!loading[2]" color="orange" @click="simulateProgress(2)" label="Button">
+          <q-spinner-bars slot="loading" />
+        </q-btn>
+        <q-btn :loading="!!loading[3]" color="secondary" @click="simulateProgress(3)" label="Button">
+          <q-spinner-circles slot="loading" />
+        </q-btn>
+        <q-btn :loading="!!loading[4]" color="amber" @click="simulateProgress(4)" label="Button">
+          <q-spinner-comment slot="loading" />
+        </q-btn>
+        <q-btn :loading="!!loading[5]" color="dark" size="xs" @click="simulateProgress(5)" label="Button">
+          <q-spinner-cube slot="loading" />
+        </q-btn>
+        <q-btn :loading="!!loading[6]" color="dark" size="sm" @click="simulateProgress(6)" label="Button">
+          <q-spinner-dots slot="loading" />
+        </q-btn>
+        <q-btn :loading="!!loading[7]" color="dark" size="md" @click="simulateProgress(7)" label="Button">
+          <q-spinner-facebook slot="loading" />
+        </q-btn>
+        <q-btn :loading="!!loading[8]" color="dark" size="lg" @click="simulateProgress(8)" label="Button">
+          <q-spinner-grid slot="loading" />
+        </q-btn>
+        <q-btn :loading="!!loading[9]" color="dark" size="xl" @click="simulateProgress(9)" label="Button">
+          <q-spinner-hearts slot="loading" />
+        </q-btn>
+        <q-btn size="xs" round :loading="!!loading[10]" @click="simulateProgress(10)" color="primary" icon="mail">
+          <q-spinner-hourglass slot="loading" />
+        </q-btn>
+        <q-btn size="sm" round :loading="!!loading[11]" @click="simulateProgress(11)" color="primary" icon="mail">
+          <q-spinner-infinity slot="loading" />
+        </q-btn>
+        <q-btn round :loading="!!loading[12]" @click="simulateProgress(12)" color="primary" icon="mail">
+          <q-spinner-pie slot="loading" />
+        </q-btn>
+        <q-btn size="lg" round :loading="!!loading[13]" @click="simulateProgress(13)" color="primary" icon="mail">
+          <q-spinner-puff slot="loading" />
+        </q-btn>
+        <q-btn size="xl" round :loading="!!loading[14]" @click="simulateProgress(14)" color="primary" icon="mail">
+          <q-spinner-gears slot="loading" />
+        </q-btn>
+        <q-btn :loading="!!loading[15]" color="orange" @click="simulateProgress(15)" label="Button">
+          <q-spinner-radio slot="loading" />
+        </q-btn>
+        <q-btn :loading="!!loading[16]" color="orange" @click="simulateProgress(16)" label="Button">
+          <q-spinner-rings slot="loading" />
+        </q-btn>
+        <q-btn :loading="!!loading[17]" color="orange" @click="simulateProgress(17)" label="Button">
+          <q-spinner-tail slot="loading" />
+        </q-btn>
 
-        <q-btn color="dark" size="sm" @click="simulateProgress" icon-right="alarm" label="Button">
+        <q-btn color="dark" :loading="!!loading[18]" size="sm" @click="simulateProgress(18)" icon-right="alarm" label="Button">
           <q-spinner-audio slot="loading" />
         </q-btn>
-        <q-btn round @click="simulateProgress" color="primary" size="lg" icon="alarm">
-          <q-spinner-audio slot="loading" />
+        <q-btn round :loading="!!loading[19]" @click="simulateProgress(19)" color="primary" size="lg" icon="alarm">
+          <q-spinner-ball slot="loading" />
         </q-btn>
+
+        <q-btn round :loading="!!loading[20]" color="black" @click="simulateProgress(20)" icon="camera_rear">
+          <q-spinner-gears slot="loading" />
+        </q-btn>
+
+        <br />
         <q-btn color="negative" @click="stopProgress">Stop</q-btn>
+        <q-chip small v-for="(l, i) in loading" :key="i">{{ i }}: {{ l }}</q-chip>
       </p>
 
       <p class="group">
@@ -154,7 +205,7 @@
       </p>
 
       <p class="group">
-        <q-btn loader :percentage="percentage" color="primary" @click="startProgress">
+        <q-btn :loading="loading2" :percentage="percentage" color="primary" @click="startProgress">
           Btn with progress
           <span slot="loading" class="row items-center">
             <q-spinner class="on-left" />
@@ -162,7 +213,7 @@
           </span>
         </q-btn>
 
-        <q-btn round loader :percentage="percentage" color="primary" @click="startProgress" icon="wifi" />
+        <q-btn round :loading="loading2" :percentage="percentage" color="primary" @click="startProgress" icon="wifi" />
       </p>
 
       <p class="caption">Small, Medium (default) and Big</p>
@@ -244,6 +295,8 @@
         <q-btn round color="primary" disable icon="card_giftcard" />
         <q-btn push color="primary" disable>Push</q-btn>
         <q-btn push color="primary" disable round icon="card_giftcard" />
+        <q-btn push color="white" text-color="primary" disable>Push</q-btn>
+        <q-btn push color="white" text-color="primary" disable round icon="card_giftcard" />
       <p>
 
       <p class="caption">Flat Buttons</p>
@@ -262,6 +315,8 @@
       <p class="group">
         <q-btn push color="primary">Push</q-btn>
         <q-btn push color="primary" round icon="card_giftcard" />
+        <q-btn push color="white" text-color="primary">Push</q-btn>
+        <q-btn push color="white" text-color="primary" round icon="card_giftcard" />
       <p>
 
       <p class="caption">Round Buttons</p>
@@ -414,6 +469,8 @@
 </template>
 
 <script>
+import { extend } from 'quasar'
+
 export default {
   data () {
     return {
@@ -425,29 +482,43 @@ export default {
         'light-green', 'lime', 'yellow', 'amber', 'orange', 'deep-orange', 'brown', 'grey', 'blue-grey'
       ],
       extras: ['flat', 'outline', 'round', 'rounded', 'push', 'glossy'],
-      done: [],
-      percentage: 0
+      loading: {},
+      loading2: false,
+      percentage: 0,
+      clickTimes: 0
     }
   },
   methods: {
-    startProgress (e, done) {
+    clickHandler (e) {
+      this.clickTimes++
+    },
+    repeatFunction (timesTriggered) {
+      // first time timesTriggered is 0, so we add 1
+      // to be sure we don't divide by 0
+      return Math.max(300, 1000 / (timesTriggered + 1))
+    },
+    startProgress () {
       this.percentage = 0
+      this.loading2 = true
       this.interval = setInterval(() => {
         this.percentage += Math.floor(Math.random() * 8 + 10)
         if (this.percentage >= 100) {
           clearInterval(this.interval)
-          done()
+          this.loading2 = false
         }
       }, 700)
     },
-    simulateProgress (e, done) {
-      this.done.push(done)
+    simulateProgress (index) {
+      const timeout = setTimeout(() => {
+        if (index in this.loading) {
+          this.loading = extend({}, this.loading, { [index]: false })
+        }
+      }, 5 * 60 * 1000)
+      this.loading = extend({}, this.loading, { [index]: timeout })
     },
     stopProgress () {
-      if (this.done.length) {
-        this.done.forEach(d => d())
-      }
-      this.done = []
+      Object.values(this.loading).filter(t => t).map(t => clearTimeout(t))
+      this.loading = {}
     }
   },
   beforeDestroy () {

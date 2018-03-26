@@ -4,14 +4,13 @@ import {
   positionValidator,
   offsetValidator,
   parsePosition,
-  getTransformProperties,
   setPosition
 } from '../../utils/popup'
 import ModelToggleMixin from '../../mixins/model-toggle'
 import { listenOpts } from '../../utils/event'
 
 export default {
-  name: 'q-tooltip',
+  name: 'QTooltip',
   mixins: [ModelToggleMixin],
   props: {
     anchor: {
@@ -46,11 +45,6 @@ export default {
     },
     selfOrigin () {
       return parsePosition(this.self)
-    },
-    transformCSS () {
-      return getTransformProperties({
-        selfOrigin: this.selfOrigin
-      })
     }
   },
   methods: {
@@ -83,6 +77,7 @@ export default {
     __updatePosition () {
       setPosition({
         el: this.$el,
+        animate: true,
         offset: this.offset,
         anchorEl: this.anchorEl,
         anchorOrigin: this.anchorOrigin,
@@ -101,9 +96,13 @@ export default {
   },
   render (h) {
     return h('span', {
-      staticClass: 'q-tooltip animate-scale',
+      staticClass: 'q-tooltip animate-popup',
       style: this.transformCSS
-    }, [ this.$slots.default ])
+    }, [
+      h('div', [
+        this.$slots.default
+      ])
+    ])
   },
   created () {
     this.__debouncedUpdatePosition = debounce(() => {

@@ -2,7 +2,7 @@ import { QIcon } from '../icon'
 import { QBtn } from '../btn'
 
 export default {
-  name: 'q-alert',
+  name: 'QAlert',
   props: {
     type: {
       type: String,
@@ -67,14 +67,14 @@ export default {
             staticClass: 'q-alert-actions col-auto gutter-xs column flex-center'
           },
           this.actions.map(action =>
-            h('div', [
+            h('div', { staticClass: 'full-width' }, [
               h(QBtn, {
                 staticClass: 'full-width',
                 props: {
                   flat: true,
                   dense: true,
-                  icon: action.icon,
                   align: 'left',
+                  icon: action.icon,
                   label: action.closeBtn === true
                     ? (typeof action.label === 'string' ? action.label : this.$q.i18n.label.close)
                     : action.label

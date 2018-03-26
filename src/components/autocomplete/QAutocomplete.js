@@ -1,13 +1,13 @@
 import { width } from '../../utils/dom'
-import { getEventKey, stopAndPrevent } from '../../utils/event'
 import filter from '../../utils/filter'
 import uid from '../../utils/uid'
-import { normalizeToInterval } from '../../utils/format'
 import { QPopover } from '../popover'
 import { QList, QItemWrapper } from '../list'
+import KeyboardSelectionMixin from '../../mixins/keyboard-selection'
 
 export default {
-  name: 'q-autocomplete',
+  name: 'QAutocomplete',
+  mixins: [KeyboardSelectionMixin],
   props: {
     minCharacters: {
       type: Number,
@@ -40,7 +40,6 @@ export default {
     return {
       searchId: '',
       results: [],
-      selectedIndex: -1,
       width: 0,
       enterKey: false,
       timer: null
@@ -61,6 +60,9 @@ export default {
       return this.maxResults && this.results.length > 0
         ? this.results.slice(0, this.maxResults)
         : []
+    },
+    keyboardMaxIndex () {
+      return this.computedResults.length - 1
     },
     computedWidth () {
       return {minWidth: this.width}
@@ -96,7 +98,7 @@ export default {
         this.results = this.filter(terms, this.staticData)
         const popover = this.$refs.popover
         if (this.results.length) {
-          this.selectedIndex = 0
+          this.__keyboardShow(-1)
           if (popover.showing) {
             popover.reposition()
           }
@@ -120,7 +122,7 @@ export default {
 
         if (Array.isArray(results) && results.length > 0) {
           this.results = results
-          this.selectedIndex = 0
+          this.__keyboardShow(-1)
           this.$refs.popover.show()
           return
         }
@@ -130,7 +132,6 @@ export default {
     },
     hide () {
       this.results = []
-      this.selectedIndex = -1
       return this.isWorking()
         ? this.$refs.popover.hide()
         : Promise.resolve()
@@ -143,6 +144,17 @@ export default {
       clearTimeout(this.timer)
       this.__input.loading = false
       this.searchId = ''
+    },
+    __keyboardCustomKeyHandle (key) {
+      if (key === 27) { // ESCAPE
+        this.__clearSearch()
+      }
+    },
+    __keyboardShowTrigger () {
+      this.trigger()
+    },
+    __keyboardIsSelectableIndex (index) {
+      return index > -1 && index < this.computedResults.length && !this.computedResults[index].disable
     },
     setValue (result) {
       const value = this.staticData ? result[this.staticData.field] : result.value
@@ -159,17 +171,8 @@ export default {
       this.__clearSearch()
       this.hide()
     },
-    move (offset) {
-      this.selectedIndex = normalizeToInterval(
-        this.selectedIndex + offset,
-        0,
-        this.computedResults.length - 1
-      )
-    },
-    setCurrentSelection () {
-      if (this.selectedIndex >= 0 && this.selectedIndex < this.results.length) {
-        this.setValue(this.results[this.selectedIndex])
-      }
+    __keyboardSetSelection (index) {
+      this.setValue(this.results[index])
     },
     __delayTrigger () {
       this.__clearSearch()
@@ -181,39 +184,6 @@ export default {
         return
       }
       this.timer = setTimeout(this.trigger, this.debounce)
-    },
-    __handleKeyDown (e) {
-      switch (getEventKey(e)) {
-        case 38: // UP key
-          this.__moveCursor(-1, e)
-          break
-        case 40: // DOWN key
-          this.__moveCursor(1, e)
-          break
-        case 13: // ENTER key
-        case 32: // SPACE key
-          if (this.$refs.popover.showing) {
-            stopAndPrevent(e)
-            this.setCurrentSelection()
-          }
-          break
-        case 27: // ESCAPE key
-          this.__clearSearch()
-          break
-        case 9: // TAB key
-          this.hide()
-          break
-      }
-    },
-    __moveCursor (offset, e) {
-      stopAndPrevent(e)
-
-      if (!this.$refs.popover.showing) {
-        this.trigger()
-      }
-      else {
-        this.move(offset)
-      }
     }
   },
   mounted () {
@@ -223,7 +193,7 @@ export default {
     }
     this.$nextTick(() => {
       this.inputEl = this.__input.getEl()
-      this.inputEl.addEventListener('keydown', this.__handleKeyDown)
+      this.inputEl.addEventListener('keydown', this.__keyboardHandleKey)
       this.inputEl.addEventListener('blur', this.blurHide)
     })
   },
@@ -234,17 +204,18 @@ export default {
       this.__inputDebounce.setChildDebounce(false)
     }
     if (this.inputEl) {
-      this.inputEl.removeEventListener('keydown', this.__handleKeyDown)
+      this.inputEl.removeEventListener('keydown', this.__keyboardHandleKey)
       this.inputEl.removeEventListener('blur', this.blurHide)
       this.hide()
     }
   },
   render (h) {
+    const dark = this.__input.isDark()
     return h(QPopover, {
       ref: 'popover',
+      'class': dark ? 'bg-dark' : null,
       props: {
         fit: true,
-        offset: [0, 10],
         anchorClick: false
       },
       on: {
@@ -254,6 +225,7 @@ export default {
     }, [
       h(QList, {
         props: {
+          dark,
           noBorder: true,
           separator: this.separator
         },
@@ -262,12 +234,13 @@ export default {
       this.computedResults.map((result, index) => h(QItemWrapper, {
         key: result.id || JSON.stringify(result),
         'class': {
-          active: this.selectedIndex === index,
-          'cursor-pointer': !result.disable
+          active: this.keyboardIndex === index,
+          'cursor-pointer': !result.disable,
+          'text-faded': result.disable
         },
         props: { cfg: result },
         nativeOn: {
-          mouseenter: () => { !result.disable && (this.selectedIndex = index) },
+          mouseenter: () => { !result.disable && (this.keyboardIndex = index) },
           click: () => { !result.disable && this.setValue(result) }
         }
       })))

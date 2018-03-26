@@ -4,15 +4,12 @@ import { offset, height, width } from '../../utils/dom'
 import TouchPan from '../../directives/touch-pan'
 
 export default {
-  name: 'q-knob',
+  name: 'QKnob',
   directives: {
     TouchPan
   },
   props: {
-    value: {
-      type: Number,
-      required: true
-    },
+    value: Number,
     min: {
       type: Number,
       default: 0
@@ -57,9 +54,10 @@ export default {
       return cls
     },
     svgStyle () {
+      const dir = this.$q.i18n.rtl ? -1 : 1
       return {
         'stroke-dasharray': '295.31px, 295.31px',
-        'stroke-dashoffset': (295.31 * (1.0 - (this.model - this.min) / (this.max - this.min))) + 'px',
+        'stroke-dashoffset': (295.31 * dir * (1.0 - (this.model - this.min) / (this.max - this.min))) + 'px',
         'transition': this.dragging ? '' : 'stroke-dashoffset 0.6s ease 0s, stroke 0.6s ease'
       }
     },
@@ -79,28 +77,27 @@ export default {
   watch: {
     value (value) {
       if (value < this.min) {
-        this.$emit('input', this.min)
         this.model = this.min
-        this.$nextTick(() => {
-          if (this.model !== this.value) {
-            this.$emit('change', this.model)
-          }
-        })
       }
       else if (value > this.max) {
-        this.$emit('input', this.max)
         this.model = this.max
-        this.$nextTick(() => {
-          if (this.model !== this.value) {
-            this.$emit('change', this.model)
-          }
-        })
       }
       else {
-        this.model = this.computedDecimals
+        const newVal = this.computedDecimals && typeof value === 'number'
           ? parseFloat(value.toFixed(this.computedDecimals))
           : value
+        if (newVal !== this.model) {
+          this.model = newVal
+        }
+        return
       }
+
+      this.$emit('input', this.model)
+      this.$nextTick(() => {
+        if (this.model !== this.value) {
+          this.$emit('change', this.model)
+        }
+      })
     }
   },
   methods: {
@@ -123,9 +120,8 @@ export default {
         return
       }
       stopAndPrevent(ev)
-
       this.centerPosition = this.__getCenter()
-
+      clearTimeout(this.timer)
       this.dragging = true
       this.__onInput(ev)
     },
@@ -141,12 +137,12 @@ export default {
         return
       }
       stopAndPrevent(ev)
-      setTimeout(() => {
+      this.timer = setTimeout(() => {
         this.dragging = false
       }, 100)
-      this.__onInput(ev, this.centerPosition, true, true)
+      this.__onInput(ev, this.centerPosition, true)
     },
-    __onInput (ev, center = this.__getCenter(), emitChange, dragStop) {
+    __onInput (ev, center = this.__getCenter(), emitChange) {
       if (!this.editable) {
         return
       }
@@ -166,6 +162,10 @@ export default {
         angle = center.left < pos.left ? angle + 90 : 270 - angle
       }
 
+      if (this.$q.i18n.rtl) {
+        angle = 360 - angle
+      }
+
       let
         model = this.min + (angle / 360) * (this.max - this.min),
         modulo = model % this.step
@@ -180,16 +180,21 @@ export default {
         value = parseFloat(value.toFixed(this.computedDecimals))
       }
 
-      this.model = value
+      if (this.model !== value) {
+        this.model = value
+      }
+      if (this.value === value) {
+        return
+      }
+
       this.$emit('input', value)
-      this.$nextTick(() => {
-        if (emitChange && JSON.stringify(value) !== JSON.stringify(this.value)) {
-          this.$emit('change', value)
-        }
-        if (dragStop) {
-          this.$emit('dragend', value)
-        }
-      })
+      if (emitChange) {
+        this.$nextTick(() => {
+          if (JSON.stringify(value) !== JSON.stringify(this.value)) {
+            this.$emit('change', value)
+          }
+        })
+      }
     },
     __getCenter () {
       let knobOffset = offset(this.$el)
@@ -210,7 +215,7 @@ export default {
     }, [
       h('div', {
         on: {
-          click: e => this.__onInput(e, undefined, true)
+          click: e => !this.dragging && this.__onInput(e, void 0, true)
         },
         directives: [{
           name: 'touch-pan',

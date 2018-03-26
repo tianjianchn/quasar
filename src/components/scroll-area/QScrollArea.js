@@ -6,7 +6,7 @@ import { QResizeObservable, QScrollObservable } from '../observables'
 import TouchPan from '../../directives/touch-pan'
 
 export default {
-  name: 'q-scroll-area',
+  name: 'QScrollArea',
   directives: {
     TouchPan
   },
@@ -63,19 +63,19 @@ export default {
     setScrollPosition (offset, duration) {
       setScrollPosition(this.$refs.target, offset, duration)
     },
-    __updateContainer (size) {
-      if (this.containerHeight !== size.height) {
-        this.containerHeight = size.height
+    __updateContainer ({ height }) {
+      if (this.containerHeight !== height) {
+        this.containerHeight = height
         this.__setActive(true, true)
       }
     },
-    __updateScroll (scroll) {
-      if (this.scrollPosition !== scroll.position) {
-        this.scrollPosition = scroll.position
+    __updateScroll ({ position }) {
+      if (this.scrollPosition !== position) {
+        this.scrollPosition = position
         this.__setActive(true, true)
       }
     },
-    __updateScrollHeight ({height}) {
+    __updateScrollHeight ({ height }) {
       if (this.scrollHeight !== height) {
         this.scrollHeight = height
         this.__setActive(true, true)
@@ -154,11 +154,15 @@ export default {
   render (h) {
     if (!this.$q.platform.is.desktop) {
       return h('div', {
-        ref: 'target',
-        staticClass: 'q-scroll-area scroll relative-position',
+        staticClass: 'q-scroll-area relative-position',
         style: this.contentStyle
       }, [
-        this.$slots.default
+        h('div', {
+          ref: 'target',
+          staticClass: 'scroll relative-position fit'
+        }, [
+          this.$slots.default
+        ])
       ])
     }
 
@@ -173,9 +177,7 @@ export default {
         ref: 'target',
         staticClass: 'scroll relative-position overflow-hidden fit',
         on: {
-          wheel: this.__mouseWheel,
-          mousewheel: this.__mouseWheel,
-          DOMMouseScroll: this.__mouseWheel
+          wheel: this.__mouseWheel
         },
         directives: [{
           name: 'touch-pan',
@@ -191,20 +193,17 @@ export default {
           staticClass: 'absolute full-width',
           style: this.mainStyle
         }, [
-          this.$slots.default,
           h(QResizeObservable, {
-            staticClass: 'resize-obs',
             on: { resize: this.__updateScrollHeight }
-          })
+          }),
+          this.$slots.default
         ]),
         h(QScrollObservable, {
-          staticClass: 'scroll-obs',
           on: { scroll: this.__updateScroll }
         })
       ]),
 
       h(QResizeObservable, {
-        staticClass: 'main-resize-obs',
         on: { resize: this.__updateContainer }
       }),
 

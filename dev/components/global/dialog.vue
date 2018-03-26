@@ -75,7 +75,7 @@ export default {
     onHide () {
       console.log('hide')
     },
-    async choose (okFn, hero) {
+    choose (okFn, hero) {
       if (this.name.length === 0) {
         this.error = true
         this.$q.dialog({
@@ -84,8 +84,7 @@ export default {
         })
       }
       else {
-        await okFn()
-        this.$q.notify(`Ok ${this.name}, going with ${hero}`)
+        Promise.resolve(okFn()).then(() => this.$q.notify(`Ok ${this.name}, going with ${hero}`))
       }
     },
     adHoc () {
@@ -132,7 +131,13 @@ export default {
       this.$q.dialog({
         title: 'Alert',
         message: 'Modern HTML5 Single Page Application front-end framework on steroids.',
-        cancel: true,
+        ok: {
+          push: true
+        },
+        cancel: {
+          push: true,
+          color: 'negative'
+        },
         preventClose: true
       }).then(() => {
         console.log('>>> OK')

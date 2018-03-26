@@ -52,7 +52,7 @@ export default {
     add: 'send'
   },
   collapsible: {
-    icon: 'keyboard_arrow_down'
+    icon: 'arrow_drop_down'
   },
   datetime: {
     arrowLeft: 'chevron_left',
@@ -99,6 +99,7 @@ export default {
     showNumber: 'keyboard',
     hideNumber: 'keyboard_hide',
     clear: 'cancel',
+    clearInverted: 'clear',
     dropdown: 'arrow_drop_down'
   },
   pagination: {
@@ -140,7 +141,8 @@ export default {
   },
   uploader: {
     done: 'done',
-    clear: 'clear',
+    clear: 'cancel',
+    clearInverted: 'clear',
     add: 'add',
     upload: 'cloud_upload',
     expand: 'keyboard_arrow_down',

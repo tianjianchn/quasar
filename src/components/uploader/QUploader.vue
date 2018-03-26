@@ -15,33 +15,37 @@
       :warning="warning"
       :disable="disable"
       :inverted="inverted"
+      :invertedLight="invertedLight"
       :dark="dark"
       :hide-underline="hideUnderline"
       :before="before"
       :after="after"
       :color="color"
       :align="align"
+      :no-parent-field="noParentField"
 
       :length="queueLength"
       additional-length
     >
       <div
-        class="col row items-center q-input-target"
-        v-html="label"
-      ></div>
+        class="col q-input-target ellipsis"
+        :class="alignClass"
+      >
+        {{ label }}
+      </div>
 
       <q-spinner
         v-if="uploading"
         slot="after"
         size="24px"
-        class="q-if-control"
+        class="q-if-end self-center"
       ></q-spinner>
 
       <q-icon
         v-if="uploading"
         slot="after"
-        class="q-if-control"
-        :name="$q.icon.uploader.clear"
+        class="q-if-end self-center"
+        :name="$q.icon.uploader[`clear${isInverted ? 'Inverted' : ''}`]"
         @click.native="abort"
       ></q-icon>
 
@@ -84,7 +88,7 @@
 
     <q-slide-transition>
       <div v-show="expanded">
-        <div class="q-uploader-files scroll" :style="filesStyle">
+        <q-list :dark="dark" class="q-uploader-files q-py-none scroll" :style="filesStyle">
           <q-item
             v-for="file in files"
             :key="file.name + file.__timestamp"
@@ -92,7 +96,7 @@
           >
             <q-progress v-if="!hideUploadProgress"
               class="q-uploader-progress-bg absolute-full"
-              :color="file.__failed ? 'negative' : 'grey'"
+              :color="file.__failed ? 'negative' : progressColor"
               :percentage="file.__progress"
               height="100%"
             ></q-progress>
@@ -114,7 +118,7 @@
               ></q-item-tile>
             </q-item-side>
           </q-item>
-        </div>
+        </q-list>
       </div>
     </q-slide-transition>
 
@@ -137,7 +141,7 @@ import { humanStorageSize } from '../../utils/format'
 import { QSpinner } from '../spinner'
 import { QIcon } from '../icon'
 import { QProgress } from '../progress'
-import { QItem, QItemSide, QItemMain, QItemTile } from '../list'
+import { QItem, QItemSide, QItemMain, QItemTile, QList } from '../list'
 import { QSlideTransition } from '../slide-transition'
 
 function initFile (file) {
@@ -148,13 +152,14 @@ function initFile (file) {
 }
 
 export default {
-  name: 'q-uploader',
+  name: 'QUploader',
   mixins: [FrameMixin],
   components: {
     QInputFrame,
     QSpinner,
     QIcon,
     QProgress,
+    QList,
     QItem,
     QItemSide,
     QItemMain,
@@ -235,7 +240,7 @@ export default {
     },
     dndClass () {
       const cls = [`text-${this.color}`]
-      if (this.inverted) {
+      if (this.isInverted) {
         cls.push('inverted')
       }
       return cls
@@ -244,7 +249,22 @@ export default {
       return {
         'q-uploader-expanded': this.expanded,
         'q-uploader-dark': this.dark,
-        'q-uploader-files-no-border': this.inverted || !this.hideUnderline
+        'q-uploader-files-no-border': this.isInverted || !this.hideUnderline
+      }
+    },
+    progressColor () {
+      return this.dark ? 'white' : 'grey'
+    },
+    computedExtensions () {
+      if (this.extensions) {
+        return this.extensions.split(',').map(ext => {
+          ext = ext.trim()
+          // support "image/*"
+          if (ext.endsWith('/*')) {
+            ext = ext.slice(0, ext.length - 1)
+          }
+          return ext
+        })
       }
     }
   },
@@ -259,6 +279,12 @@ export default {
     }
   },
   methods: {
+    add (files) {
+      if (files) {
+        this.__add(null, files)
+      }
+    },
+
     __onDragOver () {
       this.dnd = true
     },
@@ -267,14 +293,29 @@ export default {
     },
     __onDrop (e) {
       this.dnd = false
+      let files = e.dataTransfer.files
 
-      const
-        files = e.dataTransfer.files,
-        count = files.length
-
-      if (count > 0) {
-        this.__add(null, this.multiple ? files : [ files[0] ])
+      if (files.length === 0) {
+        return
       }
+
+      files = this.multiple ? files : [ files[0] ]
+      if (this.extensions) {
+        files = this.__filter(files)
+        if (files.length === 0) {
+          return
+        }
+      }
+
+      this.__add(null, files)
+    },
+    __filter (files) {
+      return Array.prototype.filter.call(files, file => {
+        return this.computedExtensions.some(ext => {
+          return file.type.toUpperCase().startsWith(ext.toUpperCase()) ||
+            file.name.toUpperCase().endsWith(ext.toUpperCase())
+        })
+      })
     },
     __add (e, files) {
       if (this.addDisabled) {
@@ -291,7 +332,7 @@ export default {
           file.__size = humanStorageSize(file.size)
           file.__timestamp = new Date().getTime()
 
-          if (this.noThumbnails || !file.type.startsWith('image')) {
+          if (this.noThumbnails || !file.type.toUpperCase().startsWith('IMAGE')) {
             this.queue.push(file)
           }
           else {

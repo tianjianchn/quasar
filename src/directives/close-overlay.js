@@ -5,7 +5,7 @@ export default {
       let vm = vnode.componentInstance
       while ((vm = vm.$parent)) {
         const name = vm.$options.name
-        if (name === 'q-popover' || name === 'q-modal') {
+        if (name === 'QPopover' || name === 'QModal') {
           vm.hide()
           break
         }
@@ -15,7 +15,9 @@ export default {
     el.addEventListener('click', handler)
   },
   unbind (el) {
-    el.removeEventListener('click', el.__qclose.handler)
+    const ctx = el.__qclose
+    if (!ctx) { return }
+    el.removeEventListener('click', ctx.handler)
     delete el.__qclose
   }
 }

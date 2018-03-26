@@ -49,7 +49,8 @@
       <q-datetime default-view="month" v-model="model" type="date" float-label="Default view" />
       <q-datetime inverted v-model="model" type="date" />
       <q-datetime inverted color="secondary" stack-label="Stack Label" v-model="model" type="date" />
-      <q-datetime inverted color="amber" float-label="Float Label" v-model="model" type="date" />
+      <q-datetime inverted-light color="amber" float-label="Float Label" v-model="model" type="date" />
+      <q-datetime inverted-light color="white" :dark="false" float-label="Float Label" v-model="model" type="date" />
 
       <p class="caption">Format Model</p>
       <div class="bg-secondary text-white">
@@ -81,17 +82,17 @@
           <span class="mat-only">inside of the clock</span>.
         </small>
       </p>
-      <q-datetime v-model="model" type="time" />
+      <q-datetime minimal v-model="model" type="time" />
 
       <p class="caption">Time 24hr Format (force)</p>
-      <q-datetime v-model="model" type="time" format24h />
+      <q-datetime minimal v-model="model" type="time" format24h />
 
       <p class="caption">Date & Time</p>
-      <q-datetime @change="value => log('@change', value)" v-model="model" type="datetime" />
+      <q-datetime minimal @change="value => log('@change', value)" v-model="model" type="datetime" />
 
       <p class="caption">Default Selection</p>
-      <q-datetime v-model="model" :default-selection="defaultSelection" type="datetime" />
-      <q-datetime v-model="model" :default-selection="defaultSelection" type="time" />
+      <q-datetime v-model="model" :default-value="defaultValue" type="datetime" />
+      <q-datetime v-model="model" :default-value="defaultValue" type="time" />
 
       <p class="caption">With explicit popover</p>
       <q-datetime v-model="model" popover type="date"     float-label="Pick Date" />
@@ -183,6 +184,15 @@
       </p>
       <q-datetime-picker v-model="model" type="time" />
 
+      <q-datetime v-model="model" type="datetime" />
+      <div class="bg-black q-pa-md">
+        <q-datetime dark v-model="model" type="datetime" />
+        <q-datetime-picker class="q-my-md" dark v-model="model" type="datetime" />
+        <q-datetime-picker class="q-my-md" dark color="primary" v-model="model" type="datetime" />
+        <q-datetime-picker class="q-my-md" dark color="secondary" v-model="model" type="datetime" />
+        <q-datetime-picker class="q-my-md" dark color="amber" v-model="model" type="datetime" />
+      </div>
+
       <p class="caption">Time 24hr Format (force)</p>
       <q-datetime-picker v-model="model" type="time" format24h />
 
@@ -191,9 +201,9 @@
       @change<q-datetime-picker :value="model" @input="value => log('@input', value)" @change="value => { model = value; log('@change', value) }" color="secondary" type="datetime" />
 
       <p class="caption">Date - Monday as First</p>
-      <q-datetime-picker v-model="model" monday-first type="date" />
+      <q-datetime-picker v-model="model" :first-day-of-week="1" type="date" />
       <p class="caption">Date - Saturday as First</p>
-      <q-datetime-picker v-model="model" saturday-first type="date" />
+      <q-datetime-picker v-model="model" :first-day-of-week="6" type="date" />
 
       <p class="caption">Disabled State</p>
       <q-datetime-picker disable v-model="model" type="datetime" />
@@ -218,7 +228,7 @@ export default {
       model: undefined,
       modelVar: undefined,
       // model: 0,
-      defaultSelection: '2016-09-18T10:45:00.000Z',
+      defaultValue: '2016-09-18T10:45:00.000Z',
 
       format: 'MMMM D, YYYY [at] h:mm [[]a[\\]]',
 

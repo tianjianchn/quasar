@@ -1,3 +1,4 @@
+import extend from '../../utils/extend'
 import { QCheckbox } from '../checkbox'
 
 export default {
@@ -40,7 +41,7 @@ export default {
                   : h('td', { staticClass: col.__tdClass }, this.getCellValue(col, row))
               })
 
-          if (this.selection) {
+          if (this.hasSelectionMode) {
             child.unshift(h('td', { staticClass: 'q-table-col-auto-width' }, [
               h(QCheckbox, {
                 props: {
@@ -71,7 +72,7 @@ export default {
       return h('tbody', child)
     },
     addBodyRowMeta (data) {
-      if (this.selection) {
+      if (this.hasSelectionMode) {
         Object.defineProperty(data, 'selected', {
           get: () => this.isRowSelected(data.key),
           set: adding => {
@@ -88,7 +89,7 @@ export default {
       })
 
       data.cols = data.cols.map(col => {
-        const c = Object.assign({}, col)
+        const c = extend({}, col)
         Object.defineProperty(c, 'value', {
           get: () => this.getCellValue(col, data.row)
         })

@@ -14,6 +14,10 @@ export const inline = {
     validator: modelValidator,
     required: true
   },
+  defaultValue: {
+    type: [String, Number, Date],
+    default: null
+  },
   type: {
     type: String,
     default: 'date',
@@ -23,6 +27,7 @@ export const inline = {
     type: String,
     default: 'primary'
   },
+  dark: Boolean,
   min: {
     validator: modelValidator,
     default: null
@@ -45,20 +50,14 @@ export const inline = {
   defaultView: {
     type: String,
     validator: v => ['year', 'month', 'day', 'hour', 'minute'].includes(v)
-  }
+  },
+  minimal: Boolean
 }
 
 export const input = {
   format: String,
   placeholder: String,
-  clearable: Boolean,
   okLabel: String,
   cancelLabel: String,
-  defaultSelection: {
-    type: [String, Number, Date],
-    default: null
-  },
-  displayValue: String,
-  disable: Boolean,
-  readonly: Boolean
+  displayValue: String
 }

@@ -1,7 +1,7 @@
 import { QResizeObservable } from '../observables'
 
 export default {
-  name: 'q-layout-footer',
+  name: 'QLayoutFooter',
   inject: {
     layout: {
       default () {
@@ -31,8 +31,14 @@ export default {
     offset (val) {
       this.__update('offset', val)
     },
-    revealed () {
+    reveal (val) {
+      if (!val) {
+        this.__updateLocal('revealed', this.value)
+      }
+    },
+    revealed (val) {
       this.layout.__animate()
+      this.$emit('reveal', val)
     },
     'layout.scroll' () {
       this.__updateRevealed()
@@ -72,10 +78,10 @@ export default {
         css = {}
 
       if (view[0] === 'l' && this.layout.left.space) {
-        css.marginLeft = `${this.layout.left.size}px`
+        css[`margin${this.$q.i18n.rtl ? 'Right' : 'Left'}`] = `${this.layout.left.size}px`
       }
       if (view[2] === 'r' && this.layout.right.space) {
-        css.marginRight = `${this.layout.right.size}px`
+        css[`margin${this.$q.i18n.rtl ? 'Left' : 'Right'}`] = `${this.layout.right.size}px`
       }
 
       return css
@@ -88,17 +94,24 @@ export default {
       style: this.computedStyle
     }, [
       h(QResizeObservable, {
+        props: { debounce: 0 },
         on: { resize: this.__onResize }
       }),
       this.$slots.default
     ])
   },
   created () {
+    this.layout.instances.footer = this
     this.__update('space', this.value)
+    this.__update('offset', this.offset)
   },
-  destroyed () {
-    this.__update('size', 0)
-    this.__update('space', false)
+  beforeDestroy () {
+    if (this.layout.instances.footer === this) {
+      this.layout.instances.footer = null
+      this.__update('size', 0)
+      this.__update('offset', 0)
+      this.__update('space', false)
+    }
   },
   methods: {
     __onResize ({ height }) {

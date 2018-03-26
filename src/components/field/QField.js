@@ -1,7 +1,7 @@
 import { QIcon } from '../icon'
 
 export default {
-  name: 'q-field',
+  name: 'QField',
   props: {
     inset: {
       type: String,
@@ -18,6 +18,7 @@ export default {
     warningLabel: String,
     helper: String,
     icon: String,
+    iconColor: String,
     dark: Boolean,
     orientation: {
       type: String,
@@ -103,6 +104,13 @@ export default {
       return this.isVertical
         ? `col-xs-12`
         : (this.isHorizontal ? 'col' : 'col-xs-12 col-sm')
+    },
+    iconProps () {
+      const prop = { name: this.icon }
+      if (this.iconColor && !this.hasError && !this.hasWarning) {
+        prop.color = this.iconColor
+      }
+      return prop
     }
   },
   provide () {
@@ -114,8 +122,10 @@ export default {
     __registerInput (vm) {
       this.input = vm
     },
-    __unregisterInput () {
-      this.input = {}
+    __unregisterInput (vm) {
+      if (!vm || vm === this.input) {
+        this.input = {}
+      }
     },
     __getBottomContent (h) {
       if (this.hasError && this.errorLabel) {
@@ -137,7 +147,7 @@ export default {
     }, [
       this.icon
         ? h(QIcon, {
-          props: { name: this.icon },
+          props: this.iconProps,
           staticClass: 'q-field-icon q-field-margin'
         })
         : (this.insetIcon ? h('div', { staticClass: 'q-field-icon' }) : null),

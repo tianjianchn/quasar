@@ -1,17 +1,29 @@
 export default {
-  name: 'q-toolbar',
+  name: 'QToolbar',
   props: {
-    color: String,
+    color: {
+      type: String,
+      default: 'primary'
+    },
+    textColor: String,
     inverted: Boolean,
     glossy: Boolean
   },
   computed: {
     classes () {
-      return [
-        `q-toolbar-${this.inverted ? 'inverted' : 'normal'}`,
-        this.color ? ` ${this.inverted ? 'text' : 'bg'}-${this.color}` : '',
-        this.glossy ? 'glossy' : ''
-      ]
+      const cls = [ `q-toolbar-${this.inverted ? 'inverted' : 'normal'}` ]
+
+      this.glossy && cls.push('glossy')
+
+      if (this.inverted) {
+        cls.push(`text-${this.textColor || this.color}`)
+      }
+      else {
+        cls.push(`bg-${this.color}`)
+        cls.push(`text-${this.textColor || 'white'}`)
+      }
+
+      return cls
     }
   },
   render (h) {

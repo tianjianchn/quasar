@@ -22,7 +22,7 @@ export default {
   computed: {
     classes () {
       return [
-        this.$options._componentTag,
+        this.__kebabTag,
         {
           disabled: this.disable,
           reverse: this.leftLabel,
@@ -37,7 +37,7 @@ export default {
       else {
         const color = this.keepColor
           ? this.color
-          : (this.dark ? 'light' : 'dark')
+          : (this.dark ? 'light' : 'faded')
 
         return `text-${color}`
       }
@@ -83,7 +83,7 @@ export default {
         blur: () => { this.$emit('blur') },
         keydown: this.__handleKeyDown
       },
-      directives: this.$options._componentTag === 'q-toggle'
+      directives: this.__kebabTag === 'q-toggle'
         ? [{
           name: 'touch-swipe',
           modifiers: { horizontal: true },
@@ -99,7 +99,9 @@ export default {
           attrs: { type: 'checkbox' },
           on: { change: this.toggle }
         }),
-        h('div', { staticClass: 'q-focus-helper' }),
+        this.$q.platform.is.desktop
+          ? h('div', { staticClass: 'q-focus-helper' })
+          : null,
         this.__getContent(h)
       ]),
 

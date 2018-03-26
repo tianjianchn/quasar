@@ -2,7 +2,7 @@ import QBtn from './QBtn'
 import QBtnGroup from './QBtnGroup'
 
 export default {
-  name: 'q-btn-toggle',
+  name: 'QBtnToggle',
   props: {
     value: {
       required: true
@@ -14,7 +14,7 @@ export default {
       type: String,
       default: 'primary'
     },
-    textToggleColor: String,
+    toggleTextColor: String,
     options: {
       type: Array,
       required: true,
@@ -71,11 +71,11 @@ export default {
           label: opt.label,
           // Colors come from the button specific options first, then from general props
           color: this.val[i] ? opt.toggleColor || this.toggleColor : opt.color || this.color,
-          textColor: this.val[i] ? opt.textToggleColor || this.textToggleColor : opt.textColor || this.textColor,
+          textColor: this.val[i] ? opt.toggleTextColor || this.toggleTextColor : opt.textColor || this.textColor,
           icon: opt.icon,
           iconRight: opt.iconRight,
-          noCaps: this.noCaps,
-          noWrap: this.noWrap,
+          noCaps: this.noCaps || opt.noCaps,
+          noWrap: this.noWrap || opt.noWrap,
           outline: this.outline,
           flat: this.flat,
           rounded: this.rounded,
@@ -83,8 +83,8 @@ export default {
           glossy: this.glossy,
           size: this.size,
           dense: this.dense,
-          noRipple: this.noRipple,
-          waitForRipple: this.waitForRipple,
+          noRipple: this.noRipple || opt.noRipple,
+          waitForRipple: this.waitForRipple || opt.waitForRipple,
           tabindex: opt.tabindex
         }
       })

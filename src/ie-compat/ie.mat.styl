@@ -1,11 +1,13 @@
 ie_style = @block
   /* Flex */
-  .absolute .q-if-inner, .fixed .q-if-inner
-    min-width 10em
+  .absolute, .fixed
+    .q-if-inner, .q-input-target
+      min-width auto
+      flex-basis auto
+  .q-if-inner
+    min-height 21px
 
   /* QAlert */
-  .q-alert-container
-    max-width 100%
   .row > .col
     &.q-alert-content
       flex-basis auto
@@ -16,32 +18,26 @@ ie_style = @block
       display -ms-inline-grid
 
   /* QBtn */
-  .q-btn.row
-    &:not(.q-btn-round)
-      &.inline
-        display inline-block
-      &.block
-        display block
+  .q-btn
     &:active
       .q-btn-inner
         margin -1px 1px 1px -1px
-      &.q-btn-push .q-btn-inner
-        margin 0 1px 0 -1px
+      &.q-btn-push
+        .q-btn-inner
+          margin 0 1px 0 -1px
+        &.disabled
+          .q-btn-inner
+            margin -1px 1px 1px -1px
+  .q-btn-group > .q-btn.q-btn-push:not(.disabled):active .q-btn-inner
+    margin 0
 
   /* QChip */
-  .q-chip
-    .q-chip-main
-      line-height $chip-height
-    &.small .q-chip-main
-      line-height normal
-  .q-btn
-    .q-chip
-      display inline-block
-      .q-chip-main
-        line-height normal
-  .q-tab
-    .q-chip
-      left auto
+  .q-chip:not(.q-chip-small):not(.q-chip-dense) .q-chip-main
+    line-height $chip-height
+  .q-btn .q-chip
+    display inline-block
+  .q-tab .q-chip .q-chip-main
+    line-height normal
 
   /* QFab */
   .q-fab-actions
@@ -49,7 +45,10 @@ ie_style = @block
     &.q-fab-right
       display block
       white-space nowrap
-      top -6px
+
+  /* QList */
+  .q-item-main
+    min-width 1px
 
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none)
   {ie_style}

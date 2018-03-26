@@ -2,13 +2,12 @@ import { QIcon } from '../icon'
 import { RouterLinkMixin } from '../../utils/router-link'
 
 export default {
-  name: 'q-breadcrumbs-el',
+  name: 'QBreadcrumbsEl',
   mixins: [{ props: RouterLinkMixin.props }],
   props: {
     label: String,
     icon: String,
-    color: String,
-    noRipple: Boolean
+    color: String
   },
   computed: {
     link () {
@@ -18,14 +17,7 @@ export default {
   render (h) {
     return h(this.link ? 'router-link' : 'span', {
       staticClass: 'q-breadcrumbs-el flex inline items-center relative-position',
-      props: this.link
-        ? {
-          to: this.to,
-          exact: this.exact,
-          append: this.append,
-          replace: this.replace
-        }
-        : null
+      props: this.link ? this.$props : null
     },
     this.label || this.icon
       ? [

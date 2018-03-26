@@ -10,11 +10,13 @@
     :warning="warning"
     :disable="disable"
     :inverted="inverted"
+    :invertedLight="invertedLight"
     :dark="dark"
     :hide-underline="hideUnderline"
     :before="before"
     :after="after"
-    :color="computedColor"
+    :color="color"
+    :no-parent-field="noParentField"
 
     :focused="focused"
     :length="length"
@@ -28,7 +30,7 @@
         :closable="editable"
         v-for="(label, index) in model"
         :key="`${label}#${index}`"
-        :color="computedChipColor"
+        :color="computedChipBgColor"
         :text-color="computedChipTextColor"
         @blur="__onInputBlur"
         @blur.native="__onInputBlur"
@@ -43,7 +45,7 @@
       <input
         ref="input"
         class="col q-input-target"
-        :class="[`text-${align}`]"
+        :class="alignClass"
         v-model="input"
 
         :placeholder="inputPlaceholder"
@@ -62,7 +64,7 @@
       v-if="editable"
       :name="computedAddIcon"
       slot="after"
-      class="q-if-control self-end"
+      class="q-if-control"
       :class="{invisible: !input.length}"
       @mousedown.native="__clearTimer"
       @touchstart.native="__clearTimer"
@@ -79,7 +81,7 @@ import { QChip } from '../chip'
 import { getEventKey, stopAndPrevent } from '../../utils/event'
 
 export default {
-  name: 'q-chips-input',
+  name: 'QChipsInput',
   mixins: [FrameMixin, InputMixin],
   components: {
     QInputFrame,
@@ -90,19 +92,20 @@ export default {
       type: Array,
       required: true
     },
-    frameColor: String,
+    chipsColor: String,
+    chipsBgColor: String,
     readonly: Boolean,
     addIcon: String
   },
   data () {
     return {
       input: '',
-      model: [...this.value]
+      model: this.value
     }
   },
   watch: {
     value (v) {
-      this.model = Array.isArray(v) ? [...v] : []
+      this.model = this.value
     }
   },
   computed: {
@@ -114,34 +117,51 @@ export default {
     computedAddIcon () {
       return this.addIcon || this.$q.icon.chipsInput.add
     },
-    computedColor () {
-      return this.inverted ? this.frameColor || this.color : this.color
-    },
-    computedChipColor () {
-      if (this.inverted) {
-        if (this.frameColor) {
-          return this.color
-        }
-        return this.dark !== false ? 'white' : null
-      }
-      return this.color
-    },
     computedChipTextColor () {
-      if (this.inverted) {
-        return this.frameColor || this.color
+      if (this.chipsColor) {
+        return this.chipsColor
       }
-      return this.dark !== false ? 'white' : null
+      if (this.isInvertedLight) {
+        return this.invertedLight ? this.color : 'white'
+      }
+      if (this.isInverted) {
+        return this.invertedLight ? 'grey-10' : this.color
+      }
+      return this.dark
+        ? this.color
+        : 'white'
+    },
+    computedChipBgColor () {
+      if (this.chipsBgColor) {
+        return this.chipsBgColor
+      }
+      if (this.isInvertedLight) {
+        return this.invertedLight ? 'grey-10' : this.color
+      }
+      if (this.isInverted) {
+        return this.invertedLight ? this.color : 'white'
+      }
+      return this.dark
+        ? 'white'
+        : this.color
     }
   },
   methods: {
     add (value = this.input) {
       clearTimeout(this.timer)
       this.focus()
-      if (this.editable && value) {
-        this.model.push(value)
-        this.$emit('input', this.model)
-        this.input = ''
+
+      if (!this.editable || !value) {
+        return
       }
+      if (this.model.includes(value)) {
+        this.$emit('duplicate', value)
+        return
+      }
+
+      this.model.push(value)
+      this.$emit('input', this.model)
+      this.input = ''
     },
     remove (index) {
       clearTimeout(this.timer)

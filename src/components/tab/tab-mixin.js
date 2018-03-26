@@ -50,13 +50,13 @@ export default {
         active: this.active,
         hidden: this.hidden,
         disabled: this.disable,
-        'icon-and-label': this.icon && this.label,
+        'q-tab-only-label': !this.icon && this.label,
         'hide-icon': this.hide === 'icon',
         'hide-label': this.hide === 'label'
       }
 
       const color = this.data.inverted
-        ? this.color || this.data.color
+        ? this.color || this.data.textColor || this.data.color
         : this.color
 
       if (color) {
@@ -82,7 +82,7 @@ export default {
         }
       }))
 
-      this.label && child.push(h('span', {
+      this.label && child.push(h('div', {
         staticClass: 'q-tab-label',
         domProps: {
           innerHTML: this.label
