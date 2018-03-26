@@ -42,12 +42,15 @@
       if (!elm) { return }
 
       newHeight = elm.clientHeight;
-      if (lastHeight !== newHeight) { callback(); }
+
+      var hasChanged = lastHeight !== newHeight;
+
       lastHeight = newHeight;
 
       if (elm.onElementHeightChangeTimer) { clearTimeout(elm.onElementHeightChangeTimer); }
-
       elm.onElementHeightChangeTimer = setTimeout(run, 200);
+
+      if (hasChanged) { callback(); }
     })();
 
     return function () {
@@ -11911,6 +11914,10 @@
           if (stopLoading) {
             this$1.stop();
           }
+          else if (this$1._needPollAgain) {
+            this$1._needPollAgain = false;
+            this$1.poll();
+          }
           // if (this.element.closest('body')) {
           //   this.poll()
           // }
@@ -11955,7 +11962,14 @@
         this$1.poll = debounce(this$1.poll, 50);
         this$1.element = this$1.$refs.content;
 
-        this$1.offElementHeightChange = onElementHeightChange(this$1.element, this$1.poll);
+        // If content height changed, then check again
+        this$1.offElementHeightChange = onElementHeightChange(this$1.element, function () {
+          if (this$1.fetching) { this$1._needPollAgain = true; }
+          else {
+            this$1._needPollAgain = false;
+            this$1.poll();
+          }
+        });
 
         this$1.scrollContainer = this$1.inline ? this$1.$el : getScrollTarget(this$1.$el);
         if (this$1.working) {

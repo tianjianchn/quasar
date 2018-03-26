@@ -24,12 +24,15 @@ export function onElementHeightChange (elm, callback) {
     if (!elm) return
 
     newHeight = elm.clientHeight
-    if (lastHeight !== newHeight) { callback() }
+
+    let hasChanged = lastHeight !== newHeight
+
     lastHeight = newHeight
 
     if (elm.onElementHeightChangeTimer) { clearTimeout(elm.onElementHeightChangeTimer) }
-
     elm.onElementHeightChangeTimer = setTimeout(run, 200)
+
+    if (hasChanged) callback()
   })()
 
   return () => {

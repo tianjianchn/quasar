@@ -53,6 +53,10 @@ export default {
         if (stopLoading) {
           this.stop()
         }
+        else if (this._needPollAgain) {
+          this._needPollAgain = false
+          this.poll()
+        }
         // if (this.element.closest('body')) {
         //   this.poll()
         // }
@@ -93,7 +97,14 @@ export default {
       this.poll = debounce(this.poll, 50)
       this.element = this.$refs.content
 
-      this.offElementHeightChange = onElementHeightChange(this.element, this.poll)
+      // If content height changed, then check again
+      this.offElementHeightChange = onElementHeightChange(this.element, () => {
+        if (this.fetching) this._needPollAgain = true
+        else {
+          this._needPollAgain = false
+          this.poll()
+        }
+      })
 
       this.scrollContainer = this.inline ? this.$el : getScrollTarget(this.$el)
       if (this.working) {
