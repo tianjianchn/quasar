@@ -10,6 +10,5 @@ test/e2e/dist/
 cordova
 *.sublime*
 .idea/
+.vscode/
 debug.log
-yarn.lock
-package-lock.json
