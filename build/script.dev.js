@@ -62,6 +62,6 @@ module.exports = app.listen(port, function (err) {
   }
 
   devMiddleware.waitUntilValid(function () {
-    opn(uri)
+    // opn(uri)
   })
 })
