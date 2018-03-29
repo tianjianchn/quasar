@@ -46,9 +46,10 @@ export default {
         : cls
     },
     content () {
-      return this.classes.startsWith('material-icons')
-        ? this.icon.replace(/ /g, '_')
-        : ' '
+      return ' ' // 统一一个字符，避免宽度过大
+      // return this.classes.startsWith('material-icons')
+      //   ? this.icon.replace(/ /g, '_')
+      //   : ' '
     },
     style () {
       if (this.size) {
