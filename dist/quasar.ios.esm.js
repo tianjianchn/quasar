@@ -18249,6 +18249,8 @@ var QUploader = {render: function(){var _vm=this;var _h=_vm.$createElement;var _
       var
         form = new FormData(),
         xhr = new XMLHttpRequest();
+      xhr.timeout = 20000;
+      xhr.withCredentials = true; // support cookie under cors
 
       try {
         this.additionalFields.forEach(function (field) {

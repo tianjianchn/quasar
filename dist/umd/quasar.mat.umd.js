@@ -18297,6 +18297,8 @@
         var
           form = new FormData(),
           xhr = new XMLHttpRequest();
+        xhr.timeout = 20000;
+        xhr.withCredentials = true; // support cookie under cors
 
         try {
           this.additionalFields.forEach(function (field) {
