@@ -91,5 +91,8 @@ export default {
   tree: {
     noNodes: 'No nodes available',
     noResults: 'No matching nodes found'
+  },
+  uploader: {
+    placeholder: 'Click to select an image or drag and drop one'
   }
 }

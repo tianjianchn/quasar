@@ -26,13 +26,16 @@
 
       :length="queueLength"
       additional-length
+      @click="__pick"
     >
-      <div
-        class="col q-input-target ellipsis"
-        :class="alignClass"
-      >
-        {{ label }}
-      </div>
+      <slot name="placeholder">
+        <div
+          class="col q-input-target ellipsis"
+          :class="alignClass"
+        >
+          {{ label }}
+        </div>
+      </slot>
 
       <q-spinner
         v-if="uploading"
@@ -46,26 +49,30 @@
         slot="after"
         class="q-if-end self-center"
         :name="$q.icon.uploader[`clear${isInverted ? 'Inverted' : ''}`]"
-        @click.native="abort"
+        @click.native.stop="abort"
+      ></q-icon>
+      <q-icon
+        v-if="!uploading && files.length>0"
+        slot="after"
+        class="q-uploader-pick-button q-if-end self-center"
+        :name="$q.icon.uploader[`clear${isInverted ? 'Inverted' : ''}`]"
+        @click.native.stop="__removeAllFiles"
       ></q-icon>
 
       <q-icon
-        v-if="!uploading"
+        v-if="!uploading && !addDisabled"
         slot="after"
         :name="$q.icon.uploader.add"
         class="q-uploader-pick-button q-if-control relative-position overflow-hidden"
-        @click.native="__pick"
-        :disabled="addDisabled"
-      >
-        <input
-          type="file"
-          ref="file"
-          class="q-uploader-input absolute-full cursor-pointer"
-          :accept="extensions"
-          v-bind.prop="{multiple: multiple}"
-          @change="__add"
-        >
-      </q-icon>
+      ></q-icon>
+      <input
+        type="file"
+        ref="file"
+        class="q-uploader-input absolute-full cursor-pointer"
+        :accept="extensions"
+        v-bind.prop="{multiple: multiple}"
+        @change="__add"
+      />
 
       <q-icon
         v-if="!hideUploadButton && !uploading"
@@ -73,7 +80,7 @@
         :name="$q.icon.uploader.upload"
         class="q-if-control"
         :disabled="queueLength === 0"
-        @click.native="upload"
+        @click.native.stop="upload"
       ></q-icon>
 
       <q-icon
@@ -82,7 +89,7 @@
         :name="$q.icon.uploader.expand"
         class="q-if-control generic_transition"
         :class="{'rotate-180': expanded}"
-        @click.native="expanded = !expanded"
+        @click.native.stop="expanded = !expanded"
       ></q-icon>
     </q-input-frame>
 
@@ -199,7 +206,10 @@ export default {
     sendRaw: {
       type: Boolean,
       default: false
-    }
+    },
+    value: Array, // Existent online files
+    limit: Number, // limit number of files
+    placeholder: String
   },
   data () {
     return {
@@ -223,14 +233,15 @@ export default {
     },
     label () {
       const total = humanStorageSize(this.totalSize)
-      return this.uploading
-        ? `${(this.progress).toFixed(2)}% (${humanStorageSize(this.uploadedSize)} / ${total})`
-        : `${this.queueLength} (${total})`
+      if (this.uploading) return `${(this.progress).toFixed(2)}% (${humanStorageSize(this.uploadedSize)} / ${total})`
+      else if (this.limit && this.files.length >= this.limit) return ''
+      else return this.placeholder || this.$q.i18n.uploader.placeholder
     },
     progress () {
       return this.totalSize ? Math.min(99.99, this.uploadedSize / this.totalSize * 100) : 0
     },
     addDisabled () {
+      if (this.limit && this.files.length >= this.limit) return true
       return !this.multiple && this.queueLength >= 1
     },
     filesStyle () {
@@ -275,6 +286,22 @@ export default {
       }
       else if (this.autoExpand) {
         this.expanded = true
+      }
+    },
+    value: {
+      immediate: true,
+      handler (v) {
+        if (!v) this.files = []
+        else {
+          this.files = v.map(item => ({
+            __img: {src: item},
+            __failed: false,
+            __doneUploading: true,
+            progress: 100,
+            __progress: 100,
+            __timestamp: Date.now()
+          }))
+        }
       }
     }
   },
@@ -371,6 +398,9 @@ export default {
         ? this.queue.map(f => f.size).reduce((total, size) => total + size)
         : 0
     },
+    __removeAllFiles () {
+      this.files.forEach(file => this.__remove(file))
+    },
     __remove (file) {
       const
         name = file.name,
@@ -394,7 +424,7 @@ export default {
       this.__computeTotalSize()
     },
     __pick () {
-      if (!this.addDisabled && this.$q.platform.is.mozilla) {
+      if (!this.addDisabled) {
         this.$refs.file.click()
       }
     },

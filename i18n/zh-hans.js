@@ -87,5 +87,8 @@ export default {
     size6: '非常大',
     size7: '超级大',
     defaultFont: '默认字体'
+  },
+  uploader: {
+    placeholder: '点击选择图片或拖拽图片至此'
   }
 }

@@ -4140,6 +4140,7 @@ body.desktop .q-tree-dark .q-tree-node-link:hover {
   border-bottom-right-radius: 0;
 }
 .q-uploader-input {
+  display: none;
   opacity: 0;
   max-width: 100%;
   height: 100%;
