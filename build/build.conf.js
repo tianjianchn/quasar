@@ -3,7 +3,7 @@ const version = process.env.VERSION || require('../package.json').version
 module.exports = {
   version,
   // themes: ['mat', 'ios'],
-  themes: ['mat'],
+  themes: ['ios'],
   themeToken: '__THEME__',
   banner:
     '/*!\n' +

@@ -561,21 +561,20 @@ $shadow-up-21 = 0 -10px 13px -6px $elevation-umbra, 0 -21px 33px 3px $elevation-
 $shadow-up-22 = 0 -10px 14px -6px $elevation-umbra, 0 -22px 35px 3px $elevation-penumbra, 0 -8px 42px 7px $elevation-ambient
 $shadow-up-23 = 0 -11px 14px -7px $elevation-umbra, 0 -23px 36px 3px $elevation-penumbra, 0 -9px 44px 8px $elevation-ambient
 $shadow-up-24 = 0 -11px 15px -7px $elevation-umbra, 0 -24px 38px 3px $elevation-penumbra, 0 -9px 46px 8px $elevation-ambient
-$generic-border-radius      ?= 2px
-$typography-font-family     ?= 'Roboto', '-apple-system', 'Helvetica Neue', Helvetica, Arial, sans-serif
-$min-line-height            ?= 1.12
+$generic-border-radius      ?= 4px
+$typography-font-family     ?= '-apple-system', 'Helvetica Neue', Helvetica, Arial, sans-serif
+$min-line-height            ?= 1.19
 $action-sheet-background       ?= white
+$action-sheet-border-radius    ?= 13px
 $action-sheet-hover-background ?= #d0d0d0
-$alert-padding       ?= 12px
-$alert-border-radius ?= $generic-border-radius
-$alert-min-width     ?= 200px
+$alert-padding        ?= 12px
+$alert-border-radius  ?= $generic-border-radius
+$alert-min-width      ?= 200px
 $button-border-radius         ?= $generic-border-radius
 $button-padding               ?= 4px 16px
 $button-dense-padding         ?= 4px
 $button-transition            ?= .3s cubic-bezier(.25, .8, .5, 1)
 $button-font-size             ?= 14px
-$button-font-weight           ?= 500
-$button-shadow                ?= $shadow-2
 $button-rounded-border-radius ?= 28px
 $button-push-border-radius    ?= 7px
 $card-faded-color          ?= rgba(0, 0, 0, .4)
@@ -593,9 +592,10 @@ $chat-message-received-bg        ?= $green-4
 $chat-message-sent-color         ?= black
 $chat-message-sent-bg            ?= $grey-4
 $chat-message-avatar-size        ?= 48px
-$chat-message-border-radius      ?= $generic-border-radius
+$chat-message-border-radius      ?= 20px
 $chat-message-distance           ?= 8px
-$chat-message-text-padding       ?= 8px
+$chat-message-text-padding-vert  ?= 9px
+$chat-message-text-padding-horiz ?= 11px
 $chip-border             ?= #e0e0e0
 $chip-border-radius      ?= 2rem
 $chip-font-size          ?= 14px
@@ -638,7 +638,7 @@ $collapsible-padding             ?= 8px 16px
 $collapsible-indent-left-padding ?= ($item-primary-size + $item-gutter)
 $collapsible-active-color        ?= $item-active-color
 $collapsible-menu-left-padding   ?= 48px
-$datetime-range-space     ?= 10px
+$datetime-range-space    ?= 10px
 $datetime-input-min-width ?= 70px
 $dot-color             ?= $red
 $dot-opacity           ?= .8
@@ -654,8 +654,8 @@ $editor-hr-color                ?= $editor-border-color
 $editor-button-gutter           ?= 5px
 $fab-margin    ?= 5px
 $field-icon-size        ?= 28px
-$field-label-color      ?= $form-dark
-$field-dark-label-color ?= $form-light
+$field-label-color      ?= $dark
+$field-dark-label-color ?= $light
 $table-transition               ?= .3s cubic-bezier(.25, .8, .5, 1)
 $table-border-radius            ?= $generic-border-radius
 $table-box-shadow               ?= $shadow-2
@@ -665,36 +665,36 @@ $table-header-color             ?= rgba(0, 0, 0, .54)
 $table-hover-background         ?= rgba(0, 0, 0, .03)
 $table-selected-background      ?= rgba(0, 0, 0, .06)
 $table-dark-border-color        ?= rgba(255, 255, 255, .12)
-$table-dark-color               ?= $grey-3
+$table-dark-color               ?= white
 $table-dark-header-color        ?= rgba(255, 255, 255, .64)
 $table-dark-hover-background    ?= rgba(255, 255, 255, .1)
 $table-dark-selected-background ?= rgba(255, 255, 255, .2)
 $input-frame-transition ?= all .45s cubic-bezier(.23, 1, .32, 1)
 $toolbar-min-height          ?= 50px
-$toolbar-padding             ?= 4px 12px
-$toolbar-title-font-size     ?= 18px
+$toolbar-padding             ?= 4px 10px
+$toolbar-title-font-size     ?= 16px
 $toolbar-subtitle-font-size  ?= 12px
-$toolbar-title-font-weight   ?= 500
-$toolbar-title-padding       ?= 0 12px
+$toolbar-title-font-weight   ?= 600
+$toolbar-title-padding       ?= 0 5px
 $layout-aside-background   ?= white
-$layout-aside-left-width   ?= 300px
-$layout-aside-right-width  ?= 300px
-$layout-header-shadow      ?= $shadow-4
-$layout-footer-shadow      ?= $shadow-up-4
-$layout-aside-shadow       ?= $shadow-8
+$layout-aside-left-width   ?= 280px
+$layout-aside-right-width  ?= 280px
+$layout-border-color       ?= $item-separator-color
+$layout-border             ?= 1px solid $layout-border-color
 $loading-background ?= $dimmed-background
 $modal-background        ?= white
 $modal-width             ?= 80vw
 $modal-max-width         ?= 1000px
 $modal-height            ?= 80vh
 $modal-max-height        ?= 1000px
-$modal-header-font-size  ?= 1.6rem
-$modal-header-padding    ?= 24px 24px 10px 24px
-$modal-header-text-align ?= left
-$modal-body-color        ?= rgba(0, 0, 0, .5)
-$modal-body-padding      ?= 10px 24px
+$modal-header-font-size  ?= 1.3rem
+$modal-header-padding    ?= 20px 16px 10px
+$modal-header-text-align ?= center
+$modal-body-color        ?= black
+$modal-body-padding      ?= 10px 16px 21px
 $modal-scroll-size       ?= 240px
-$modal-buttons-padding   ?= 22px 8px 8px
+$modal-buttons-padding   ?= 0
+$modal-border-radius     ?= 13px
 $label-offset ?= 8px
 $paralax-text-shadow ?= 0 0 5px white
 $popover-background   ?= white
@@ -712,25 +712,31 @@ $stepper-divider-color         ?= rgba(0, 0, 0, .12)
 $stepper-label-color           ?= rgba(0, 0, 0, .56)
 $stepper-label-inactive-color  ?= rgba(0, 0, 0, .42)
 $stepper-hover-background      ?= rgba(0, 0, 0, .05)
+$stepper-active-background     ?= rgba(0, 0, 0, .17)
 $stepper-pane-padding          ?= 16px
 $stepper-border-radius         ?= $generic-border-radius
 $tabs-padding                  ?= 8px
 $tabs-big-screen-horiz-padding ?= 25px
-$tabs-min-height               ?= 48px
+$tabs-min-height               ?= 35px
 $tabs-big-screen-side-padding  ?= 12px
 $tabs-pane-padding             ?= 12px
 $tabs-pane-border              ?= 1px solid rgba(0, 0, 0, .1)
-$tabs-unselected-opacity       ?= .7
-$tabs-font-size                ?= .95rem
-$tabs-icon-font-size           ?= 27px
-$tabs-font-weight              ?= 500
-$tabs-text-transform           ?= uppercase
-$tabs-border-width             ?= 2px
-$tooltip-color         ?= #fafafa
-$tooltip-background    ?= #747474
+$tabs-unselected-opacity       ?= .6
+$tabs-font-size                ?= .7rem
+$tabs-big-font-size            ?= .9rem
+$tabs-icon-font-size           ?= 1.5rem
+$tabs-font-weight              ?= 400
+$tooltip-color         ?= black
+$tooltip-background    ?= white
 $tooltip-box-shadow    ?= $shadow-6
 $tooltip-padding       ?= 10px
 $tooltip-border-radius ?= $generic-border-radius
+$tree-connector-color            ?= #ccc
+$tree-label-padding              ?= 5px
+$tree-label-border-radius        ?= $generic-border-radius
+$tree-highlight-color            ?= inherit
+$tree-highlight-background       ?= $tree-connector-color
+$tree-label-icon-font-size       ?= 1.3rem
 *, *:before, *:after 
   box-sizing inherit
   -webkit-tap-highlight-color transparent
@@ -801,17 +807,24 @@ input[type='search']
 input[type='search']::-webkit-search-cancel-button,
 input[type='search']::-webkit-search-decoration
   -webkit-appearance none
+.q-actionsheet
+  border-radius $action-sheet-border-radius
+  background $action-sheet-background
+  max-width 95%
+  margin-left auto
+  margin-right auto
+  margin-bottom 10px
+  overflow hidden
 .q-actionsheet-title
-  min-height 56px
+  min-height 48px
   padding 0 16px
   color $faded
   color var(--q-color-faded)
-.q-actionsheet-body
-  max-height 500px
+  text-align center
 .q-actionsheet-grid
   padding 8px 16px
   .q-item-separator-component
-    margin 24px 0
+    margin 18px 0
 .q-actionsheet-grid-item
   padding 8px 16px
   transition background .3s
@@ -820,7 +833,7 @@ input[type='search']::-webkit-search-decoration
     outline 0
   i, img
     font-size 48px
-    margin-bottom 8px
+    margin-bottom 4px
   .avatar
     width 48px
     height 48px
@@ -895,9 +908,6 @@ input[type='search']::-webkit-search-decoration
   background transparent
   transition $button-transition
   min-height 2.572em
-  box-shadow $button-shadow
-  font-weight $button-font-weight
-  text-transform uppercase
   .q-icon, .q-spinner
     font-size 1.4em
   
@@ -905,35 +915,14 @@ input[type='search']::-webkit-search-decoration
     content ''
   &.disabled
     opacity .7 !important
-  &:not(.disabled):not(.q-btn-flat):not(.q-btn-outline):not(.q-btn-push)
-    &:before
-      
-      
-      
-      
-      content ''
-      position absolute
-      top 0
-      right 0
-      bottom 0
-      left 0
-      border-radius inherit
-      z-index -1
-      transition $button-transition
-    &:active:before
-      box-shadow $shadow-8
 .q-btn-progress
   transition all .3s
   height 100%
   background rgba(255, 255, 255, .25)
   &.q-btn-dark-progress
     background rgba(0, 0, 0, .2)
-.q-btn-no-uppercase
-  text-transform none
 .q-btn-rectangle
   border-radius $button-border-radius
-.q-btn-flat, .q-btn-outline
-  box-shadow none
 .q-btn-outline
   border 1px solid currentColor
   background transparent !important
@@ -941,7 +930,6 @@ input[type='search']::-webkit-search-decoration
   border-radius $button-push-border-radius
   border-bottom 3px solid rgba(0, 0, 0, .15)
   &:active:not(.disabled)
-    box-shadow none
     transform translateY(3px)
     border-bottom-color transparent
   .q-focus-helper, .q-ripple-container
@@ -955,8 +943,6 @@ input[type='search']::-webkit-search-decoration
   min-height 0
   height 3em
   width 3em
-  &:not(.q-btn-flat):not(.q-btn-outline)
-    box-shadow $button-shadow
 .q-btn-dense
   padding .285em
   min-height 2em
@@ -982,10 +968,7 @@ input[type='search']::-webkit-search-decoration
   border-left 1px solid rgba(255, 255, 255, .3)
 .q-btn-group
   border-radius $button-border-radius
-  box-shadow $button-shadow
   vertical-align middle
-  > .q-btn-item
-    box-shadow none
   > .q-btn-group
     > .q-btn:first-child
       border-top-left-radius inherit
@@ -1015,8 +998,6 @@ input[type='search']::-webkit-search-decoration
         transform translateY(3px)
 .q-btn-group-rounded
   border-radius $button-rounded-border-radius
-.q-btn-group-flat, .q-btn-group-outline
-  box-shadow none
 .q-btn-group-outline
   > .q-btn-item + .q-btn-item
     border-left 0
@@ -1126,6 +1107,8 @@ input[type='search']::-webkit-search-decoration
       font-size $carousel-quick-nav-icon-inactive-font-size !important
 .q-message-name, .q-message-stamp, .q-message-label
   font-size small
+.q-message-name
+  padding-left $chat-message-text-padding-horiz
 .q-message-label
   margin (3 * $chat-message-distance) 0
 .q-message-stamp
@@ -1146,34 +1129,41 @@ input[type='search']::-webkit-search-decoration
     margin-right 8px
   .q-message-text
     color $chat-message-received-bg
-    border-radius $chat-message-border-radius $chat-message-border-radius $chat-message-border-radius 0
-    &:last-child:before
-      right 100%
-      border-right 0 solid transparent
-      border-left 8px solid transparent
-      border-bottom 8px solid currentColor
+    border-radius $chat-message-border-radius
+    &:last-child
+      &:before
+        left -7px
+        border-left 20px solid currentColor
+        border-bottom-right-radius 16px 14px
+      &:after
+        left 23px
+        border-bottom-right-radius 10px
   .q-message-text-content
     color $chat-message-received-color
 .q-message-sent
   .q-message-name
     text-align right
+    padding-right $chat-message-text-padding-horiz
   .q-message-avatar
     margin-left 8px
   .q-message-container
     flex-direction row-reverse
   .q-message-text
     color $chat-message-sent-bg
-    border-radius $chat-message-border-radius $chat-message-border-radius 0 $chat-message-border-radius
-    &:last-child:before
-      left 100%
-      border-left 0 solid transparent
-      border-right 8px solid transparent
-      border-bottom 8px solid currentColor
+    border-radius $chat-message-border-radius
+    &:last-child
+      &:before
+        right -7px
+        border-right 20px solid currentColor
+        border-bottom-left-radius 16px 14px
+      &:after
+        right -37px
+        border-bottom-left-radius 10px
   .q-message-text-content
     color $chat-message-sent-color
 .q-message-text
   background currentColor
-  padding $chat-message-text-padding
+  padding $chat-message-text-padding-vert $chat-message-text-padding-horiz
   line-height max(1.2, $min-line-height)
   word-break break-word
   position relative
@@ -1184,12 +1174,16 @@ input[type='search']::-webkit-search-decoration
     min-height $chat-message-avatar-size
     .q-message-stamp
       display block
-    &:before
+    &:before, &:after
       content ''
       position absolute
-      bottom 0
-      width 0
-      height 0
+      bottom -2px
+      height 20px
+      transform translate(0, -2px)
+    &:after
+      background white
+      width 7px
+      transform translate(-30px, -2px)
 $checkbox-size = 21px
 .q-checkbox-icon
   height $checkbox-size
@@ -1413,10 +1407,12 @@ $checkbox-size = 21px
   &.active-track
     opacity 0
 .q-color-sliders
-  height 56px
+  height 66px
   .q-slider
-    height 20px
+    height 24px
   .q-slider-handle
+    height 18px
+    width 18px
     box-shadow 0 1px 4px 0 rgba(0, 0, 0, .37)
   .q-slider-ring
     display none
@@ -1447,182 +1443,85 @@ $checkbox-size = 21px
     border 1px solid var(--q-color-dark)
 .q-datetime-input
   min-width $datetime-input-min-width
-.q-datetime-controls
-  padding 0 10px 8px
 .q-datetime
-  font-size 12px
-  text-align center
-  user-select none
-  line-height initial
-  .modal-buttons
-    padding-top 8px
-.q-datetime-header
-  background currentColor
-  > div
-    color white
-.q-datetime-weekdaystring
-  font-size .8rem
-  background rgba(0, 0, 0, .1)
-  padding 5px 0
-.q-datetime-time
-  padding 10px 0
-div + .q-datetime-time
-  padding-top 0
-.q-datetime-ampm
-  font-size .9rem
-.q-datetime-datestring
-  font-size 2.7rem
-  span.small
-    font-size 1.2rem
-.q-datetime-link
-  cursor pointer
-  opacity .6
-  &.active
-    opacity 1
-.q-datetime-clockstring
-  font-size 2.7rem
-  direction: ltr /* rtl:ignore */
-.q-datetime-selector
-  height 310px
-  overflow auto
-.q-datetime-view-day
-  width 250px
-  height 285px
-  color black
-.q-datetime-view-year, .q-datetime-view-month
-  > .q-btn:not(.active)
-    color black
-.q-datetime-month-stamp
-  font-size 16px
-.q-datetime-weekdays
-  margin-bottom 5px
-  div
-    opacity .6
-    width 35px
-    height 35px
-    line-height 35px
-    margin 0
-    padding 0
-    min-width 0
-    min-height 0
-    background transparent
-.q-datetime-days div
-  margin 1px
-  line-height 33px
-  width 33px
-  height 33px
-  border-radius 50%
-  &.q-datetime-day-active
-    background currentColor
-    > span
-      color white
-      font-weight bold
-  &.q-datetime-day-today
-    color currentColor
-    font-weight bold
-    font-size 14px
-  &:not(.q-datetime-fillerday):not(.disabled):not(.q-datetime-day-active):hover
-    background $grey-4
-.q-datetime-btn
-  font-weight normal
-  &.active
-    font-size 1.5rem
-    padding-top 1rem
-    padding-bottom 1rem
-.q-datetime-clock
-  width 250px
-  height 250px
-  border-radius 50%
-  background $grey-4
-  padding 24px
-.q-datetime-clock-circle
+  border 1px solid $grey-4
+  &.type-date, &.type-datetime
+    width 320px
+  &.type-time
+    width 250px
+.q-datetime-content
+  height 200px
   position relative
-  animation q-pop-in .5s
-.q-datetime-clock-center
-  height 6px
-  width 6px
-  top 0
-  margin auto
-  border-radius 50%
-  min-height 0
-  position absolute
-  left 0
-  right 0
-  bottom 0
-  background currentColor
-.q-datetime-clock-pointer
-  width 1px
-  height 50%
-  margin 0 auto
-  transform-origin top center
-  min-height 0
-  position absolute
-  left 0
-  right 0
-  bottom 0
-  background currentColor
-  span
-    position absolute
-    border-radius 50%
-    width 8px
-    height 8px
-    bottom -8px
-    left 0
-    min-width 0
-    min-height 0
-    transform translate(-50%, -50%)
-    background currentColor
-.q-datetime-arrow
-  color $grey-7
-.q-datetime-dark
-  background $dark
-  background var(--q-color-dark)
-  .q-datetime-arrow
-    color $light
-    color var(--q-color-light)
-  .q-datetime-header, .q-datetime-clock
-    background $grey-8
-  .q-datetime-view-day
-    color white
-  .q-datetime-view-year, .q-datetime-view-month
-    > .q-btn:not(.active)
-      color white
-  .q-datetime-days div
-    &.q-datetime-day-active > span, &:not(.q-datetime-fillerday):not(.disabled):not(.q-datetime-day-active):hover
-      color black
-body.desktop .q-datetime-clock-position:not(.active):hover
-  background $grey-2 !important
-body.desktop .q-datetime-dark .q-datetime-clock-position:not(.active):hover
-  color black
-.q-datetime-clock-position
-  position absolute
-  min-height 32px
-  width 32px
-  height 32px
-  font-size 12px
-  line-height 32px
-  margin 0
+.q-datetime-inner
+  font-size 21px
+  overflow hidden
+  perspective 1200px
+  height 100%
+  text-align right
+  position relative
   padding 0
-  transform translate(-50%, -50%) /* rtl:ignore */
-  border-radius 50%
-  &:not(.active)
-    color black
-    .q-datetime-dark &
-      color white
-  &.active
-    background currentColor
-    > span
-      color white
-for $pos in 0..12
-  $degree = (270 + 30 * $pos)
-  .q-datetime-clock-pos-{$pos}
-    top round(((1 + sin($degree * 1deg)) * 100%) / 2, 2)
-    left round(((1 + cos($degree * 1deg)) * 100%) / 2, 2) /* rtl:ignore */
-for $pos in 0..23
-  $degree = (270 + 15 * $pos)
-  .q-datetime-clock-pos-{$pos}.fmt24
-    top round(((1 + sin($degree * 1deg)) * 100%) / 2, 2)
-    left round(((1 + cos($degree * 1deg)) * 100%) / 2, 2) /* rtl:ignore */
+  direction ltr /* rtl:ignore */
+.q-datetime-col
+  display block
+  overflow visible
+  transform-style preserve-3d
+  position relative
+  max-height 100%
+.q-datetime-col-wrapper, .q-datetime-item
+  transform-style preserve-3d
+  transition all .2s ease-out
+  cursor pointer
+.q-datetime-col-divider
+  max-height 100%
+  width 10px
+.q-datetime-col-month
+  width 117px
+  text-align left
+.q-datetime-col-day
+  width 37px
+.q-datetime-col-year
+  width 61px
+.q-datetime-col-hour
+  width 37px
+.q-datetime-col-minute
+  width 37px
+.q-datetime-item
+  font-size 85%
+  height 36px
+  line-height 36px
+  color rgba(0, 0, 0, .87)
+  position absolute
+  white-space nowrap
+  overflow hidden
+  text-overflow ellipsis
+  left 0
+  top 0
+  width 100%
+  backface-visibility hidden
+  transform-origin center center -110px
+[dir=rtl] .q-datetime-col-month .q-datetime-item
+  padding-right 5px
+.q-datetime-mask
+  position absolute
+  top 0
+  right 0
+  bottom 0
+  left 0
+  height 100%
+  width 100%
+  background linear-gradient(to top, white, rgba(255, 255, 255, 0.0) 50%, white)
+  pointer-events none
+.q-datetime-highlight
+  height 36px
+  position absolute
+  left 0
+  right 0
+  width 100%
+  top 50%
+  margin-top -18px
+  pointer-events none
+  border-top 1px solid $grey-5
+  border-bottom 1px solid $grey-5
 .q-datetime-range
   &.row
     .q-datetime-range-left
@@ -1633,50 +1532,26 @@ for $pos in 0..23
       border-bottom-left-radius 0
   &.column > div + div
     margin-top $datetime-range-space
+.q-datetime-dark
+  background $dark
+  background var(--q-color-dark)
+  .modal-buttons
+    background black
+  .q-datetime-item
+    color rgba(255, 255, 255, .87)
+  .q-datetime-mask
+    background linear-gradient(to top, black, rgba(0, 0, 0, 0.0) 50%, black)
 @media (max-width $breakpoint-sm-max)
-  .q-datetime-ampm
-    margin-left 1.5rem
-  .q-datetime-datestring span
-    margin 10px 5px
-    &.small
-      margin-top 1.3rem
-  .q-datetime
-    width 290px
-    &:not(.no-border)
-      &:not(.q-datetime-dark) .q-datetime-content
-        border-width 0 1px 1px 1px
-        border-style solid
-        border-color $grey-4
-      &.q-datetime-dark
-        border 1px solid $dark
-        border 1px solid var(--q-color-dark)
+  .datetime-ios-modal
+    &.type-date, &.type-datetime
+      min-width 320px
+      width auto
+    &.type-time
+      min-width 250px
+      width auto
 @media (min-width $breakpoint-md-min)
-  .q-datetime-datestring
-    padding 10px 0
-  .q-datetime-ampm
-    margin-top 5px
-    div
-      margin 2px 0
-  .q-datetime-header
-    width 170px
-    position relative
-  .q-datetime-weekdaystring
-    position absolute
-    top 0
-    left 0
-    right 0
-  .q-datetime-content
-    width 290px
-  .q-datetime
-    width 480px
-    &:not(.no-border)
-      &:not(.q-datetime-dark) .q-datetime-content
-        border-width 1px 1px 1px 0
-        border-style solid
-        border-color $grey-4
-      &.q-datetime-dark
-        border 1px solid $dark
-        border 1px solid var(--q-color-dark)
+  .datetime-ios-modal.type-time
+    min-width 280px
 .q-dot
   position absolute
   top $dot-position-top
@@ -2086,11 +1961,11 @@ $layout-transition = all .12s ease-in
   width 100%
   min-height 100vh
 .q-layout-header
-  box-shadow $layout-header-shadow
+  border-bottom $layout-border
   &-hidden
     transform translateY(-110%)
 .q-layout-footer
-  box-shadow $layout-footer-shadow
+  border-top $layout-border
   &-hidden
     transform translateY(110%)
 .q-layout-drawer
@@ -2101,16 +1976,18 @@ $layout-transition = all .12s ease-in
   z-index $z-side
   &.on-top
     z-index $z-fixed-drawer
-.q-layout-drawer-delimiter
-  box-shadow $layout-aside-shadow
 .q-layout-drawer-left
   left 0
   transform translateX(-100%)
   width $layout-aside-left-width
+  &.fixed
+    border-right $layout-border
 .q-layout-drawer-right
   right 0
   transform translateX(100%)
   width $layout-aside-right-width
+  &.fixed
+    border-left $layout-border
 .q-layout, .q-layout-header, .q-layout-footer, .q-layout-page
   position relative
 .q-layout-header, .q-layout-footer
@@ -2253,15 +2130,18 @@ body
   &:last-child
     display none
   & + .q-list-header
-    margin-top (- $item-padding / 2)
+    margin-top ($item-padding / 2)
 .q-item-separator-inset-component
   margin-left ($item-padding + $item-gutter + $item-primary-size)
 .q-list-header
   color $item-label-color
-  font-size 14px
+  font-size 10px
   font-weight 500
-  line-height 48px
-  padding-left $item-padding
+  min-height 35px
+  padding ($item-padding / 2) ($item-padding / 2) ($item-padding / 2) $item-padding
+  line-height 14px
+  letter-spacing 1px
+  text-transform uppercase
 .q-list-header-inset
   padding-left ($item-padding + $item-gutter + $item-primary-size)
 .q-list-dark, .q-item-dark
@@ -2312,6 +2192,7 @@ maximized-modal()
   height 100%
   max-width 100%
   max-height 100%
+  border-radius 0
 .modal-content
   position relative
   background $modal-background
@@ -2319,6 +2200,7 @@ maximized-modal()
   overflow-y auto
   min-width 280px
   max-height 80vh
+  border-radius $modal-border-radius
   -webkit-backface-visibility hidden
 .modal
   z-index $z-modal
@@ -2340,7 +2222,7 @@ maximized-modal()
   .modal.maximized
     &.q-modal-enter, &.q-modal-leave-active
       .modal-content
-        transform translateY(30%)
+        transform translateX(30%)
 @media (max-width $breakpoint-sm-max)
   .q-responsive-modal
     overflow hidden
@@ -2349,7 +2231,7 @@ maximized-modal()
       maximized-modal()
     &.q-modal-enter, &.q-modal-leave-active
       .modal-content
-        transform translateY(30%)
+        transform translateX(30%)
   .modal.minimized
     &.q-modal-enter .modal-content
       transform scale(1.2)
@@ -2367,6 +2249,8 @@ maximized-modal()
 .modal-body
   padding $modal-body-padding
   color $modal-body-color
+.modal-message
+  text-align center
 .small-modal-scroll, .modal-scroll, .big-modal-scroll
   overflow auto
   -webkit-overflow-scrolling touch
@@ -2377,18 +2261,28 @@ maximized-modal()
   max-height $modal-scroll-size
 .big-modal-scroll
   max-height (2 * $modal-scroll-size)
-.modal-buttons
+.modal-buttons:not(.modal-buttons-top)
   padding $modal-buttons-padding
-  justify-content flex-end
+  border-top 1px solid $grey-5
   color $primary
   color var(--q-color-primary)
+  .q-btn
+    flex 1 1 auto
+    font-size 110%
+    margin 0
+    padding 1rem
+    border-radius 0
+    &:last-child
+      font-weight bold
   &.row
     .q-btn + .q-btn
-      margin-left 8px
+      border-left 1px solid $grey-5
   &.column
-    align-items flex-end
     .q-btn + .q-btn
-      margin-top 8px
+      border-top 1px solid $grey-5
+.modal-buttons-top
+  background $grey-2
+  height 45px
 .q-modal-bottom-enter, .q-modal-bottom-leave-active
   opacity 0
   .modal-content
@@ -2467,6 +2361,9 @@ maximized-modal()
 .q-option-inner
   display inline-block
   line-height 0
+  &.active
+    color $primary
+    color var(--q-color-primary)
   & + .q-option-label
     margin-left $label-offset
 .q-option
@@ -2493,7 +2390,6 @@ maximized-modal()
   position relative
   width 100%
   overflow hidden
-  border-radius inherit
 .q-parallax-image
   > img
     visibility hidden
@@ -2654,10 +2550,10 @@ $radio-size = 21px
   background rgba(255, 255, 255, .25)
 body.desktop .q-select-highlight
   background rgba(0, 0, 0, .2) !important
-$slider-height              = 28px
+$slider-height              = 32px
 $slider-track-height        = 2px
 $slider-mark-height         = 10px
-$slider-handle-size         = 12px
+$slider-handle-size         = 22px
 $slider-label-transform     = translateX(-50%) translateY(-139%) scale(1)
 .q-slider-track, .q-slider-mark
   opacity .4
@@ -2707,25 +2603,14 @@ $slider-label-transform     = translateX(-50%) translateY(-139%) scale(1)
   transition all .3s ease
   width $slider-handle-size
   height $slider-handle-size
+  background white
+  box-shadow $shadow-3
   &.dragging
-    transform translate3d(-50%, -50%, 0) scale(1.3)
+    transform translate3d(-50%, -50%, 0)
     transition opacity .3s ease, transform .3s ease
     .q-slider-label
       opacity 1
       transform $slider-label-transform
-  background currentColor
-  &.handle-at-minimum
-    background white
-    &:after
-      content ''
-      position absolute
-      top 0
-      right 0
-      bottom 0
-      left 0
-      background transparent
-      border-radius inherit
-      border 2px solid currentColor
 .q-slider-ring
   position absolute
   top -50%
@@ -2738,7 +2623,7 @@ $slider-label-transform     = translateX(-50%) translateY(-139%) scale(1)
   transform scale(0)
   transition all .2s ease-in
   background currentColor
-.q-slider:not(.disabled):not(.readonly)
+.q-slider:not(.disabled)
   &:focus, &:hover
     .q-slider-ring
       opacity .4
@@ -2755,8 +2640,8 @@ $slider-label-transform     = translateX(-50%) translateY(-139%) scale(1)
   color var(--q-color-primary)
   cursor pointer
   &.label-always, &.with-padding
-    padding 36px 0 8px
-    height 64px
+    padding 30px 0 4px
+    height 56px
   &.has-error
     color $negative
     color var(--q-color-negative)
@@ -2812,6 +2697,8 @@ $slider-label-transform     = translateX(-50%) translateY(-139%) scale(1)
   &.step-navigation
     user-select none
     cursor pointer
+    &:active
+      background $stepper-active-background !important
   &.step-color
     color currentColor
   &.step-active .q-stepper-title
@@ -2942,9 +2829,8 @@ body.desktop .q-stepper-tab.step-navigation:hover
   border 0
 .q-tabs-panes:empty
   display none
-.q-tabs-normal
-  .q-tab-icon, .q-tab-label
-    opacity $tabs-unselected-opacity
+.q-tab-icon, .q-tab-label
+  opacity $tabs-unselected-opacity
 .q-tab
   cursor pointer
   transition color .3s, background .3s
@@ -2952,9 +2838,10 @@ body.desktop .q-stepper-tab.step-navigation:hover
   user-select none
   padding $tabs-padding
   min-height $tabs-min-height
-  text-transform $tabs-text-transform
+  > .q-icon, .q-tab-label
+    transition transform .2s
   > .q-icon + .q-tab-label
-    margin-top 4px
+    margin-top 3px
   .q-chip
     top 5px
     right 5px
@@ -2963,10 +2850,17 @@ body.desktop .q-stepper-tab.step-navigation:hover
     color white
     background alpha($dot-color, .75)
   &.active
+    > .q-icon, .q-tab-label
+      transform scale(1.1)
     .q-tab-icon, .q-tab-label
       opacity 1
+  &:active
+    background rgba(255, 255, 255, .3)
 .q-tab-label
   text-align center
+  line-height 1.3
+.q-tab-only-label
+  font-size $tabs-big-font-size
 .q-tab-icon
   font-size $tabs-icon-font-size
 @media (max-width $breakpoint-sm-max)
@@ -2975,7 +2869,8 @@ body.desktop .q-stepper-tab.step-navigation:hover
     &.hide-label .q-tab-label
       display none !important
     &.hide-icon .q-tab-label
-        margin-top 0
+      font-size $tabs-big-font-size
+      margin-top 0
 @media (max-width $breakpoint-md-max)
   .q-tabs-head:not(.scrollable)
     .q-tabs-scroller, .q-tab
@@ -2984,6 +2879,8 @@ body.desktop .q-stepper-tab.step-navigation:hover
   .q-tab
     padding-left $tabs-big-screen-horiz-padding
     padding-right $tabs-big-screen-horiz-padding
+  .q-tab-label
+    font-size $tabs-big-font-size
   .q-tabs-head:not(.scrollable)
     padding-left $tabs-big-screen-side-padding
     padding-right $tabs-big-screen-side-padding
@@ -3024,25 +2921,6 @@ body.desktop .q-stepper-tab.step-navigation:hover
   justify-content center
 .q-tabs-align-right
   justify-content flex-end
-.q-tabs-bar
-  border $tabs-border-width solid currentColor
-  border-width 0
-  position absolute
-  height 0
-  left 0
-  right 0
-.q-tabs-global-bar
-  width 1px
-  transform scale(0)
-  transform-origin left center
-  transition transform
-  transition-duration .15s
-  transition-timing-function cubic-bezier(.4, .0, 1, 1)
-  &.contract
-    transition-duration .18s
-    transition-timing-function cubic-bezier(.0, .0, .2, 1)
-.q-tabs-global-bar-container.highlight > .q-tabs-global-bar
-  display none
 .q-tabs-two-lines .q-tab
   white-space normal
   .q-tab-label
@@ -3050,17 +2928,12 @@ body.desktop .q-stepper-tab.step-navigation:hover
     display -webkit-box
     -webkit-box-orient vertical
     -webkit-line-clamp 2
-.q-tabs-position-top
-  .q-tabs-bar
-    bottom 0
-    border-bottom-width $tabs-border-width
-.q-tabs-position-bottom
-  .q-tabs-bar
-    top 0
-    border-top-width $tabs-border-width
-  .q-tabs-panes
-    order -1
+.q-tabs-position-bottom .q-tabs-panes
+  order -1
 .q-tabs-inverted
+  .q-tab
+    &:active
+      background rgba(0, 0, 0, .1)
   .q-tabs-head
     background white
   &.q-tabs-position-top
@@ -3400,25 +3273,31 @@ table-dense()
   .q-timeline-entry
     padding-bottom 24px
     overflow hidden
-$toggle-width       = 40px
-$toggle-height      = 21px
-$toggle-handle-size = $toggle-height
-$toggle-base-height = round($toggle-handle-size / 1.7)
+$toggle-width           = 50px
+$toggle-height          = 32px
+$toggle-span            = 2px
+$toggle-handle-size     = $toggle-height - 2 * $toggle-span
 .q-toggle-base
   transition all .45s cubic-bezier(.23, 1, .32, 1)
   width 100%
-  height $toggle-base-height
-  border-radius 30px
+  height $toggle-height
+  color $grey-2
   background currentColor
-  opacity .5
+  border-radius 16px
+  border 2px solid $light
+  border 2px solid var(--q-color-light)
+.q-toggle-base-dark
+  color darken($light, 10%)
+  color var(--q-color-light-d)
 .q-toggle-handle
-  background rgb(245, 245, 245)
+  background white
+  box-shadow 0 3px 3px rgba(0, 0, 0, .2), 0 0 0 2px $light 
+  box-shadow 0 3px 3px rgba(0, 0, 0, .2), 0 0 0 2px var(--q-color-light) 
   transition all 450ms cubic-bezier(.23, 1, .32, 1)
-  box-shadow $shadow-1
   border-radius 50%
   position absolute
-  top 0
-  left 0
+  top $toggle-span
+  left $toggle-span
   width $toggle-handle-size
   height $toggle-handle-size
   line-height $toggle-handle-size
@@ -3426,13 +3305,13 @@ $toggle-base-height = round($toggle-handle-size / 1.7)
   height $toggle-height
   width $toggle-width
   min-width $toggle-width
-  padding round(($toggle-height - $toggle-base-height) / 2) 0
   &.active
+    .q-toggle-base
+      color currentColor
+      border 0
     .q-toggle-handle
-      background currentColor
-      left ($toggle-width - $toggle-handle-size)
-    .q-toggle-icon
-      color white
+      box-shadow $shadow-2
+      left ($toggle-width - $toggle-handle-size - $toggle-span)
 .q-toolbar
   padding $toolbar-padding
   min-height $toolbar-min-height
@@ -3444,9 +3323,11 @@ $toggle-base-height = round($toggle-handle-size / 1.7)
   flex 1
   min-width 1px
   max-width 100%
+  align-items center
   font-size $toolbar-title-font-size
   font-weight $toolbar-title-font-weight
   padding $toolbar-title-padding
+  text-align center
 .q-toolbar-subtitle
   font-size $toolbar-subtitle-font-size
   opacity .7

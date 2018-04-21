@@ -2,9 +2,9 @@
   "name": "quasar",
   "version": "0.15.9",
   "description": "Build responsive websites, PWAs, hybrid mobile apps and Electron apps, all simultaneously using same codebase",
-  "main": "dist/quasar.mat.esm.js",
-  "module": "dist/quasar.mat.esm.js",
-  "jsnext:main": "dist/quasar.mat.esm.js",
+  "main": "dist/quasar.ios.esm.js",
+  "module": "dist/quasar.ios.esm.js",
+  "jsnext:main": "dist/quasar.ios.esm.js",
   "files": [
     "dist",
     "i18n",
