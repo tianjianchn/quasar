@@ -12396,10 +12396,12 @@ var QLayout = {
       }, 150);
     },
     __onPageScroll: function __onPageScroll (data) {
+      this.__onLayoutResize();
       this.scroll = data;
       this.$emit('scroll', data);
     },
     __onLayoutResize: function __onLayoutResize () {
+      if (this.scrollHeight === this.$el.scrollHeight) { return }
       this.scrollHeight = this.$el.scrollHeight;
       this.$emit('scrollHeight', this.scrollHeight);
     },

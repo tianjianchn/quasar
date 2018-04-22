@@ -96,10 +96,12 @@ export default {
       }, 150)
     },
     __onPageScroll (data) {
+      this.__onLayoutResize()
       this.scroll = data
       this.$emit('scroll', data)
     },
     __onLayoutResize () {
+      if (this.scrollHeight === this.$el.scrollHeight) return
       this.scrollHeight = this.$el.scrollHeight
       this.$emit('scrollHeight', this.scrollHeight)
     },
