@@ -31,7 +31,8 @@ export default {
         const v = parseInt(val, 10)
         return v > 0 && v < 13
       }
-    }
+    },
+    alwaysShowBottom: Boolean
   },
   data () {
     return {
@@ -46,7 +47,8 @@ export default {
       return !this.hasError && (this.input.warning || this.warning)
     },
     hasBottom () {
-      return (this.hasError && this.errorLabel) ||
+      return this.alwaysShowBottom ||
+        (this.hasError && this.errorLabel) ||
         (this.hasWarning && this.warningLabel) ||
         this.helper ||
         this.count
