@@ -11869,6 +11869,10 @@ var QInfiniteScroll = {
     offset: {
       type: Number,
       default: 0
+    },
+    offsetPages: {
+      type: Number,
+      default: 0
     }
   },
   data: function data () {
@@ -11888,8 +11892,10 @@ var QInfiniteScroll = {
 
       var
         containerHeight = height(this.scrollContainer),
-        containerBottom = offset(this.scrollContainer).top + containerHeight,
-        triggerPosition = offset(this.element).top + contentHeight - (this.offset || containerHeight);
+        containerBottom = offset(this.scrollContainer).top + containerHeight;
+
+      var triggerOffset = this.offset ? this.offset : (this.offsetPages || 1) * containerHeight;
+      var triggerPosition = offset(this.element).top + contentHeight - triggerOffset;
 
       if (triggerPosition < containerBottom) {
         this.loadMore();
