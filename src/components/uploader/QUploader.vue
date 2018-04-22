@@ -293,13 +293,15 @@ export default {
       handler (v) {
         if (!v) this.files = []
         else {
-          this.files = v.map(item => ({
-            __img: {src: item},
+          let now = Date.now()
+          this.files = v.map((url, index) => ({
+            name: '' + (index + 1),
+            __img: {src: url},
             __failed: false,
             __doneUploading: true,
             progress: 100,
             __progress: 100,
-            __timestamp: Date.now()
+            __timestamp: now + index
           }))
         }
       }
