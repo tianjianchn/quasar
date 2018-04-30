@@ -68,7 +68,7 @@
     />
     <q-icon slot="after" :name="$q.icon.input.dropdown" class="q-if-control" />
 
-    <q-popover
+    <component :is="dropdown"
       ref="popover"
       fit
       :disable="readonly || disable"
@@ -164,13 +164,14 @@
           </q-item-wrapper>
         </template>
       </q-list>
-    </q-popover>
+    </component>
   </q-input-frame>
 </template>
 
 <script>
 import { QSearch } from '../search'
 import { QPopover } from '../popover'
+import { QModal } from '../modal'
 import { QList, QItemWrapper } from '../list'
 import { QCheckbox } from '../checkbox'
 import { QRadio } from '../radio'
@@ -199,7 +200,8 @@ export default {
     QToggle,
     QIcon,
     QInputFrame,
-    QChip
+    QChip,
+    QModal
   },
   props: {
     remoteQuery: Function,
@@ -223,7 +225,11 @@ export default {
     chipsBgColor: String,
     displayValue: String,
     clearable: Boolean,
-    clearValue: {}
+    clearValue: {},
+    dropdown: {
+      type: String,
+      default: 'q-popover'
+    }
   },
   data () {
     return {
