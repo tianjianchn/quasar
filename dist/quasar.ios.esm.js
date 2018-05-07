@@ -15073,7 +15073,7 @@ var QSelect = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=
     reposition: function reposition () {
       var popover = this.$refs.popover;
       if (popover.showing) {
-        popover.reposition();
+        popover.reposition && popover.reposition();
       }
     },
 

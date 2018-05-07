@@ -341,7 +341,7 @@ export default {
     reposition () {
       const popover = this.$refs.popover
       if (popover.showing) {
-        popover.reposition()
+        popover.reposition && popover.reposition()
       }
     },
 

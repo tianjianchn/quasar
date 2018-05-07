@@ -15081,7 +15081,7 @@
       reposition: function reposition () {
         var popover = this.$refs.popover;
         if (popover.showing) {
-          popover.reposition();
+          popover.reposition && popover.reposition();
         }
       },
 
