@@ -355,7 +355,7 @@ export default {
       this.$refs.file.value = ''
 
       let filesReady = [] // List of image load promises
-      files = files.filter(file => !this.queue.some(f => file.name === f.name))
+      files = files.slice(0, this.limit).filter(file => !this.queue.some(f => file.name === f.name))
         .map(file => {
           initFile(file)
           file.__size = humanStorageSize(file.size)

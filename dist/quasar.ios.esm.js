@@ -18211,7 +18211,7 @@ var QUploader = {render: function(){var _vm=this;var _h=_vm.$createElement;var _
       this.$refs.file.value = '';
 
       var filesReady = []; // List of image load promises
-      files = files.filter(function (file) { return !this$1.queue.some(function (f) { return file.name === f.name; }); })
+      files = files.slice(0, this.limit).filter(function (file) { return !this$1.queue.some(function (f) { return file.name === f.name; }); })
         .map(function (file) {
           initFile(file);
           file.__size = humanStorageSize(file.size);
