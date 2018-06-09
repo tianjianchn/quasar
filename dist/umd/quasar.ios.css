@@ -1005,7 +1005,6 @@ input[type='search']::-webkit-search-decoration {
   -webkit-perspective: 1200px;
           perspective: 1200px;
   height: 100%;
-  text-align: right;
   position: relative;
   padding: 0;
   direction: ltr /* rtl:ignore */;
@@ -1031,20 +1030,20 @@ input[type='search']::-webkit-search-decoration {
   width: 10px;
 }
 .q-datetime-col-month {
-  width: 117px;
+  width: 64px;
   text-align: left;
 }
 .q-datetime-col-day {
-  width: 37px;
+  width: 64px;
 }
 .q-datetime-col-year {
-  width: 61px;
+  width: 56px;
 }
 .q-datetime-col-hour {
-  width: 37px;
+  width: 56px;
 }
 .q-datetime-col-minute {
-  width: 37px;
+  width: 56px;
 }
 .q-datetime-item {
   font-size: 85%;

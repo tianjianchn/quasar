@@ -5,6 +5,20 @@
       <div class="q-datetime-inner full-height flex justify-center" @touchstart.stop.prevent>
         <template v-if="typeHasDate">
           <div
+            class="q-datetime-col q-datetime-col-year"
+            v-touch-pan.vertical="__dragYear"
+          >
+            <div ref="year" class="q-datetime-col-wrapper" :style="__yearStyle">
+              <div
+                v-for="n in yearInterval"
+                :key="`yi${n}`"
+                class="q-datetime-item"
+              >
+                {{ n + yearMin }}
+              </div>
+            </div>
+          </div>
+          <div
             class="q-datetime-col q-datetime-col-month"
             v-touch-pan.vertical="__dragMonth"
           >
@@ -29,22 +43,7 @@
                 :key="`di${index}`"
                 class="q-datetime-item"
               >
-                {{ index + dayMin - 1 }}
-              </div>
-            </div>
-          </div>
-
-          <div
-            class="q-datetime-col q-datetime-col-year"
-            v-touch-pan.vertical="__dragYear"
-          >
-            <div ref="year" class="q-datetime-col-wrapper" :style="__yearStyle">
-              <div
-                v-for="n in yearInterval"
-                :key="`yi${n}`"
-                class="q-datetime-item"
-              >
-                {{ n + yearMin }}
+                {{ index + dayMin - 1 }} 日
               </div>
             </div>
           </div>
@@ -61,7 +60,7 @@
                 :key="`hi${n}`"
                 class="q-datetime-item"
               >
-                {{ n + hourMin - 1 }}
+                {{ n + hourMin - 1 }} 时
               </div>
             </div>
           </div>
@@ -76,7 +75,7 @@
                 :key="`ni${n}`"
                 class="q-datetime-item"
               >
-                {{ __pad(n + minuteMin - 1) }}
+                {{ __pad(n + minuteMin - 1) }} 分
               </div>
             </div>
           </div>
